@@ -84,7 +84,9 @@ def load_paths_and_graph():
     
     print("extracting additional information from source code...")
     articles_data = extract_articles_data()
-    paths_and_graph["articles"] = paths_and_graph["articles"].merge(articles_data, left_on="article", right_index=True)
-    paths_and_graph["articles"]["num_links"] = paths_and_graph["articles"]["links"].apply(lambda l: len(l))
+    paths_and_graph["articles"] = paths_and_graph["articles"].merge(articles_data, left_on="article", right_index=True, how="left")
+    paths_and_graph["articles"]["num_links"] = paths_and_graph["articles"]["links"].apply(lambda l: len(l) if type(l) == list else 0)
 
+    assert paths_and_graph["shortest-path-distance-matrix"].shape == (len(paths_and_graph["articles"]), len(paths_and_graph["articles"]))
+    
     return paths_and_graph
