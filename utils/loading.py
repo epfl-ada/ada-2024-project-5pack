@@ -12,10 +12,13 @@ WP_SOURCE_DATA_FOLDER = "data/wpcd/wp"
 def extract_links(page_path):
     doc = parse(page_path).getroot()
     
+    # note: for some reason one call is not enough
+    decode = lambda e: unquote(unquote(e))
+    
     return [
-        (a.text_content(), href.split("/")[-1].split(".htm")[0], unquote(href.split("/")[-1].split(".htm")[0])) 
-        for a in doc.cssselect('a') 
-        if (href := a.get('href'))
+        (a.text_content(), href.split("/")[-1].split(".htm")[0], decode(href.split("/")[-1].split(".htm")[0])) 
+        for a in doc.cssselect('a, area') 
+        if ((href := a.get('href')) and href.endswith(".htm"))
     ]
 
 def extract_articles_data():
@@ -23,7 +26,7 @@ def extract_articles_data():
     for root, _, files in os.walk(WP_SOURCE_DATA_FOLDER):
         for file in files:
             if file.endswith(".htm"):
-                article_name = file.split(".")[0]
+                article_name = file.split(".htm")[0]
                 article_links = extract_links(os.path.join(root, file))
                 
                 articles_data[article_name] = {
@@ -77,7 +80,7 @@ def load_paths_and_graph():
     paths_and_graph["links"]["linkTarget_decoded"] = paths_and_graph["links"]["linkTarget"].apply(unquote)
     
     paths_and_graph["shortest-path-distance-matrix"] = np.array(list(map(
-            lambda s: np.array(list(map(lambda e: np.nan if e == "_" else int(e), list(s)))),
+            lambda s: np.array([*map(lambda e: np.nan if e == "_" else int(e), list(s))]),
             paths_and_graph["shortest-path-distance-matrix"].value.values
         ))
     )
