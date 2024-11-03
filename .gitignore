@@ -1,1 +1,4 @@
-data/
+data/*
+!data/README.md
+utils/__pycache__
+.DS_STORE
