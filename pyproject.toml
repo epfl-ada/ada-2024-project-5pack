@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "ada-2024-project-5pack"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.3"
+lxml = "^5.3.0"
+cssselect = "^1.2.0"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

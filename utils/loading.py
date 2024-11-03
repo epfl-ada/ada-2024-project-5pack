@@ -77,7 +77,7 @@ def load_paths_and_graph():
     paths_and_graph["links"]["linkTarget_decoded"] = paths_and_graph["links"]["linkTarget"].apply(unquote)
     
     paths_and_graph["shortest-path-distance-matrix"] = np.array(list(map(
-            lambda s: np.array(list(map(lambda e: np.NaN if e == "_" else int(e), list(s)))),
+            lambda s: np.array(list(map(lambda e: np.nan if e == "_" else int(e), list(s)))),
             paths_and_graph["shortest-path-distance-matrix"].value.values
         ))
     )

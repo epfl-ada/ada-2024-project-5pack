@@ -1,4 +1,8 @@
 data/*
 !data/README.md
+
 utils/__pycache__
 .DS_STORE
+
+.venv
+poetry.lock
