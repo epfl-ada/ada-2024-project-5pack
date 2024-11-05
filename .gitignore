@@ -6,3 +6,5 @@ utils/__pycache__
 
 .venv
 poetry.lock
+
+__pycache__/
