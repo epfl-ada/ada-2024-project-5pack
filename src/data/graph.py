@@ -77,7 +77,7 @@ def load_graph_data():
 
     print("building graph...")
     wikispeedia_graph = nx.DiGraph() 
-    wikispeedia_graph.add_nodes_from(graph_data["articles"])
+    wikispeedia_graph.add_nodes_from(graph_data["articles"].name)
     wikispeedia_graph.add_edges_from(graph_data["links"].values)
 
     graph_data["graph"] = wikispeedia_graph
