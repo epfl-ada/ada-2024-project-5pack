@@ -12,9 +12,21 @@ networkx = "^3.4.2"
 tqdm = "^4.66.6"
 numpy = "^2.1.3"
 matplotlib = "^3.9.2"
+pre-commit = "^4.0.1"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 130
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+
+[tool.ruff.lint]
+ignore = ["E722"]
 
 [build-system]
 requires = ["poetry-core"]
