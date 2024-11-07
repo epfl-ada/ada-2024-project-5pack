@@ -30,6 +30,15 @@ Put the uncompressed Wikispeedia data in `data/`.
 
 Tell us how the code is arranged, any explanation goes here.
 
+### Code quality checks
+
+We use [pre-commit](https://pre-commit.com) to ensure code quality for any contribution to this repository.
+
+To run all the checks before trying to commit, use
+```bash
+pre-commit run --all-files
+```
+
 ## Project structure
 
 The directory structure of new project looks like this:
@@ -51,4 +60,3 @@ The directory structure of new project looks like this:
 ├── .pyproject.toml             <- Configuration file for Poetry
 └── README.md
 ```
-

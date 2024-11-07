@@ -9,3 +9,4 @@ utils/__pycache__
 poetry.lock
 
 __pycache__/
+.ruff_cache
