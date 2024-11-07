@@ -1,5 +1,6 @@
 data/*
 !data/README.md
+!data/download_linux_or_macos.sh
 
 utils/__pycache__
 .DS_STORE

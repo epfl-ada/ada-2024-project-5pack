@@ -10,3 +10,8 @@ Once setup this folder should contain the following structure.
 ├── 📁 wpcd
 └── README.md
 ```
+
+For Linux and macOS users, you can quickly configure this folder by executing the following code, assuming you have [curl](https://curl.se) and [tar](https://www.gnu.org/software/tar/) installed on your system:
+```bash
+bash download_linux_or_macos.sh
+```
