@@ -73,7 +73,7 @@ def load_graph_data():
 
 	print("formatting paths...")
 	for k in ["paths_finished", "paths_unfinished"]:
-		graph_data[k]["path"] = graph_data[k]["path"].apply(lambda path: path.split(";"))
+		graph_data[k]["path"] = graph_data[k]["path"].apply(lambda path: [unquote(p) for p in path.split(";")])
 		graph_data[k]["source"] = graph_data[k]["path"].apply(lambda path: path[0])
 		graph_data[k]["datetime"] = graph_data[k]["timestamp"].astype(int).apply(datetime.fromtimestamp)
 
