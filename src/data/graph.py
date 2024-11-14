@@ -1,107 +1,70 @@
-from functools import cache
-from urllib.parse import unquote
-from datetime import datetime
-
-import os
-import numpy as np
-import pandas as pd
 import networkx as nx
 
-PATHS_AND_GRAPH_FOLDER = "data/wikispeedia_paths-and-graph"
-WP_SOURCE_DATA_FOLDER = "data/wpcd/wp"
 
-
-def load_data_from_file(file_path):
+def _get_edge_weights(graph_data: dict, dataframe_key: str) -> dict[tuple[str, str], int]:
 	"""
-	Load a data file using the original format and return a DataFrame containing the data.
-
-	Args:
-	    file_path (str): the file to get the data from
-
-	Raises:
-	    RuntimeError: if the format of the data cannot be resolved
-
-	Returns:
-	    pd.DataFramce: the dataframe with the data
+	Return a dictionary where the keys are tuples representing an edge (u, v) and values are the edges weights.
+	The weight of an edge (u, v) is the number of times users went from u to v in their path.
+	If a user clicked on '<', the article that was discarded does not contribute to the weight.
 	"""
-	columns = None
-	data = []
-	with open(file_path) as file:
-		while line := file.readline():
-			line = line.rstrip()
-			if line.startswith("# FORMAT:") and not columns:
-				data_str = line.split("# FORMAT:   ")[1] if line.startswith("# FORMAT:   ") else "value"
-				columns = data_str.split("   ")
-			elif line.startswith("# FORMAT:"):
-				raise RuntimeError()
-			elif len(line) > 0 and not line.startswith("#"):
-				data_line = line.split("	")
-				assert len(data_line) == len(columns)
-				data.append(data_line)
+	assert dataframe_key in graph_data
 
-	df = pd.DataFrame(data, columns=columns)
+	# Initialize all edge weights to zero
+	edge_weights = {link_tuple: 0 for link_tuple in graph_data["links"][["source_name", "target_name"]].apply(tuple, axis=1)}
 
-	return df
+	edge_weights |= {(source, "<"): 0 for source in graph_data["articles"]["name"]}
+
+	# Increase edge weights
+	unrecognized_edges: set[tuple[str, str]] = set()
+	for _, row in graph_data[dataframe_key].iterrows():
+		path = row["path"]
+		clean_path = []  # Path without '<'
+		for element in path:
+			if element == "<":
+				edge_weights[(clean_path[-1], "<")] += 1
+				clean_path.pop()
+			else:
+				clean_path.append(element)
+
+		for i in range(1, len(clean_path)):
+			edge = (clean_path[i - 1], clean_path[i])
+			if edge not in edge_weights:
+				unrecognized_edges.add(edge)
+				edge_weights[edge] = 0
+
+			edge_weights[edge] += 1
+
+	if len(unrecognized_edges) > 0:
+		print(f"Note that the following edges are present in '{dataframe_key}' but not in 'links'")
+		print(unrecognized_edges)
+
+	assert sum(edge_weights.values()) == sum(graph_data[dataframe_key]["path"].apply(len)) - sum(
+		graph_data[dataframe_key]["path"].apply(lambda list: list.count("<"))
+	) - len(graph_data[dataframe_key])
+
+	return edge_weights
 
 
-@cache
-def load_graph_data():
-	if not os.path.isdir(PATHS_AND_GRAPH_FOLDER):
-		raise ValueError("The data is not setup correctly, please follow the instructions in `data/README.md`.")
+def extract_players_graph(graph_data: dict, finished=True) -> nx.DiGraph:
+	"""
+	Generates a directed graph from the given dataframe (either 'paths_finished' or 'paths_unfinished').
+	The nodes of the graph are the articles.
+	The weight of the edges of the graph represents the number of times users went from one article to another.
+	A special node '<' is created.
+	The weight of an edge from u to '<' represents the number of times users clicked on the back button after visiting u.
+	"""
+	graph = nx.DiGraph()
 
-	graph_data = {}
+	# Add nodes to graph
+	graph.add_node("<")
+	graph.add_nodes_from(graph_data["articles"]["name"])
 
-	print("loading raw data from tsv files...")
-	with os.scandir(PATHS_AND_GRAPH_FOLDER) as it:
-		for entry in it:
-			if (entry.name.endswith(".tsv") or entry.name.endswith(".txt")) and entry.is_file():
-				key = entry.name.split(".")[0]
-				graph_data[key] = load_data_from_file(entry.path)
+	# Add edges to graph
+	edge_weights = _get_edge_weights(graph_data, "paths_finished" if finished else "paths_unfinished")
+	for (source, dest), count in edge_weights.items():
+		graph.add_edge(source, dest, weight=count)
 
-	print("formatting articles...")
-	graph_data["articles"]["name"] = graph_data["articles"]["article"].apply(unquote)
-	graph_data["articles"].drop(columns=["article"], inplace=True)
+	# TODO: see why this assertion is needed and why it does not pass
+	# assert(abs(graph.number_of_edges() - len(graph_data['links']) - len(graph_data['articles'])) <= 4)
 
-	print("formatting categories...")
-	graph_data["categories"]["article_name"] = graph_data["categories"]["article"].apply(unquote)
-	graph_data["categories"].drop(columns=["article"], inplace=True)
-
-	print("formatting links...")
-	graph_data["links"]["source_name"] = graph_data["links"]["linkSource"].apply(unquote)
-	graph_data["links"]["target_name"] = graph_data["links"]["linkTarget"].apply(unquote)
-	graph_data["links"].drop(columns=["linkSource", "linkTarget"], inplace=True)
-
-	print("formatting paths...")
-	for k in ["paths_finished", "paths_unfinished"]:
-		graph_data[k]["path"] = graph_data[k]["path"].apply(lambda path: [unquote(p) for p in path.split(";")])
-		graph_data[k]["path_length"] = graph_data[k]["path"].apply(lambda path: len(path))
-		graph_data[k]["source"] = graph_data[k]["path"].apply(lambda path: path[0])
-		graph_data[k]["datetime"] = graph_data[k]["timestamp"].astype(int).apply(datetime.fromtimestamp)
-		graph_data[k]["duration_in_seconds"] = graph_data[k]["durationInSec"].astype(np.int64)
-
-		graph_data[k].drop(columns=["durationInSec"], inplace=True)
-
-	graph_data["paths_finished"]["target"] = graph_data["paths_finished"]["path"].apply(lambda path: path[-1])
-
-	print("formatting distance matrix...")
-	graph_data["shortest-path-distance-matrix"] = np.array(
-		list(
-			map(
-				lambda s: np.array([*map(lambda e: np.nan if e == "_" else int(e), list(s))]),
-				graph_data["shortest-path-distance-matrix"].value.values,
-			)
-		)
-	)
-
-	assert graph_data["shortest-path-distance-matrix"].shape == (len(graph_data["articles"]), len(graph_data["articles"]))
-
-	print("building graph...")
-	wikispeedia_graph = nx.DiGraph()
-	wikispeedia_graph.add_nodes_from(graph_data["articles"].name)
-	wikispeedia_graph.add_edges_from(graph_data["links"].values)
-	# Every node has a link to the GNU Free Documentation License
-	wikispeedia_graph.add_edges_from([(node, 'Wikipedia_Text_of_the_GNU_Free_Documentation_License') for node in graph_data["articles"].name.values])
-
-	graph_data["graph"] = wikispeedia_graph
-
-	return graph_data
+	return graph
