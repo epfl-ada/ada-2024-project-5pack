@@ -5,7 +5,7 @@ Team *5Pack*.
 The Wikispeedia project explores human navigation patterns within a simplified Wikipedia network, analyzing how players find paths between articles using only hyperlinks. With a dataset of over 75,000 gameplay paths (51,000 completed, 25,000 abandoned), we aim to uncover the strategies players employ when navigating this knowledge network. Our analysis focuses on identifying navigation patterns, such as the use of hub articles and hierarchical thinking (e.g., moving from specific to general categories), and investigating how link positioning within articles influences player choices. By combining network analysis with behavioral data, we seek to understand what makes certain paths more challenging than others and how players' internal mental models of knowledge organization affect their navigation strategies. This research could provide insights into human information seeking behavior and potentially improve website navigation design.
 
 ## Research Questions
-1. Hub Navigation Analysis:
+1. Wikispeedia network analysis:
    - To what extent do players rely on hub articles in their navigation?
    - Are certain types of hubs (e.g., geographical, temporal, categorical) more frequently used?
    - How does hub usage correlate with success rates?
@@ -15,12 +15,10 @@ The Wikispeedia project explores human navigation patterns within a simplified W
    - What factors correlate with players abandoning their search?
    - Is there a relationship between path length and completion time?
 
-3. Link Position Impact:
+3. Navigation Strategies:
+   - Do players show evidence of hierarchical navigation (e.g., specific → general → specific)?
    - How does the position of links within articles affect player choices?
    - Do players prefer links at the beginning, middle, or end of articles?
-
-4. Navigation Strategies:
-   - Do players show evidence of hierarchical navigation (e.g., specific → general → specific)?
    - Can we identify common patterns in successful vs. unsuccessful navigation attempts?
    - How diverse are the paths chosen for the same source-target pairs?
 
