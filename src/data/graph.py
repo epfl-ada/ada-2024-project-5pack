@@ -74,8 +74,12 @@ def load_graph_data():
 	print("formatting paths...")
 	for k in ["paths_finished", "paths_unfinished"]:
 		graph_data[k]["path"] = graph_data[k]["path"].apply(lambda path: [unquote(p) for p in path.split(";")])
+		graph_data[k]["path_length"] = graph_data[k]["path"].apply(lambda path: len(path))
 		graph_data[k]["source"] = graph_data[k]["path"].apply(lambda path: path[0])
 		graph_data[k]["datetime"] = graph_data[k]["timestamp"].astype(int).apply(datetime.fromtimestamp)
+		graph_data[k]["duration_in_seconds"] = graph_data[k]["durationInSec"].astype(np.int64)
+
+		graph_data[k].drop(columns=["durationInSec"], inplace=True)
 
 	graph_data["paths_finished"]["target"] = graph_data["paths_finished"]["path"].apply(lambda path: path[-1])
 
@@ -95,6 +99,8 @@ def load_graph_data():
 	wikispeedia_graph = nx.DiGraph()
 	wikispeedia_graph.add_nodes_from(graph_data["articles"].name)
 	wikispeedia_graph.add_edges_from(graph_data["links"].values)
+	# Every node has a link to the GNU Free Documentation License
+	wikispeedia_graph.add_edges_from([(node, 'Wikipedia_Text_of_the_GNU_Free_Documentation_License') for node in graph_data["articles"].name.values])
 
 	graph_data["graph"] = wikispeedia_graph
 
