@@ -105,3 +105,36 @@ def load_graph_data():
 	graph_data["graph"] = wikispeedia_graph
 
 	return graph_data
+
+def explode_paths(paths):
+	exploded_paths = paths.copy(deep=True)
+
+
+	# Explode the paths
+	exploded_paths['source'] = exploded_paths['path'].map(lambda p: [dict(rank=i, name=node) for i, node in enumerate(p)])
+	exploded_paths = exploded_paths.explode('source')
+
+	# Restructure columns
+	exploded_paths['rank'] = exploded_paths['source'].apply(lambda src: src['rank'])
+	exploded_paths['source'] = exploded_paths['source'].apply(lambda src: src['name'])
+	exploded_paths['path_length'] = exploded_paths['path_length'] - exploded_paths['rank']
+
+	# Remove paths to self
+	exploded_paths = exploded_paths[lambda x: x['source'] != x['target']]
+
+	# Irrelevant rows
+	# exploded_paths = exploded_paths[lambda x: x['path_length'] < 20]
+
+	exploded_paths = (
+		exploded_paths
+		.groupby(['source', 'target'])
+		[['source', 'target', 'rank', 'path_length']]
+		.apply(lambda x: pd.Series(dict(
+			correlation_coefficient=np.corrcoef(
+				np.vstack([x['rank'].to_numpy(), x['path_length'].to_numpy()]), rowvar=True
+			)[0, 1],
+			count=len(x)
+		)))
+		.reset_index()
+	)
+	return exploded_paths
