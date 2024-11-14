@@ -1,4 +1,4 @@
-# Your project name
+# Information Pursuit: A Wikispeedia Analysis
 Team *5Pack*.
 
 **Abstract**
