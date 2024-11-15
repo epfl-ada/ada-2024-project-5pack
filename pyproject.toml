@@ -24,6 +24,8 @@ scipy = "^1.14.1"
 transformers = "^4.46.2"
 torch = "^2.5.1"
 scikit-learn = "^1.5.2"
+bs4 = "^0.0.2"
+chardet = "^5.2.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"

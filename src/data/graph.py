@@ -1,6 +1,6 @@
 import networkx as nx
 
-from typing import Any, Dict, Tuple, Set, str
+from typing import Any, Dict, Tuple, Set
 
 Node = str
 Edge = Tuple[str, str]
