@@ -1,9 +1,11 @@
 from functools import cache
 from urllib.parse import unquote
 from datetime import datetime
+from typing import Dict, Union
 
 import os
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import networkx as nx
 
@@ -11,7 +13,7 @@ PATHS_AND_GRAPH_FOLDER = "data/wikispeedia_paths-and-graph"
 WP_SOURCE_DATA_FOLDER = "data/wpcd/wp"
 
 
-def load_data_from_file(file_path):
+def load_data_from_file(file_path: str) -> pd.DataFrame:
 	"""
 	Load a data file using the original format and return a DataFrame containing the data.
 
@@ -44,7 +46,18 @@ def load_data_from_file(file_path):
 	return df
 
 
-def _index_based_to_df_matrix(index_based_matrix, articles, paths):
+def _index_based_to_df_matrix(index_based_matrix: npt.NDArray, articles: pd.DataFrame, paths: pd.DataFrame) -> pd.DataFrame:
+	"""Transform the shortest path distance matrix from the original format to a Dataframe index with article names
+
+	Args:
+		index_based_matrix (np.ndarray): index based shortest distance matrix
+		articles (pd.DataFrame): articles data with correct order preserved
+		paths (pd.DataFrame): realised path data
+
+	Returns:
+		pd.DataFrame: the resulting Dataframe indexed with article names
+	"""
+
 	articles = articles.reset_index()
 	paths = paths.reset_index(names="path_id")
 
@@ -82,7 +95,15 @@ def _index_based_to_df_matrix(index_based_matrix, articles, paths):
 
 
 @cache
-def load_graph_data():
+def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]:
+	"""Load the original dataset with some preprocessing
+
+	Raises:
+		ValueError: if the data is not configured correctly
+
+	Returns:
+		dict: a dictionnary with all the data
+	"""
 	if not os.path.isdir(PATHS_AND_GRAPH_FOLDER):
 		raise ValueError("The data is not setup correctly, please follow the instructions in `data/README.md`.")
 
@@ -152,7 +173,7 @@ def load_graph_data():
 	return graph_data
 
 
-def explode_paths(paths):
+def explode_paths(paths: pd.DataFrame) -> pd.DataFrame:
 	exploded_paths = paths.copy(deep=True)
 
 	# Explode the paths
