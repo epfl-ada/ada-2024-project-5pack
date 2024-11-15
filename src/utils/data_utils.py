@@ -173,8 +173,21 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 	return graph_data
 
 
-def explode_paths(paths: pd.DataFrame) -> pd.DataFrame:
-	exploded_paths = paths.copy(deep=True)
+
+def explode_paths(paths: pd.DataFrame, path_length_threshold: int = 500) -> pd.DataFrame:
+	"""Explode each path by creating one row for each article visited in the path.
+
+	Args:
+		paths:					pd.DataFrame, either paths_finished or paths_unfinished as returned by `load_graph_data`.
+		path_length_threshold:	int, paths above this threshold are ignored (we assume the players were not playing seriously)
+
+	Returns:
+		exploded_paths:			pd.DataFrame, one row for each article visited in each path.
+		`source` is the article visited and `target` is the original target.
+		The original path is kept in the column `path` and the rank is represented in the column `rank`.
+		The column `path_length` holds the distance between the new `source` and `target.
+	"""
+	exploded_paths = paths[lambda x: x['path_length'] <= path_length_threshold].copy(deep=True)
 
 	# Explode the paths
 	exploded_paths["source"] = exploded_paths["path"].map(lambda p: [dict(rank=i, name=node) for i, node in enumerate(p)])
@@ -191,22 +204,41 @@ def explode_paths(paths: pd.DataFrame) -> pd.DataFrame:
 	# Irrelevant rows
 	# exploded_paths = exploded_paths[lambda x: x['path_length'] < 20]
 
-	exploded_paths = (
-		exploded_paths.groupby(["source", "target"])[["source", "target", "rank", "path_length"]]
-		.apply(
-			lambda x: pd.Series(
-				dict(
-					correlation_coefficient=np.corrcoef(
-						np.vstack([x["rank"].to_numpy(), x["path_length"].to_numpy()]), rowvar=True
-					)[0, 1],
-					count=len(x),
-				)
-			)
-		)
-		.reset_index()
-	)
 	return exploded_paths
 
+def compute_correlation_between_rank_and_path_length(paths: pd.DataFrame) -> pd.DataFrame:
+	"""Computes the correlation between the columns `rank` and `path_length` for distinct pair of articles.
+	Args:
+		paths:		pd.DataFrame, either paths_finished or paths_unfinished as returned by `load_graph_data`
+
+	Returns:
+		corr_data	pd.DataFrame, correlation data. One pair of articles per row.
+		The correlation coefficient is in the column `correlation_coefficient` and the column
+		`count` is the number of times the given pair was found.
+	"""
+	compute_corr = lambda group: pd.Series(
+		dict(
+			correlation_coefficient=(
+				np.corrcoef(
+					data := np.vstack([group["rank"].to_numpy(), group["path_length"].to_numpy()]), rowvar=True
+				)[0, 1] if len(group["rank"]) > 1 and len(group["path_length"]) > 1 else np.nan 
+			),
+			covariance=(
+				np.cov(data, rowvar=True)[0, 1]
+				if len(group["rank"]) > 1 and len(group["path_length"] > 1)
+				else np.nan
+			),
+			count=len(group),
+		)
+	)
+
+	corr_data = (
+		explode_paths(paths, 50).groupby(["source", "target"])[["source", "target", "rank", "path_length"]]
+		.apply(compute_corr)
+		.reset_index()
+	)
+
+	return corr_data
 
 def get_links_with_position(file_name):
 	#In this function we calculate all of the links rank in the article

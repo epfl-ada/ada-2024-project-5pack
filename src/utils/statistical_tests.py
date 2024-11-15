@@ -34,7 +34,7 @@ PATH_FEATURES = [
 class StatisticalAnalyzer:
     def __init__(self):
         """Initialize StatisticalAnalyzer"""
-        self.scaler = StandardScaler()
+        self.scaler = StandardScaler() # used to standardize features - mean 0, variance 1
         self.model = None
         self.feature_stats = None
         
@@ -46,14 +46,14 @@ class StatisticalAnalyzer:
             def get_semantic_distance(row):
                 if not isinstance(row['path'], list) or len(row['path']) < 2:
                     return None
-                start = row['path'][0]
-                end = row['path'][-1]
+                start = row['path'][0] # First article
+                end = row['path'][-1] # Last one
                 return semantic_distances.get((start, end))
             
             # Calculate semantic distances
             paths_df['semantic_distance'] = paths_df.apply(get_semantic_distance, axis=1)
             
-            # Remove paths with missing distances
+            # Remove paths with missing distances if applicable (not all paths have semantic data)
             valid_paths = paths_df.dropna(subset=['semantic_distance'])
             
             if len(valid_paths) < 2:
