@@ -165,6 +165,11 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 	wikispeedia_graph = nx.DiGraph()
 	wikispeedia_graph.add_nodes_from(graph_data["articles"].name)
 	wikispeedia_graph.add_edges_from(graph_data["links"].values)
+	# Every node has a link to the GNU Free Documentation License
+	wikispeedia_graph.add_edges_from(
+		[(node, "Wikipedia_Text_of_the_GNU_Free_Documentation_License") for node in graph_data["articles"].name.values]
+	)
+
 	graph_data["graph"] = wikispeedia_graph
 
 	return graph_data
