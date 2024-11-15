@@ -2,8 +2,11 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 
+from typing import Any, Dict
 
-def describe_value(value):
+
+def describe_value(value: Any) -> str:
+	# utility function to get a textual and useful description of a variable
 	if isinstance(value, pd.DataFrame):
 		return f"DataFrame {value.shape}"
 
@@ -16,7 +19,8 @@ def describe_value(value):
 	raise ValueError(f"Cannot describe type {type(value)}")
 
 
-def describe_dict(data_dict):
+def describe_dict(data_dict: Dict[str, Any]) -> None:
+	# utility function to describe a dictionary by printing a table
 	data_infos = {"Keyword": list(data_dict.keys()), "Type (shape)": [*map(describe_value, data_dict.values())]}
 
 	column_lengths = {k: max(map(len, v)) for k, v in data_infos.items()}

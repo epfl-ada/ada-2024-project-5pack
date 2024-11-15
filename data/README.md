@@ -15,3 +15,7 @@ For Linux and macOS users, you can quickly configure this folder by executing th
 ```bash
 bash download_linux_or_macos.sh
 ```
+
+## Generated data
+
+This directory is also used to store data generated for the project in the different scripts. It allows to avoid some lengthy processes to run at each execution of the code.
