@@ -8,6 +8,7 @@ from src.utils.data_utils import load_graph_data
 from src.utils.llm import get_tokenizer_and_model, next_token_probs
 
 BATCH_SIZE = 16
+RESULT_FILE_PATH = "./data/generated/pairs_categories.csv"
 
 
 def get_category_prompt(article_1: str, article_2: str) -> str:
@@ -123,7 +124,7 @@ if __name__ == "__main__":
 
 	unique_pairs = retrieve_unique_pairs()
 
-	with open("./src/data/pairs_categories.csv", "w") as file:
+	with open(RESULT_FILE_PATH, "w") as file:
 		file.write("Article 1,Article 2,Geographical,Temporal,Categorical,Other,Total\n")
 
 		for batch, results in tqdm(categories_generator(), total=(len(unique_pairs) // BATCH_SIZE)):

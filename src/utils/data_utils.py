@@ -3,6 +3,8 @@ from urllib.parse import unquote
 from datetime import datetime
 from typing import Dict, Union
 
+from src.utils import logger
+
 import os
 import numpy as np
 import numpy.typing as npt
@@ -109,27 +111,27 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 
 	graph_data = {}
 
-	print("loading raw data from tsv files...")
+	logger.info("loading raw data from tsv files...")
 	with os.scandir(PATHS_AND_GRAPH_FOLDER) as it:
 		for entry in it:
 			if (entry.name.endswith(".tsv") or entry.name.endswith(".txt")) and entry.is_file():
 				key = entry.name.split(".")[0]
 				graph_data[key] = load_data_from_file(entry.path)
 
-	print("formatting articles...")
+	logger.info("formatting articles...")
 	graph_data["articles"]["name"] = graph_data["articles"]["article"].apply(unquote)
 	graph_data["articles"].drop(columns=["article"], inplace=True)
 
-	print("formatting categories...")
+	logger.info("formatting categories...")
 	graph_data["categories"]["article_name"] = graph_data["categories"]["article"].apply(unquote)
 	graph_data["categories"].drop(columns=["article"], inplace=True)
 
-	print("formatting links...")
+	logger.info("formatting links...")
 	graph_data["links"]["source_name"] = graph_data["links"]["linkSource"].apply(unquote)
 	graph_data["links"]["target_name"] = graph_data["links"]["linkTarget"].apply(unquote)
 	graph_data["links"].drop(columns=["linkSource", "linkTarget"], inplace=True)
 
-	print("formatting paths...")
+	logger.info("formatting paths...")
 	for k in ["paths_finished", "paths_unfinished"]:
 		graph_data[k]["path"] = graph_data[k]["path"].apply(lambda path: [unquote(p) for p in path.split(";")])
 		graph_data[k]["path_length"] = graph_data[k]["path"].apply(lambda path: len(path))
@@ -141,7 +143,7 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 
 	graph_data["paths_finished"]["target"] = graph_data["paths_finished"]["path"].apply(lambda path: path[-1])
 
-	print("formatting distance matrix...")
+	logger.info("formatting distance matrix...")
 	index_based_matrix = np.array(
 		list(
 			map(
@@ -153,21 +155,16 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 
 	assert index_based_matrix.shape == (len(graph_data["articles"]), len(graph_data["articles"]))
 
-	print("converting distance matrix to dataframe...")
+	logger.info("converting distance matrix to dataframe...")
 	all_paths = pd.concat([graph_data["paths_finished"], graph_data["paths_unfinished"]], axis=0)
 	graph_data["shortest-path-distance-matrix"] = _index_based_to_df_matrix(
 		index_based_matrix, graph_data["articles"].copy(), all_paths
 	)
 
-	print("building graph...")
+	logger.info("building graph...")
 	wikispeedia_graph = nx.DiGraph()
 	wikispeedia_graph.add_nodes_from(graph_data["articles"].name)
 	wikispeedia_graph.add_edges_from(graph_data["links"].values)
-	# Every node has a link to the GNU Free Documentation License
-	wikispeedia_graph.add_edges_from(
-		[(node, "Wikipedia_Text_of_the_GNU_Free_Documentation_License") for node in graph_data["articles"].name.values]
-	)
-
 	graph_data["graph"] = wikispeedia_graph
 
 	return graph_data
