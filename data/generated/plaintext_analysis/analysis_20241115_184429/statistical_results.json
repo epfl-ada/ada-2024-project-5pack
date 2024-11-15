@@ -1,0 +1,76 @@
+{
+    "strategy_analysis": {
+        "test_name": "Strategy Effectiveness Test",
+        "chi2": 1051.912216229612,
+        "p_value": 9.851596325432973e-228,
+        "effect_size": 0.11749847027893706,
+        "success_rates": [
+            {
+                "mean": 0.6837272462737237,
+                "count": 61858
+            },
+            {
+                "mean": 0.3689114781872088,
+                "count": 2361
+            },
+            {
+                "mean": 0.5087719298245614,
+                "count": 171
+            },
+            {
+                "mean": 0.6833855799373041,
+                "count": 11803
+            }
+        ]
+    },
+    "semantic_analysis": {
+        "test_name": "Semantic Proximity Test",
+        "p_value": 4.621774073195667e-174,
+        "effect_size": 0.2365765864260382,
+        "sample_size": 70968
+    },
+    "model_performance": {
+        "roc_auc": 0.8551001635664852,
+        "cv_scores": {
+            "mean": 0.8442104340208745,
+            "std": 0.0025674426239920205
+        },
+        "feature_importance": [
+            {
+                "feature": "avg_time_per_click",
+                "coefficient": -8.37609245761443,
+                "abs_importance": 8.37609245761443
+            },
+            {
+                "feature": "unique_articles",
+                "coefficient": 2.111252754608873,
+                "abs_importance": 2.111252754608873
+            },
+            {
+                "feature": "path_length",
+                "coefficient": -1.7520467153827426,
+                "abs_importance": 1.7520467153827426
+            },
+            {
+                "feature": "semantic_coherence",
+                "coefficient": -0.6028521135023176,
+                "abs_importance": 0.6028521135023176
+            },
+            {
+                "feature": "backtrack_count",
+                "coefficient": 0.48489034817606197,
+                "abs_importance": 0.48489034817606197
+            },
+            {
+                "feature": "path_efficiency",
+                "coefficient": 0.3906263703056938,
+                "abs_importance": 0.3906263703056938
+            },
+            {
+                "feature": "hub_usage_ratio",
+                "coefficient": 0.11259868063575301,
+                "abs_importance": 0.11259868063575301
+            }
+        ]
+    }
+}

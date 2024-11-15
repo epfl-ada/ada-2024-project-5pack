@@ -1,0 +1,10 @@
+{
+    "basic_metrics": {
+        "nodes": 4604,
+        "edges": 124486,
+        "density": 0.005874139046929127,
+        "avg_clustering": 0.3415750835166055,
+        "strongly_connected_components": 531,
+        "avg_path_length": 3.1813009438303603
+    }
+}
