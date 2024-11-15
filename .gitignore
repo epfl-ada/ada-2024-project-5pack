@@ -1,13 +1,17 @@
 data/*
+
 !data/README.md
 !data/download_linux_or_macos.sh
-!data/generated/plaintext_analysis/analysis_20241115_184429/*
 
+!data/generated/
+!data/generated/plaintext_analysis/
+!data/generated/plaintext_analysis/analysis_20241115_184429/
+
+
+# Other patterns
 utils/__pycache__
 .DS_STORE
-
 .venv
 poetry.lock
-
 __pycache__/
 .ruff_cache

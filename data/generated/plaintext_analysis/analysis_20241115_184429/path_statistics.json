@@ -1,0 +1,21 @@
+{
+    "basic_stats": {
+        "total_paths": 76193,
+        "success_rate": 0.6735264394366937,
+        "avg_path_length": 6.2482511516806,
+        "avg_duration": 379.3055530035568,
+        "avg_backtrack_rate": 0.07030014304528927
+    },
+    "strategy_distribution": {
+        "Direct": 61858,
+        "Mixed": 11803,
+        "Exploratory": 2361,
+        "Hub-focused": 171
+    },
+    "success_by_strategy": {
+        "Direct": 0.6837272462737237,
+        "Exploratory": 0.3689114781872088,
+        "Hub-focused": 0.5087719298245614,
+        "Mixed": 0.6833855799373041
+    }
+}
