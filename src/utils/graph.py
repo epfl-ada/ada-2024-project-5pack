@@ -16,7 +16,6 @@ def _get_edge_weights(graph_data: Dict[str, Any], paths_finished: bool) -> Tuple
 	"""
 	# Initialize all edge weights to zero
 	edge_weights = {link_tuple: 0 for link_tuple in graph_data["links"][["source_name", "target_name"]].apply(tuple, axis=1)}
-	edge_weights |= {(source, "<"): 0 for source in graph_data["articles"]["name"]}
 
 	# Increase edge weights
 	unrecognized_edges: set[tuple[str, str]] = set()
@@ -26,7 +25,6 @@ def _get_edge_weights(graph_data: Dict[str, Any], paths_finished: bool) -> Tuple
 		clean_path = []  # Path without '<'
 		for element in path:
 			if element == "<":
-				edge_weights[(clean_path[-1], "<")] += 1
 				clean_path.pop()
 			else:
 				clean_path.append(element)
@@ -43,7 +41,7 @@ def _get_edge_weights(graph_data: Dict[str, Any], paths_finished: bool) -> Tuple
 		print(f"Note that {len(unrecognized_edges)} edges are present in '{dataframe_key}.tsv' but not in 'links.tsv':")
 		print(unrecognized_edges)
 
-	assert sum(edge_weights.values()) == sum(graph_data[dataframe_key]["path"].apply(len)) - sum(
+	assert sum(edge_weights.values()) == sum(graph_data[dataframe_key]["path"].apply(len)) - 2 * sum(
 		graph_data[dataframe_key]["path"].apply(lambda list: list.count("<"))
 	) - len(graph_data[dataframe_key])
 
@@ -58,9 +56,6 @@ def extract_players_graph(graph_data: dict, paths_finished: bool = True) -> nx.D
 	- Edges: A directed edge (u, v) exists if there is a hyperlink from article u to article v.
 	- Edge Weights: The weight of an edge (u, v) represents the number of times users navigated from article u to article v.
 
-	- A special node labeled '<' is added to the graph.
-	- An edge from a node u to '<' represents instances where users clicked the back button after visiting article u.
-
 	Parameters:
 	- graph_data: The graph data
 	- finished_paths: Whether to use 'paths_finished' or 'paths_unfinished'
@@ -71,7 +66,6 @@ def extract_players_graph(graph_data: dict, paths_finished: bool = True) -> nx.D
 	graph = nx.DiGraph()
 
 	# Add nodes to graph
-	graph.add_node("<")
 	graph.add_nodes_from(graph_data["articles"]["name"])
 
 	# Add edges to graph
@@ -79,7 +73,7 @@ def extract_players_graph(graph_data: dict, paths_finished: bool = True) -> nx.D
 	for (source, dest), count in edge_weights.items():
 		graph.add_edge(source, dest, weight=count)
 
-	assert graph.number_of_nodes() == len(graph_data["articles"]) + 1
-	assert graph.number_of_edges() == len(graph_data["links"]) + len(graph_data["articles"]) + len(unrecognized_edges)
+	assert graph.number_of_nodes() == len(graph_data["articles"])
+	assert graph.number_of_edges() == len(graph_data["links"]) + len(unrecognized_edges)
 
 	return graph

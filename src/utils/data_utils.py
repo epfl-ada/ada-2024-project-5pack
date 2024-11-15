@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Dict, Union
 
 from src.utils import logger
+from src.utils import graph
 
 import os
 import numpy as np
@@ -167,15 +168,8 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 	)
 
 	logger.info("building graph...")
-	wikispeedia_graph = nx.DiGraph()
-	wikispeedia_graph.add_nodes_from(graph_data["articles"].name)
-	wikispeedia_graph.add_edges_from(graph_data["links"].values)
-	# Every node has a link to the GNU Free Documentation License
-	wikispeedia_graph.add_edges_from(
-		[(node, "Wikipedia_Text_of_the_GNU_Free_Documentation_License") for node in graph_data["articles"].name.values]
-	)
-
-	graph_data["graph"] = wikispeedia_graph
+	graph_data["graph_finished"] = graph.extract_players_graph(graph_data, paths_finished=True)
+	graph_data["graph_unfinished"] = graph.extract_players_graph(graph_data, paths_finished=False)
 
 	return graph_data
 
