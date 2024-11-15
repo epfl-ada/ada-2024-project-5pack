@@ -1,7 +1,13 @@
 [tool.poetry]
 name = "ada-2024-project-5pack"
+description="ADA 2024 5pack"
+authors=[]
 readme = "README.md"
-package-mode = false
+version="0.0.1"
+package-mode=true
+packages = [
+    { include = "src" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -15,6 +21,8 @@ matplotlib = "^3.9.2"
 pre-commit = "^4.0.1"
 pyvis = "^0.3.2"
 scipy = "^1.14.1"
+transformers = "^4.46.2"
+torch = "^2.5.1"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
