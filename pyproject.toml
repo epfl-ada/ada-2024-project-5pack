@@ -28,7 +28,7 @@ quote-style = "double"
 indent-style = "tab"
 
 [tool.ruff.lint]
-ignore = ["E722"]
+ignore = ["E731", "E722"]
 
 [build-system]
 requires = ["poetry-core"]

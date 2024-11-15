@@ -44,6 +44,43 @@ def load_data_from_file(file_path):
 	return df
 
 
+def _index_based_to_df_matrix(index_based_matrix, articles, paths):
+	articles = articles.reset_index()
+	paths = paths.reset_index(names="path_id")
+
+	# compute all source-target pairs from games and
+	# "sub-games" derived from paths
+	#
+	# this is particular avoids a cross join of the articles
+	# which will construct a matrix taking a huge place in
+	# in memory
+
+	# compute efficiently to avoid huge memory loads
+	idx_fn = lambda k: np.stack(np.triu_indices(k, k=1), axis=-1)
+	indices = paths.path.map(lambda path: idx_fn(len(path))).values + np.arange(len(paths))
+	indices = np.vstack(indices)
+
+	paths_df = paths[["path"]].explode("path")
+
+	pairs_df = pd.concat(
+		[paths_df.iloc[indices[:, 0]].reset_index(drop=True), paths_df.iloc[indices[:, 1]].reset_index(drop=True)], axis=1
+	).drop_duplicates()
+
+	pairs_df.columns = ["source", "target"]
+
+	matrix = (
+		pairs_df.merge(articles, how="inner", left_on="source", right_on="name")
+		.merge(articles, how="inner", left_on="target", right_on="name")
+		.drop(columns=["name_x", "name_y"])
+		.set_index(["source", "target"])
+	)
+
+	matrix["optimal_path_length"] = matrix.apply(lambda row: index_based_matrix[row.index_x, row.index_y], axis=1)
+	matrix.drop(columns=["index_x", "index_y"], inplace=True)
+
+	return matrix
+
+
 @cache
 def load_graph_data():
 	if not os.path.isdir(PATHS_AND_GRAPH_FOLDER):
@@ -84,7 +121,7 @@ def load_graph_data():
 	graph_data["paths_finished"]["target"] = graph_data["paths_finished"]["path"].apply(lambda path: path[-1])
 
 	print("formatting distance matrix...")
-	graph_data["shortest-path-distance-matrix"] = np.array(
+	index_based_matrix = np.array(
 		list(
 			map(
 				lambda s: np.array([*map(lambda e: np.nan if e == "_" else int(e), list(s))]),
@@ -93,48 +130,58 @@ def load_graph_data():
 		)
 	)
 
-	assert graph_data["shortest-path-distance-matrix"].shape == (len(graph_data["articles"]), len(graph_data["articles"]))
+	assert index_based_matrix.shape == (len(graph_data["articles"]), len(graph_data["articles"]))
+
+	print("converting distance matrix to dataframe...")
+	all_paths = pd.concat([graph_data["paths_finished"], graph_data["paths_unfinished"]], axis=0)
+	graph_data["shortest-path-distance-matrix"] = _index_based_to_df_matrix(
+		index_based_matrix, graph_data["articles"].copy(), all_paths
+	)
 
 	print("building graph...")
 	wikispeedia_graph = nx.DiGraph()
 	wikispeedia_graph.add_nodes_from(graph_data["articles"].name)
 	wikispeedia_graph.add_edges_from(graph_data["links"].values)
 	# Every node has a link to the GNU Free Documentation License
-	wikispeedia_graph.add_edges_from([(node, 'Wikipedia_Text_of_the_GNU_Free_Documentation_License') for node in graph_data["articles"].name.values])
+	wikispeedia_graph.add_edges_from(
+		[(node, "Wikipedia_Text_of_the_GNU_Free_Documentation_License") for node in graph_data["articles"].name.values]
+	)
 
 	graph_data["graph"] = wikispeedia_graph
 
 	return graph_data
 
+
 def explode_paths(paths):
 	exploded_paths = paths.copy(deep=True)
 
-
 	# Explode the paths
-	exploded_paths['source'] = exploded_paths['path'].map(lambda p: [dict(rank=i, name=node) for i, node in enumerate(p)])
-	exploded_paths = exploded_paths.explode('source')
+	exploded_paths["source"] = exploded_paths["path"].map(lambda p: [dict(rank=i, name=node) for i, node in enumerate(p)])
+	exploded_paths = exploded_paths.explode("source")
 
 	# Restructure columns
-	exploded_paths['rank'] = exploded_paths['source'].apply(lambda src: src['rank'])
-	exploded_paths['source'] = exploded_paths['source'].apply(lambda src: src['name'])
-	exploded_paths['path_length'] = exploded_paths['path_length'] - exploded_paths['rank']
+	exploded_paths["rank"] = exploded_paths["source"].apply(lambda src: src["rank"])
+	exploded_paths["source"] = exploded_paths["source"].apply(lambda src: src["name"])
+	exploded_paths["path_length"] = exploded_paths["path_length"] - exploded_paths["rank"]
 
 	# Remove paths to self
-	exploded_paths = exploded_paths[lambda x: x['source'] != x['target']]
+	exploded_paths = exploded_paths[lambda x: x["source"] != x["target"]]
 
 	# Irrelevant rows
 	# exploded_paths = exploded_paths[lambda x: x['path_length'] < 20]
 
 	exploded_paths = (
-		exploded_paths
-		.groupby(['source', 'target'])
-		[['source', 'target', 'rank', 'path_length']]
-		.apply(lambda x: pd.Series(dict(
-			correlation_coefficient=np.corrcoef(
-				np.vstack([x['rank'].to_numpy(), x['path_length'].to_numpy()]), rowvar=True
-			)[0, 1],
-			count=len(x)
-		)))
+		exploded_paths.groupby(["source", "target"])[["source", "target", "rank", "path_length"]]
+		.apply(
+			lambda x: pd.Series(
+				dict(
+					correlation_coefficient=np.corrcoef(
+						np.vstack([x["rank"].to_numpy(), x["path_length"].to_numpy()]), rowvar=True
+					)[0, 1],
+					count=len(x),
+				)
+			)
+		)
 		.reset_index()
 	)
 	return exploded_paths
