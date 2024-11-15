@@ -96,7 +96,7 @@ The directory structure of new project looks like this:
 │   ├── data                            <- Data directory
 │   ├── models                          <- Model directory
 │   ├── utils                           <- Utility directory
-│   ├── scripts                         <- Shell scripts
+│   └── scripts                         <- Shell scripts
 │
 ├── tests                       <- Tests of any kind
 │
