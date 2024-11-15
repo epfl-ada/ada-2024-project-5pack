@@ -168,9 +168,8 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 	)
 
 	logger.info("building graph...")
-	graph_data["graph_finished"] = graph.extract_players_graph(graph_data, paths_finished=True)
-	graph_data["graph_unfinished"] = graph.extract_players_graph(graph_data, paths_finished=False)
-
+	graph_data["graph"] = graph.extract_players_graph(graph_data, paths=pd.concat([graph_data['paths_finished'], graph_data['paths_unfinished']]))
+ 
 	return graph_data
 
 

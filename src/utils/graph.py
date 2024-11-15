@@ -1,4 +1,5 @@
 import networkx as nx
+import pandas as pd
 
 from typing import Any, Dict, Tuple, Set
 
@@ -6,7 +7,7 @@ Node = str
 Edge = Tuple[str, str]
 
 
-def _get_edge_weights(graph_data: Dict[str, Any], paths_finished: bool) -> Tuple[Dict[Edge, int], Set[Edge]]:
+def _get_edge_weights(graph_data: Dict[str, Any], paths: pd.DataFrame) -> Tuple[Dict[Edge, int], Set[Edge]]:
 	"""
 	Return a dictionary where the keys are tuples representing an edge (u, v) and values are the edges weights.
 	The weight of an edge (u, v) is the number of times users went from u to v in their path.
@@ -19,8 +20,7 @@ def _get_edge_weights(graph_data: Dict[str, Any], paths_finished: bool) -> Tuple
 
 	# Increase edge weights
 	unrecognized_edges: set[tuple[str, str]] = set()
-	dataframe_key = "paths_finished" if paths_finished else "paths_unfinished"
-	for _, row in graph_data[dataframe_key].iterrows():
+	for _, row in paths.iterrows():
 		path = row["path"]
 		clean_path = []  # Path without '<'
 		for element in path:
@@ -38,17 +38,17 @@ def _get_edge_weights(graph_data: Dict[str, Any], paths_finished: bool) -> Tuple
 			edge_weights[edge] += 1
 
 	if len(unrecognized_edges) > 0:
-		print(f"Note that {len(unrecognized_edges)} edges are present in '{dataframe_key}.tsv' but not in 'links.tsv':")
+		print(f"Note that {len(unrecognized_edges)} edges are present in 'paths_(un)finished.tsv' but not in 'links.tsv':")
 		print(unrecognized_edges)
 
-	assert sum(edge_weights.values()) == sum(graph_data[dataframe_key]["path"].apply(len)) - 2 * sum(
-		graph_data[dataframe_key]["path"].apply(lambda list: list.count("<"))
-	) - len(graph_data[dataframe_key])
-
+	assert sum(edge_weights.values()) == sum(paths["path"].apply(len)) - 2 * sum(
+		paths["path"].apply(lambda list: list.count("<"))
+	) - len(paths)
+ 
 	return edge_weights, unrecognized_edges
 
 
-def extract_players_graph(graph_data: dict, paths_finished: bool = True) -> nx.DiGraph:
+def extract_players_graph(graph_data: dict, paths: pd.DataFrame) -> nx.DiGraph:
 	"""
 	Generates a directed graph from the provided graph_data.
 
@@ -69,7 +69,7 @@ def extract_players_graph(graph_data: dict, paths_finished: bool = True) -> nx.D
 	graph.add_nodes_from(graph_data["articles"]["name"])
 
 	# Add edges to graph
-	edge_weights, unrecognized_edges = _get_edge_weights(graph_data, paths_finished=paths_finished)
+	edge_weights, unrecognized_edges = _get_edge_weights(graph_data, paths)
 	for (source, dest), count in edge_weights.items():
 		graph.add_edge(source, dest, weight=count)
 
