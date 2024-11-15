@@ -11,6 +11,11 @@ import numpy.typing as npt
 import pandas as pd
 import networkx as nx
 
+
+from bs4 import BeautifulSoup
+import chardet
+
+
 PATHS_AND_GRAPH_FOLDER = "data/wikispeedia_paths-and-graph"
 WP_SOURCE_DATA_FOLDER = "data/wpcd/wp"
 
@@ -208,3 +213,54 @@ def explode_paths(paths: pd.DataFrame) -> pd.DataFrame:
 		.reset_index()
 	)
 	return exploded_paths
+
+
+def get_links_with_position(file_name):
+	#In this function we calculate all of the links rank in the article
+    with open(file_name, 'rb') as f:
+		#I had problems with the encoding as it is sometimes ascii and sometimes utf8
+        result = chardet.detect(f.read())
+    bug = result['encoding']
+    with open(file_name, 'r', encoding = bug) as file:
+        soup = BeautifulSoup(file, 'html.parser')
+
+	#Tags that begin with a are often used for links to other wikipedia articles
+    link_tags = soup.find_all(['a'])
+
+    with open(file_name, 'r', encoding = bug) as file:
+        content = file.read()
+    
+	#Counter that keeps track of the rank of the article
+    rank = 1
+	#In this list we will store the title and rank of article 
+    links_info = []
+
+    for tag in link_tags:
+        if tag.has_attr('href'):
+            href = tag['href']
+            if 'wp/' not in href or 'wikipedia' in href or 'favicon' in href or 'Wikipedia' in href:
+                continue
+
+            title = os.path.splitext(os.path.basename(href))[0]  # Get the title without the extension
+            links_info.append({'title': title, 'position': rank})
+            rank += 1
+			# BEFORE : To get position relative in source code. Very similar results
+            # pos = content.find(str(tag))
+            # if pos != -1:
+            #     pos = position_index / len(content)
+            #     links_info.append({'title': title, 'position': pos})
+
+    return links_info
+
+def get_links_from_html_files():
+    print("starting...")
+    all_links_info = {}
+    for root, _, files in os.walk(WP_SOURCE_DATA_FOLDER):
+		#Here we browse through all of the htm files and add their links position in a dictionary
+        for file in files:
+            if file.endswith('.htm'):
+                article_title = os.path.splitext(file)[0]  # Don't get extension
+                linkandpos = get_links_with_position(os.path.join(root, file))
+                all_links_info[article_title] = linkandpos
+    return all_links_info
+
