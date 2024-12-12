@@ -2,6 +2,7 @@ from functools import cache
 from urllib.parse import unquote
 from datetime import datetime
 from typing import Dict, Union
+import warnings
 
 from src.utils import logger
 from src.utils import graph
@@ -11,6 +12,8 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import networkx as nx
+from scipy.stats import spearmanr
+from scipy.stats import ConstantInputWarning
 
 
 from bs4 import BeautifulSoup
@@ -174,12 +177,12 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 
 
 
-def explode_paths(paths: pd.DataFrame, path_length_threshold: int = 500) -> pd.DataFrame:
+def explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
 	"""Explode each path by creating one row for each article visited in the path.
 
 	Args:
 		paths:					pd.DataFrame, either paths_finished or paths_unfinished as returned by `load_graph_data`.
-		path_length_threshold:	int, paths above this threshold are ignored (we assume the players were not playing seriously)
+		threshold:	int, paths above this threshold are ignored
 
 	Returns:
 		exploded_paths:			pd.DataFrame, one row for each article visited in each path.
@@ -187,7 +190,7 @@ def explode_paths(paths: pd.DataFrame, path_length_threshold: int = 500) -> pd.D
 		The original path is kept in the column `path` and the rank is represented in the column `rank`.
 		The column `path_length` holds the distance between the new `source` and `target.
 	"""
-	exploded_paths = paths[lambda x: x['path_length'] <= path_length_threshold].copy(deep=True)
+	exploded_paths = paths[lambda x: x['path_length'] <= threshold].copy(deep=True)
 
 	# Explode the paths
 	exploded_paths["source"] = exploded_paths["path"].map(lambda p: [dict(rank=i, name=node) for i, node in enumerate(p)])
@@ -206,7 +209,36 @@ def explode_paths(paths: pd.DataFrame, path_length_threshold: int = 500) -> pd.D
 
 	return exploded_paths
 
-def compute_correlation_between_rank_and_path_length(paths: pd.DataFrame) -> pd.DataFrame:
+def compute_correlation_between_rank_and_path_length(path_group: pd.DataFrame) -> pd.Series:
+	path_group = path_group[["rank", "path_length"]]
+	count = len(path_group)
+	corr_coeff = np.nan
+	cov = np.nan
+	res, pvalue = np.nan, np.nan
+
+	# correlation-related values are not defined when there is only one observation
+	if count > 1:
+		with warnings.catch_warnings():
+			warnings.simplefilter(action="ignore", category=RuntimeWarning)
+			corr_coeff = np.corrcoef(path_group.values, rowvar=False)[0, 1]
+			cov = np.cov(path_group.values, rowvar=False)[0, 1]
+		with warnings.catch_warnings():
+			warnings.simplefilter(action="ignore", category=ConstantInputWarning)
+			res, pvalue = spearmanr(path_group.values)
+	
+	vals = pd.Series(dict(
+		corr_coeff=corr_coeff,
+		cov=cov,
+		spearman=res,
+		pvalue=pvalue,
+		count=count
+	))
+
+	return vals
+	
+
+
+def rank_length_analysis(paths: pd.DataFrame) -> pd.DataFrame:
 	"""Computes the correlation between the columns `rank` and `path_length` for distinct pair of articles.
 	Args:
 		paths:		pd.DataFrame, either paths_finished or paths_unfinished as returned by `load_graph_data`
@@ -216,25 +248,13 @@ def compute_correlation_between_rank_and_path_length(paths: pd.DataFrame) -> pd.
 		The correlation coefficient is in the column `correlation_coefficient` and the column
 		`count` is the number of times the given pair was found.
 	"""
-	compute_corr = lambda group: pd.Series(
-		dict(
-			correlation_coefficient=(
-				np.corrcoef(
-					data := np.vstack([group["rank"].to_numpy(), group["path_length"].to_numpy()]), rowvar=True
-				)[0, 1] if len(group["rank"]) > 1 and len(group["path_length"]) > 1 else np.nan 
-			),
-			covariance=(
-				np.cov(data, rowvar=True)[0, 1]
-				if len(group["rank"]) > 1 and len(group["path_length"] > 1)
-				else np.nan
-			),
-			count=len(group),
-		)
-	)
+	# We attempt to discriminate games were the player might not have been playing seriously because they
+	# would bring a significant unbalance to our dataset
+	PATH_LENGTH_THRESHOLD = 50
 
 	corr_data = (
-		explode_paths(paths, 50).groupby(["source", "target"])[["source", "target", "rank", "path_length"]]
-		.apply(compute_corr)
+		explode_paths(paths, PATH_LENGTH_THRESHOLD).groupby(["source", "target"])[["source", "target", "rank", "path_length"]]
+		.apply(compute_correlation_between_rank_and_path_length)
 		.reset_index()
 	)
 
