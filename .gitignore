@@ -7,6 +7,13 @@ data/*
 !data/generated/plaintext_analysis/
 !data/generated/plaintext_analysis/analysis_20241115_184429/
 
+# Website generated files
+data_story/assets/plots/*.html
+data_story/_site/
+data_story/.sass-cache/
+data_story/.jekyll-cache/
+data_story/.jekyll-metadata
+data_story/Gemfile.lock
 
 # Other patterns
 utils/__pycache__
@@ -15,3 +22,4 @@ utils/__pycache__
 poetry.lock
 __pycache__/
 .ruff_cache
+tmp
