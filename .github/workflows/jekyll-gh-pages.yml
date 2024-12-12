@@ -31,6 +31,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Download data
+        run: |
+          cd data && bash download_linux_or_macos.sh && cd ..
+
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
