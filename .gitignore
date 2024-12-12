@@ -3,10 +3,6 @@ data/*
 !data/README.md
 !data/download_linux_or_macos.sh
 
-!data/generated/
-!data/generated/plaintext_analysis/
-!data/generated/plaintext_analysis/analysis_20241115_184429/
-
 # Website generated files
 data_story/assets/plots/*.html
 data_story/_site/
