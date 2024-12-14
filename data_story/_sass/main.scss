@@ -1,0 +1,83 @@
+$base-color: #48a23a;
+
+.page-header {
+    height: 300px;
+    background-color: $base-color;
+}
+
+.main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
+    color: $base-color;
+}
+
+@media screen and (min-width: 42em) {
+    .main-content {
+        padding: 2rem 1.3rem;
+        font-size: 1.1rem;
+    }
+}
+
+#abstract{
+    display: block;
+    width: 80%;
+    margin: 0 auto;
+    text-align: justify;
+
+    strong{
+        display: block;
+        text-align: center;
+    }
+}
+
+#wikispeedia-stats{
+    display: flex;
+    width: 590px;
+    margin: 0 auto;
+    color: $base-color;
+    opacity: 0.9;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.6em;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    >div:first-child{
+        font-size: 1.7em;
+    }
+
+    >div:nth-child(2){
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        text-align: center;
+    }
+}
+
+.path-example{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 45px;
+
+    div {
+        color: #fff;
+        background-color: $base-color;
+        border-radius: 4px;
+        padding: 10px;
+        position: relative;
+
+        // Connect nodes via arrows
+        &:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -22px;
+            top: 50%;
+            transform: translate(50%, -50%);
+            color: $base-color;
+            font-size: 1.2em;
+        }
+    }
+}
+
+#side-by-side-plots{
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+}

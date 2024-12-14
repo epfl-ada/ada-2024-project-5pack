@@ -6,7 +6,7 @@ from typing import Any, Dict
 
 from src.utils.data_utils import load_graph_data
 
-from . import plots
+from .plots import communities as communities_plot
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -33,7 +33,7 @@ def generate_all_plots() -> None:
 
 	logger.info("Generating plots...")
 
-	plot_modules = plots.__all__
+	plot_modules = [communities_plot]
 
 	for plot_module in plot_modules:
 		try:
