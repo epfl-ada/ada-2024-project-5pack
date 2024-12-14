@@ -1,14 +1,18 @@
 # The Wikipedia Game: Are We Playing It All Wrong?
 
+[TODO ANTOINE]
+
 {small abstract}
 
 {slight intro to dataset}
+
+{plot}
 
 {network analysis: fred, debut Peter (stats generales)}
 
 ## Players' strategies
 
-TODO
+[TODO Timothée, Fred, Peter]
 
 {peter + timothee}
 
@@ -17,11 +21,10 @@ TODO
 
 ## Optimal strategy
 
-TODO
+[TODO Gabriel]
 
 {analyse du shortest path}
-
-{transformers. see if similar behavior to humans. try to categorize the strategy}
+{déterminer les stratégies qui correspondent}
 
 ## Conclusion
 
