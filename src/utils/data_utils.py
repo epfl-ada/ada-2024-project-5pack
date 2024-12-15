@@ -151,6 +151,7 @@ def load_graph_data() -> Dict[str, Union[nx.DiGraph, pd.DataFrame, npt.NDArray]]
 		graph_data[k].drop(columns=["durationInSec"], inplace=True)
 
 	graph_data["paths_finished"]["target"] = graph_data["paths_finished"]["path"].apply(lambda path: path[-1])
+	graph_data["paths_unfinished"]["target"] = graph_data["paths_unfinished"]["target"].apply(unquote)
 
 	logger.info("formatting distance matrix...")
 	index_based_matrix = np.array(
