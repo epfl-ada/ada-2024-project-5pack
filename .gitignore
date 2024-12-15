@@ -10,6 +10,9 @@ data_story/.sass-cache/
 data_story/.jekyll-cache/
 data_story/.jekyll-metadata
 data_story/Gemfile.lock
+data_story/vendor/*
+data_story/._bundle
+data_story/.bundle/*
 
 # Other patterns
 utils/__pycache__
