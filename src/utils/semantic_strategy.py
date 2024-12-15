@@ -68,7 +68,7 @@ def semantic_increase_score(path: list[str], target_article: str) -> tuple[float
         elif p != target_article:
             clean_path.append(p)
             
-    if len(clean_path) <= 2:
+    if len(clean_path) <= 1:
         return -1, 1  # Ignore paths of small lengths as they are not statistically significant
 
     # Compute the similarity score of each article in the path with the target article
