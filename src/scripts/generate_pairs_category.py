@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from src.utils.data_utils import load_graph_data
+from src.utils.data import load_graph_data
 from src.utils.llm import get_tokenizer_and_model, next_token_probs
 
 BATCH_SIZE = 16

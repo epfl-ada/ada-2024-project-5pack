@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import warnings
 from datetime import datetime
 from functools import cache
 from urllib.parse import unquote
@@ -12,10 +11,10 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from bs4 import BeautifulSoup
-from scipy.stats import ConstantInputWarning, spearmanr
 
-from src.utils import graph, logger
+from src.utils import logger
 from src.utils.constants import PATHS_AND_GRAPH_FOLDER, WP_SOURCE_DATA_FOLDER
+from src.utils.data import extract_players_graph
 
 
 def load_data_from_file(file_path: str) -> pd.DataFrame:
@@ -204,7 +203,7 @@ def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
 	)
 
 	logger.info("building graph...")
-	graph_data["graph"] = graph.extract_players_graph(
+	graph_data["graph"] = extract_players_graph(
 		graph_data,
 		paths=pd.concat([graph_data["paths_finished"], graph_data["paths_unfinished"]]),
 	)
@@ -212,7 +211,7 @@ def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
 	return graph_data
 
 
-def _explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
+def explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
 	"""Explode each path by creating one row for each article visited in the path.
 
 	Args:
@@ -248,65 +247,7 @@ def _explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
 	return exploded_paths
 
 
-def compute_correlation_between_rank_and_path_length(
-	path_group: pd.DataFrame,
-) -> pd.Series:
-	path_group = path_group[["rank", "path_length"]]
-	count = len(path_group)
-	corr_coeff = np.nan
-	cov = np.nan
-	res, pvalue = np.nan, np.nan
-
-	# correlation-related values are not defined when there is only one observation
-	if count > 1:
-		with warnings.catch_warnings():
-			warnings.simplefilter(action="ignore", category=RuntimeWarning)
-			corr_coeff = np.corrcoef(path_group.values, rowvar=False)[0, 1]
-			cov = np.cov(path_group.values, rowvar=False)[0, 1]
-		with warnings.catch_warnings():
-			warnings.simplefilter(action="ignore", category=ConstantInputWarning)
-			res, pvalue = spearmanr(path_group.values)
-
-	vals = pd.Series(
-		dict(
-			corr_coeff=corr_coeff,
-			cov=cov,
-			spearman=res,
-			pvalue=pvalue,
-			count=count,
-		),
-	)
-
-	return vals
-
-
-def rank_length_analysis(paths: pd.DataFrame) -> pd.DataFrame:
-	"""Computes the correlation between the columns `rank` and `path_length` for distinct pair of articles.
-
-	Args:
-	        paths: pd.DataFrame, either paths_finished or paths_unfinished as returned by `load_graph_data`
-
-	Returns:
-	        corr_data	pd.DataFrame, correlation data. One pair of articles per row.
-	        The correlation coefficient is in the column `correlation_coefficient` and the column
-	        `count` is the number of times the given pair was found.
-
-	"""
-	# We attempt to discriminate games were the player might not have been playing seriously because they
-	# would bring a significant unbalance to our dataset
-	PATH_LENGTH_THRESHOLD = 50
-
-	corr_data = (
-		_explode_paths(paths, PATH_LENGTH_THRESHOLD)
-		.groupby(["source", "target"])[["source", "target", "rank", "path_length"]]
-		.apply(compute_correlation_between_rank_and_path_length)
-		.reset_index()
-	)
-
-	return corr_data
-
-
-def get_links_with_position(file_name):
+def _get_links_with_position(file_name):
 	# In this function we calculate all of the links rank in the article
 	with open(file_name, "rb") as f:
 		# I had problems with the encoding as it is sometimes ascii and sometimes utf8
@@ -344,6 +285,6 @@ def get_links_from_html_files():
 		for file in files:
 			if file.endswith(".htm"):
 				article_title = os.path.splitext(file)[0]  # Don't get extension
-				linkandpos = get_links_with_position(os.path.join(root, file))
+				linkandpos = _get_links_with_position(os.path.join(root, file))
 				all_links_info[article_title] = linkandpos
 	return all_links_info

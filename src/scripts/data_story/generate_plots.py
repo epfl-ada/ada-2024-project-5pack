@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict
 
-from src.utils.data_utils import load_graph_data
+from src.utils.data import load_graph_data
 
 from .plots import communities as communities_plot
 

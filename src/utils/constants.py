@@ -11,3 +11,6 @@ PLAINTEXT_DIR = Path("./data/plaintext_articles")
 ARTICLES_DIR = "./data/plaintext_articles"
 
 HF_KEY = None
+
+
+PLOT_COLORS = ["#2ecc71", "#e74c3c", "#3498db", "#f1c40f"]

@@ -12,9 +12,14 @@ from src.utils import logger
 from src.utils.analyzers.network_analyzer import NetworkAnalyzer
 from src.utils.analyzers.path_analyzer import PathAnalyzer
 from src.utils.analyzers.semantic_analyzer import SemanticAnalyzer
-from src.utils.data_utils import load_graph_data
-from src.utils.statistical_tests import StatisticalAnalyzer
-from src.utils.visualizations import WikispeediaVisualizer
+from src.utils.data import load_graph_data
+from src.utils.statistics import StatisticalAnalyzer
+from src.utils.visualizations import (
+	plot_model_performance,
+	plot_navigation_patterns,
+	plot_network_structure,
+	plot_temporal_patterns,
+)
 
 RESULTS_DIR = Path("./data/generated/plaintext_analysis")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -179,7 +184,6 @@ def create_visualizations(
 ):
 	"""Create and save visualizations."""
 	logger.info("Creating visualizations...")
-	visualizer = WikispeediaVisualizer()
 
 	try:
 		# Create figures
@@ -190,22 +194,22 @@ def create_visualizations(
 			"path_stats": path_stats,
 			"time_patterns": time_patterns,
 		}
-		figs["navigation_patterns"] = visualizer.plot_navigation_patterns(
+		figs["navigation_patterns"] = plot_navigation_patterns(
 			paths_df,
 			nav_stats,
 		)
 
 		# Network structure
-		figs["network_structure"] = visualizer.plot_network_structure(
+		figs["network_structure"] = plot_network_structure(
 			network_analyzer.graph,
 			network_analyzer.centrality_metrics,
 		)
 
 		# Model performance
-		figs["model_performance"] = visualizer.plot_model_performance(model_results)
+		figs["model_performance"] = plot_model_performance(model_results)
 
 		# Temporal patterns
-		figs["temporal_patterns"] = visualizer.plot_temporal_patterns(time_patterns)
+		figs["temporal_patterns"] = plot_temporal_patterns(time_patterns)
 
 		# Save figures
 		for name, fig in figs.items():

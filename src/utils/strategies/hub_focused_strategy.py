@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from src.utils.data_utils import load_graph_data
+from src.utils.data import load_graph_data
 
 # Parameters to test
 HUB_COUNTS_TO_TEST = [10, 25, 50, 75, 100, 150, 200]  # Different numbers of hubs
