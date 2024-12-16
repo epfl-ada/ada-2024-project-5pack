@@ -14,7 +14,8 @@ from bs4 import BeautifulSoup
 
 from src.utils import logger
 from src.utils.constants import PATHS_AND_GRAPH_FOLDER, WP_SOURCE_DATA_FOLDER
-from src.utils.data import extract_players_graph
+
+from .graph import extract_players_graph
 
 
 def load_data_from_file(file_path: str) -> pd.DataFrame:
