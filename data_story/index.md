@@ -9,7 +9,7 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
 
 ## Introduction
 
-[TODO: Explanation on the website and the data. Mention Stanford's page.]
+This research is based on a dataset collected in the context of [Wikispeedia](https://dlab.epfl.ch/wikispeedia/play/){:target="_blank"}, a game where players are tasked to reach one article from another only using hyperlinks on a subset of Wikipedia. A quick analysis shows that humans are not optimal, as they usually take paths longers than the shortest paths, as they visit on average **x2.4** more articles than needed. This leads us to study the specificities of human navigation patterns in Wikipedia, and understand what the most efficient strategies are for browsing the Wikipedia network.
 
 <div id="wikispeedia-stats">
   <div>Wikispeedia Website</div>
@@ -18,6 +18,8 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
     <div>124k+ hyperlinks</div>
   </div>
 </div>
+
+Quite naturally the network of articles reveals dominant subjects or articles in Wikispeedia.
 
 <div id="side-by-side-plots">
   <iframe src="assets/plots/communities_graph.html" width="100%" height="550px" frameborder="0"></iframe>
@@ -45,7 +47,7 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
 The next community is **Computer Science 🤖** with only 124 articles.
 
 ### Game Data
-The Wikispeedia dataset contains games of Wikispeedia. In this game, a player is given a pair of two articles present on the website, and his goal is to go from the first to the second article by taking hyperlinks on Wikispeedia.
+The Wikispeedia dataset contains games of Wikispeedia. In this game, a player is given a pair of two articles present on the website, and his goal is to go from the first to the second article by taking hyperlinks on Wikispeedia. The dataset contains paths taken by the players for different games and players and their overall time.
 
 **Example** Joining *Yarralumla* to *Abraham Lincoln*\
 Done in 56 seconds as follows
