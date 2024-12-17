@@ -9,7 +9,13 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
 
 ## Introduction
 
-This research is based on a dataset collected in the context of [Wikispeedia](https://dlab.epfl.ch/wikispeedia/play/){:target="_blank"}, a game where players are tasked to reach one article from another only using hyperlinks on a subset of Wikipedia. A quick analysis shows that humans are not optimal, as they usually take paths longers than the shortest paths, as they visit on average **x2.4** more articles than needed. This leads us to study the specificities of human navigation patterns in Wikipedia, and understand what the most efficient strategies are for browsing the Wikipedia network.
+This research is based on a dataset collected in the context of [Wikispeedia](https://dlab.epfl.ch/wikispeedia/play/){:target="_blank"}, a game where players are tasked to reach one article from another only using hyperlinks on a subset of Wikipedia. A quick analysis shows that humans are not optimal, as they usually take paths longers than the shortest paths, as they visit on average **x2.4** more articles than needed.
+
+<div class="plot">
+  <iframe src="assets/plots/game_stats_intro.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+This leads us to study the specificities of human navigation patterns in Wikipedia, and understand what the most efficient strategies are for browsing the Wikipedia network.
 
 <div id="wikispeedia-stats">
   <div>Wikispeedia Website</div>
@@ -29,16 +35,17 @@ Quite naturally the network of articles reveals dominant subjects or articles in
       <thead>
           <tr>
               <th>Article</th>
-              <th>HITS Score</th>
+              <th>Pagerank Score</th>
           </tr>
       </thead>
       <tbody>
-          <tr><td>United States, North America</td><td>0.0546, 0.0266</td></tr>
-          <tr><td>Europe</td><td>0.0302</td></tr>
-          <tr><td>Earth</td><td>0.0210</td></tr>
-          <tr><td>United Kingdom, England</td><td>0.0177, 0.0163</td></tr>
-          <tr><td>English language</td><td>0.0171</td></tr>
-          <tr><td>World War II</td><td>0.0145</td></tr>
+          <tr><td>United States</td><td>0.032</td></tr>
+          <tr><td>Europe</td><td>0.014</td></tr>
+          <tr><td>United Kingdom</td><td>0.014</td></tr>
+          <tr><td>England</td><td>0.0112</td></tr>
+          <tr><td>Africa</td><td>0.009</td></tr>
+          <tr><td>Earth</td><td>0.008</td></tr>
+          <tr><td>World War II</td><td>0.008</td></tr>
       </tbody>
   </table>
   </div>
@@ -90,8 +97,8 @@ We perfomed an analysis on all the finished paths to determine how different pla
 
 {analyse du shortest path}
 {déterminer les stratégies qui correspondent}
-<div>
-  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="550px" frameborder="0"></iframe>
+<div class="plot">
+  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="620px" frameborder="0"></iframe>
 </div>
 
 ## Conclusion
