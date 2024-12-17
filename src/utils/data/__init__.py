@@ -114,9 +114,10 @@ def _index_based_to_df_matrix(
 
 
 @cache
-def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
+def load_graph_data(top_n=200) -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
 	"""Load the original dataset with some preprocessing.
-
+	Args:
+			top_n: int, the number of top hubs to consider in the hub_focused strategy
 	Raises:
 			ValueError: if the data is not configured correctly
 
@@ -227,6 +228,13 @@ def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
     ).reset_index()
 
 	graph_data["target_median_duration"] = median_duration_df
+
+	# The folowing piece of code is used in the hub_focused strategy to calculate the hub usage ratio
+	pagerank_scores = nx.pagerank(graph_data["graph"])
+	graph_data[f"top_{top_n}_hubs"] = set(
+        article for article, _ in 
+        sorted(pagerank_scores.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    )
 
 	return graph_data
 
