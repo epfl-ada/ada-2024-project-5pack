@@ -1,46 +1,11 @@
 import warnings
-from functools import cache
-from urllib.parse import quote
 
 import networkx as nx
 import numpy as np
 import pandas as pd
-from scipy.sparse import spmatrix
 from scipy.stats import ConstantInputWarning, spearmanr
-from sklearn.feature_extraction.text import TfidfVectorizer
 
-from src.utils.constants import PLAINTEXT_DIR
-from src.utils.data import explode_paths, load_graph_data
-
-
-@cache
-def build_tf_idf() -> tuple[spmatrix, dict]:
-	"""Builds a TF-IDF matrix from the collection of wikispeedia articles.
-
-	Returns:
-	    tf_idf (scipy.sparse.csr.csr_matrix): The TF-IDF matrix.
-	    article_to_index (dict): A mapping from article names to their index in the TF-IDF matrix.
-
-	"""
-	# Fetch articles
-	graph_data = load_graph_data()
-
-	# Build tf_idf vectorizer
-	texts = []
-	article_to_index = {}
-	for i, article in enumerate(graph_data["articles"]["name"]):
-		filepath = f"{PLAINTEXT_DIR}/{quote(article)}.txt"
-		article_to_index[article] = i
-		with open(filepath, encoding="utf-8") as f:
-			texts.append(f.read())
-
-	vectorizer = TfidfVectorizer(
-		stop_words="english",
-		max_features=8000,
-	)
-
-	tf_idf = vectorizer.fit_transform(texts)
-	return tf_idf, article_to_index
+from src.utils.data import explode_paths
 
 
 def pagerank(graph: nx.Graph) -> pd.DataFrame:
