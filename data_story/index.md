@@ -84,12 +84,15 @@ We perfomed an analysis on all the finished paths to determine how different pla
 
 [Backtrack, Peter]
 
-## Optimal strategy
+## Discussing the best strategy
 
 [TODO Gabriel]
 
 {analyse du shortest path}
 {déterminer les stratégies qui correspondent}
+<div>
+  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
 
 ## Conclusion
 
