@@ -210,6 +210,24 @@ def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
 		paths=pd.concat([graph_data["paths_finished"], graph_data["paths_unfinished"]]),
 	)
 
+	# The following piece of code is used to create our success metric for the path strategies
+	finished_paths = graph_data["paths_finished"].copy()
+	unfinished_paths = graph_data["paths_unfinished"].copy()
+
+	unfinished_paths["duration_in_seconds"] = np.inf
+
+	combined_paths = pd.concat([
+        finished_paths[["target", "duration_in_seconds"]],
+        unfinished_paths[["target", "duration_in_seconds"]]
+    ])
+
+	median_duration_df = combined_paths.groupby("target").agg(
+        median_duration=("duration_in_seconds", "median"),
+        path_count=("duration_in_seconds", "count")
+    ).reset_index()
+
+	graph_data["target_median_duration"] = median_duration_df
+
 	return graph_data
 
 
@@ -280,7 +298,6 @@ def _get_links_with_position(file_name: str):
 
 
 def get_links_from_html_files() -> dict:
-	print("starting...")
 	all_links_info = {}
 	for root, _, files in os.walk(WP_SOURCE_DATA_FOLDER):
 		# Here we browse through all of the htm files and add their links position in a dictionary
@@ -289,4 +306,5 @@ def get_links_from_html_files() -> dict:
 				article_title = os.path.splitext(file)[0]  # Don't get extension
 				linkandpos = _get_links_with_position(os.path.join(root, file))
 				all_links_info[article_title] = linkandpos
+
 	return all_links_info
