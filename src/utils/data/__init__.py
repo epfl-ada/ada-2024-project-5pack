@@ -124,7 +124,7 @@ def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
 			dict: a dictionnary with all the data
 
 	"""
-	if not Path.isdir(PATHS_AND_GRAPH_FOLDER):
+	if not Path.is_dir(PATHS_AND_GRAPH_FOLDER):
 		raise ValueError(
 			"The data is not setup correctly, please follow the instructions in `data/README.md`.",
 		)
@@ -178,12 +178,14 @@ def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
 
 	logger.info("formatting distance matrix...")
 	index_based_matrix = np.array(
-		*map(
-			lambda s: np.array(
-				[*map(lambda e: np.nan if e == "_" else int(e), list(s))],
-			),
-			graph_data["shortest-path-distance-matrix"].value.values,
-		),
+		[
+			*map(
+				lambda s: np.array(
+					[*map(lambda e: np.nan if e == "_" else int(e), list(s))],
+				),
+				graph_data["shortest-path-distance-matrix"].value.values,
+			)
+		],
 	)
 
 	assert index_based_matrix.shape == (
