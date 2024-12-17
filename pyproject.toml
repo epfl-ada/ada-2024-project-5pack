@@ -30,6 +30,7 @@ seaborn = "^0.13.2"
 leidenalg = "^0.10.2"
 igraph = "^0.11.8"
 plotly = "^5.24.1"
+nbformat = "^5.10.4"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"

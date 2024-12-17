@@ -6,6 +6,7 @@ from pathlib import Path
 from src.utils.data import load_graph_data
 
 from .plots import communities as communities_plot
+from .plots import rank_vs_length as rank_plot
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -22,7 +23,7 @@ def generate_all_plots() -> None:
 
 	logger.info("Generating plots...")
 
-	plot_modules = [communities_plot]
+	plot_modules = [communities_plot, rank_plot]
 
 	for plot_module in plot_modules:
 		try:
