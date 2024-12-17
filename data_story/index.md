@@ -62,12 +62,21 @@ Done in 56 seconds as follows
 
 ## Players' strategies
 
-[TODO Timothée, Fred, Peter]
+### Hub-focused strategy
 
-{peter + timothee}
+[Peter]
 
-{faire plot distribution hub usage ratio}
-{gabriel}
+### Semantic navigationm
+
+[Frederic]
+
+### Link strategy
+
+[Timothee]
+
+### Fast exploration
+
+[Backtrack, Peter]
 
 ## Optimal strategy
 
