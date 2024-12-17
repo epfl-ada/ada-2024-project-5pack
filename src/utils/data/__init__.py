@@ -280,7 +280,6 @@ def _get_links_with_position(file_name: str):
 
 
 def get_links_from_html_files() -> dict:
-	print("starting...")
 	all_links_info = {}
 	for root, _, files in os.walk(WP_SOURCE_DATA_FOLDER):
 		# Here we browse through all of the htm files and add their links position in a dictionary
@@ -289,4 +288,5 @@ def get_links_from_html_files() -> dict:
 				article_title = os.path.splitext(file)[0]  # Don't get extension
 				linkandpos = _get_links_with_position(os.path.join(root, file))
 				all_links_info[article_title] = linkandpos
+
 	return all_links_info
