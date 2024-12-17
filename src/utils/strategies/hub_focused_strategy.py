@@ -11,5 +11,6 @@ def compute_hub_usage_ratio(hubs: set[str], path: list[str]) -> float:
     """
 	
 	# Return hub usage ratio
+    # This assumes path of length 1 are removed from the dataset
     hub_count = sum(1 for article in path if article in hubs)
     return hub_count / len(path) if path else 0.0
