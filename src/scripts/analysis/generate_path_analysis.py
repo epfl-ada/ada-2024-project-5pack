@@ -1,4 +1,4 @@
-"""Main analysis script for Wikispeedia dataset"""
+"""Main analysis script for Wikispeedia dataset."""
 
 import json
 from datetime import datetime
@@ -41,7 +41,7 @@ class NpEncoder(json.JSONEncoder):
 		return super(NpEncoder, self).default(obj)
 
 
-def setup_results_directory():
+def setup_results_directory() -> Path:
 	"""Create timestamped results directory."""
 	timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 	results_dir = RESULTS_DIR / f"analysis_{timestamp}"
@@ -49,7 +49,7 @@ def setup_results_directory():
 	return results_dir
 
 
-def analyze_network(graph_data, results_dir):
+def analyze_network(graph_data: dict, results_dir: Path):
 	"""Perform network analysis."""
 	logger.info("Performing network analysis...")
 	network_analyzer = NetworkAnalyzer()
@@ -75,7 +75,7 @@ def analyze_network(graph_data, results_dir):
 	return network_analyzer
 
 
-def analyze_paths(graph_data, network_analyzer, results_dir):
+def analyze_paths(graph_data: dict, network_analyzer: NetworkAnalyzer, results_dir: Path):
 	"""Perform path analysis."""
 	logger.info("Performing path analysis...")
 
@@ -108,7 +108,7 @@ def analyze_paths(graph_data, network_analyzer, results_dir):
 	return paths_df, path_stats, time_patterns
 
 
-def perform_statistical_analysis(paths_df, results_dir):
+def perform_statistical_analysis(paths_df: pd.DataFrame, results_dir: Path):
 	"""Perform comprehensive statistical analysis."""
 	logger.info("Performing statistical analysis...")
 	stat_analyzer = StatisticalAnalyzer()
@@ -175,12 +175,12 @@ def perform_statistical_analysis(paths_df, results_dir):
 
 
 def create_visualizations(
-	paths_df,
-	network_analyzer,
-	model_results,
-	path_stats,
-	time_patterns,
-	results_dir,
+	paths_df: pd.DataFrame,
+	network_analyzer: NetworkAnalyzer,
+	model_results: dict,
+	path_stats: dict,
+	time_patterns: dict,
+	results_dir: Path,
 ):
 	"""Create and save visualizations."""
 	logger.info("Creating visualizations...")
@@ -226,12 +226,12 @@ def create_visualizations(
 
 
 def generate_report(
-	network_metrics,
-	path_stats,
-	strategy_results,
-	model_results,
-	time_patterns,
-	results_dir,
+	network_metrics: dict,
+	path_stats: dict,
+	strategy_results: dict,
+	model_results: dict,
+	time_patterns: dict,
+	results_dir: Path,
 ):
 	"""Generate analysis report."""
 	logger.info("Generating analysis report...")
@@ -286,7 +286,7 @@ def generate_report(
 		json.dump(serializable_report, f, indent=4, default=str)
 
 
-def main():
+if __name__ == "__main__":
 	"""Run complete Wikispeedia data analysis pipeline."""
 	# Setup
 	results_dir = setup_results_directory()
@@ -330,12 +330,7 @@ def main():
 		)
 
 		logger.info(f"Analysis complete. Results saved to {results_dir}")
-		return results_dir
 
 	except Exception as e:
 		logger.error(f"Analysis failed: {e!s}")
 		raise
-
-
-if __name__ == "__main__":
-	results_dir = main()

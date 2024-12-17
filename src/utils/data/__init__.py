@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from datetime import datetime
 from functools import cache
+from pathlib import Path
 from urllib.parse import unquote
 
 import chardet
@@ -22,13 +23,13 @@ def load_data_from_file(file_path: str) -> pd.DataFrame:
 	"""Load a data file using the original format and return a DataFrame containing the data.
 
 	Args:
-	    file_path (str): the file to get the data from
+		file_path (str): the file to get the data from
 
 	Raises:
-	    RuntimeError: if the format of the data cannot be resolved
+		RuntimeError: if the format of the data cannot be resolved
 
 	Returns:
-	    pd.DataFramce: the dataframe with the data
+		pd.DataFramce: the dataframe with the data
 
 	"""
 	columns = None
@@ -56,15 +57,15 @@ def _index_based_to_df_matrix(
 	articles: pd.DataFrame,
 	paths: pd.DataFrame,
 ) -> pd.DataFrame:
-	"""Transform the shortest path distance matrix from the original format to a Dataframe index with article names
+	"""Transform the shortest path distance matrix from the original format to a Dataframe index with article names.
 
 	Args:
-	        index_based_matrix (np.ndarray): index based shortest distance matrix
-	        articles (pd.DataFrame): articles data with correct order preserved
-	        paths (pd.DataFrame): realised path data
+			index_based_matrix (np.ndarray): index based shortest distance matrix
+			articles (pd.DataFrame): articles data with correct order preserved
+			paths (pd.DataFrame): realised path data
 
 	Returns:
-	        pd.DataFrame: the resulting Dataframe indexed with article names
+			pd.DataFrame: the resulting Dataframe indexed with article names
 
 	"""
 	articles = articles.reset_index()
@@ -114,16 +115,16 @@ def _index_based_to_df_matrix(
 
 @cache
 def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
-	"""Load the original dataset with some preprocessing
+	"""Load the original dataset with some preprocessing.
 
 	Raises:
-	        ValueError: if the data is not configured correctly
+			ValueError: if the data is not configured correctly
 
 	Returns:
-	        dict: a dictionnary with all the data
+			dict: a dictionnary with all the data
 
 	"""
-	if not os.path.isdir(PATHS_AND_GRAPH_FOLDER):
+	if not Path.isdir(PATHS_AND_GRAPH_FOLDER):
 		raise ValueError(
 			"The data is not setup correctly, please follow the instructions in `data/README.md`.",
 		)
@@ -177,13 +178,11 @@ def load_graph_data() -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDArray]:
 
 	logger.info("formatting distance matrix...")
 	index_based_matrix = np.array(
-		list(
-			map(
-				lambda s: np.array(
-					[*map(lambda e: np.nan if e == "_" else int(e), list(s))],
-				),
-				graph_data["shortest-path-distance-matrix"].value.values,
+		*map(
+			lambda s: np.array(
+				[*map(lambda e: np.nan if e == "_" else int(e), list(s))],
 			),
+			graph_data["shortest-path-distance-matrix"].value.values,
 		),
 	)
 
@@ -216,14 +215,14 @@ def explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
 	"""Explode each path by creating one row for each article visited in the path.
 
 	Args:
-	        paths:					pd.DataFrame, either paths_finished or paths_unfinished as returned by `load_graph_data`.
-	        threshold:	int, paths above this threshold are ignored
+			paths: pd.DataFrame, either paths_finished or paths_unfinished as returned by `load_graph_data`.
+			threshold:	int, paths above this threshold are ignored
 
 	Returns:
-	        exploded_paths:			pd.DataFrame, one row for each article visited in each path.
-	        `source` is the article visited and `target` is the original target.
-	        The original path is kept in the column `path` and the rank is represented in the column `rank`.
-	        The column `path_length` holds the distance between the new `source` and `target.
+			exploded_paths:			pd.DataFrame, one row for each article visited in each path.
+			`source` is the article visited and `target` is the original target.
+			The original path is kept in the column `path` and the rank is represented in the column `rank`.
+			The column `path_length` holds the distance between the new `source` and `target.
 
 	"""
 	exploded_paths = paths[lambda x: x["path_length"] <= threshold].copy(deep=True)
@@ -248,7 +247,7 @@ def explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
 	return exploded_paths
 
 
-def _get_links_with_position(file_name):
+def _get_links_with_position(file_name: str):
 	# In this function we calculate all of the links rank in the article
 	with open(file_name, "rb") as f:
 		# I had problems with the encoding as it is sometimes ascii and sometimes utf8
@@ -278,7 +277,7 @@ def _get_links_with_position(file_name):
 	return links_info
 
 
-def get_links_from_html_files():
+def get_links_from_html_files() -> dict:
 	print("starting...")
 	all_links_info = {}
 	for root, _, files in os.walk(WP_SOURCE_DATA_FOLDER):

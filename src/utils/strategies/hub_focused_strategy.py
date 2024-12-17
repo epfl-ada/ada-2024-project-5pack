@@ -1,4 +1,5 @@
-"""Hub Strategy Analysis Script
+"""Hub Strategy Analysis Script.
+
 --------------------------
 Analyzes hub usage patterns and optimizes both number of hubs and usage threshold
 """
@@ -19,7 +20,7 @@ THRESHOLDS_TO_TEST = np.linspace(0.1, 0.9, 9)  # Hub usage thresholds
 
 
 @cache
-def get_hub_articles(top_n=50):
+def get_hub_articles(top_n=50) -> dict:
 	"""Get top N hub articles by PageRank score."""
 	graph_data = load_graph_data()
 	G = graph_data["graph"]
@@ -63,14 +64,14 @@ def get_hub_articles(top_n=50):
 
 
 def compute_hub_usage(path: list[str], hub_articles: dict) -> float:
-	"""Computes the ratio of hub articles used in a path.
+	"""Compute the ratio of hub articles used in a path.
 
-	Args:
-	    path (list[str]): Navigation path
-	    hub_articles (dict): Dictionary of hub articles and their scores
+		Args:
+			path (list[str]): Navigation path
+			hub_articles (dict): Dictionary of hub articles and their scores
 
-	Returns:
-	    float: Ratio of hub article usage (0 to 1)
+		Returns:
+	f		loat: Ratio of hub article usage (0 to 1)
 
 	"""
 	# Remove backtrack markers
@@ -117,7 +118,7 @@ def analyze_hub_strategy(paths_df: pd.DataFrame, n_hubs: int, threshold: float) 
 	}
 
 
-def find_optimal_parameters():
+def find_optimal_parameters() -> tuple[pd.DataFrame, pd.Series]:
 	"""Grid search for optimal number of hubs and usage threshold."""
 	# Load data
 	graph_data = load_graph_data()

@@ -8,24 +8,24 @@ def semantic_increase_score(
 	path: list[str],
 	target_article: str,
 ) -> tuple[float, float]:
-	"""Computes the Semantic Increase Score (SIS) for a given path of articles relative to a target article.
+	"""Compute the Semantic Increase Score (SIS) for a given path of articles relative to a target article.
 
 	The SIS quantifies how well the similarity to the target article increases as players progress
 	along the path. It is a value between -1 and 1, where 1 indicates a perfect monotonic increase in
 	similarity.
 
 	Calculation steps:
-	    1. Compute the semantic similarity between each article in the path and the target article.
-	    2. Use Spearman's rank correlation to measure how well the sequence of similarities aligns
-	    with a strictly increasing trend.
+		1. Compute the semantic similarity between each article in the path and the target article.
+		2. Use Spearman's rank correlation to measure how well the sequence of similarities aligns
+		with a strictly increasing trend.
 
 	Args:
-	    path (list[str]): A list of article names representing the player's navigation path.
-	    target_article (str): The name of the target article.
+		path (list[str]): A list of article names representing the player's navigation path.
+		target_article (str): The name of the target article.
 
 	Returns:
-	    float: The SIS score
-	    float: p-value indicating the significance of the correlation.
+		float: The SIS score
+		float: p-value indicating the significance of the correlation.
 
 	"""
 	tf_idf, article_to_index = build_tf_idf()

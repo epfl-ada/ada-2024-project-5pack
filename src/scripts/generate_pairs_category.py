@@ -65,7 +65,7 @@ def categories_generator() -> Generator[tuple[list[tuple[str, str]], list[tuple]
 	"""Generator of LLM probs for next token using the get category prompt.
 
 	Yields:
-	        Tuple[List[Tuple[str, str]], List[Tuple]]: _description_
+			Tuple[List[Tuple[str, str]], List[Tuple]]: _description_
 
 	"""
 	for i in range(len(unique_pairs) // BATCH_SIZE):

@@ -1,9 +1,15 @@
 """Semantic Analysis Module with plaintext article content."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+	import pandas as pd
+
 from urllib.parse import quote
 
 import numpy as np
-import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -12,7 +18,7 @@ from src.utils.constants import PLAINTEXT_DIR
 
 
 class SemanticAnalyzer:
-	def __init__(self, max_features=5000):
+	def __init__(self, max_features: int = 5000):
 		self.vectorizer = TfidfVectorizer(
 			stop_words="english",
 			max_features=max_features,
@@ -22,7 +28,7 @@ class SemanticAnalyzer:
 		self.tfidf_matrix = None
 		self.articles = None
 
-	def load_article_content(self, article_name: str):
+	def load_article_content(self, article_name: str) -> str:
 		"""Load article content from plaintext file."""
 		try:
 			filepath = PLAINTEXT_DIR / f"{article_name}.txt"
@@ -32,7 +38,7 @@ class SemanticAnalyzer:
 			logger.warning(f"Could not read article {article_name}: {e}")
 			return ""
 
-	def process_articles(self, articles_df: pd.DataFrame):
+	def process_articles(self, articles_df: pd.DataFrame) -> None:
 		"""Process articles using their full content."""
 		logger.info("Processing articles for semantic analysis...")
 
@@ -53,7 +59,7 @@ class SemanticAnalyzer:
 		vocab_size = len(self.vectorizer.vocabulary_)
 		logger.info(f"Processed articles with vocabulary size: {vocab_size}")
 
-	def get_path_similarity(self, path):
+	def get_path_similarity(self, path: list | str) -> float:
 		"""Compute average semantic similarity along path."""
 		articles = path if isinstance(path, list) else path.split(";")
 		if len(articles) < 2:

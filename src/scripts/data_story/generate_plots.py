@@ -2,7 +2,6 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Dict
 
 from src.utils.data import load_graph_data
 
@@ -13,23 +12,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def prepare_data() -> Dict[str, Any]:
-	"""Prepare all data needed for plot generation."""
-	logger.info("Loading and preparing data...")
-
-	# Load base data
-	data = load_graph_data()
-
-	return data
-
-
 def generate_all_plots() -> None:
 	"""Generate all plots for the data story."""
 	# Ensure output directory exists
 	output_dir = Path("data_story/assets/plots")
 	output_dir.mkdir(parents=True, exist_ok=True)
 
-	data = prepare_data()
+	data = load_graph_data()
 
 	logger.info("Generating plots...")
 

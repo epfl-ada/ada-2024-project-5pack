@@ -1,9 +1,13 @@
-def get_click_positions(paths, all_links_dict):
-	"""Get click positions of the paths
+import pandas as pd
+
+
+def get_click_positions(paths: pd.DataFrame, all_links_dict: dict):
+	"""Get click positions of the paths.
 
 	Parameters
 	----------
-	- paths : It is a dataframe with the format:   hashedIpAddress   timestamp   durationInSec   path (list of articles)   rating
+	- paths : It is a dataframe with the following columns:
+			hashedIpAddress   timestamp   durationInSec   path (list of articles)   rating
 	- all_links_dict : dictionnary from articles to their links and relative positions
 
 
@@ -16,12 +20,12 @@ def get_click_positions(paths, all_links_dict):
 	for _, row in paths.iterrows():
 		path = row["path"]
 		for i in range(len(path) - 1):
-			before = path[i]
-			next = path[i + 1]
+			current_article = path[i]
+			next_article = path[i + 1]
 
-			if before in all_links_dict:
-				for link in all_links_dict[before]:
-					if link.get("title") == next:
+			if current_article in all_links_dict:
+				for link in all_links_dict[current_article]:
+					if link.get("title") == next_article:
 						if "position" in link:
 							c.append(link["position"])
 						break

@@ -9,6 +9,7 @@ Analyzes the Wikipedia article network structure, including:
 """
 
 import networkx as nx
+import pandas as pd
 
 from src.utils import logger
 
@@ -23,13 +24,13 @@ class NetworkAnalyzer:
 		self.top_hubs = None
 		self.centrality_metrics = {}
 
-	def build_graph(self, links_df):
+	def build_graph(self, links_df: pd.DataFramce) -> None:
 		"""Build network graph from links data.
 
 		Parameters
 		----------
 		links_df : pd.DataFrame
-		    DataFrame containing source and target article links
+			DataFrame containing source and target article links
 
 		"""
 		try:
@@ -48,13 +49,13 @@ class NetworkAnalyzer:
 			logger.error(f"Error building graph: {e!s}")
 			raise Exception(f"Graph construction failed: {e!s}")
 
-	def compute_network_metrics(self):
+	def compute_network_metrics(self) -> dict:
 		"""Compute basic network metrics.
 
 		Returns
 		-------
 		dict
-		    Dictionary containing network metrics
+			Dictionary containing network metrics
 
 		"""
 		try:
@@ -93,7 +94,7 @@ class NetworkAnalyzer:
 		Parameters
 		----------
 		top_n : int
-		    Number of top hubs to identify
+			Number of top hubs to identify
 
 		"""
 		try:
@@ -113,7 +114,7 @@ class NetworkAnalyzer:
 			logger.error(f"Error identifying hubs: {e!s}")
 			raise Exception(f"Hub identification failed: {e!s}")
 
-	def compute_centrality_metrics(self):
+	def compute_centrality_metrics(self) -> None:
 		"""Compute various centrality metrics."""
 		try:
 			logger.info("Computing centrality metrics...")

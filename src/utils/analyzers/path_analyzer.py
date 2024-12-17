@@ -10,6 +10,8 @@ Analyzes navigation paths in Wikispeedia, including:
 import pandas as pd
 
 from src.utils import logger
+from src.utils.analyzers.semantic_analyzer import SemanticAnalyzer
+from src.utils.analyzers.network_analyzer import NetworkAnalyzer
 
 STRATEGY_THRESHOLDS = {
 	"direct_efficiency": 0.8,
@@ -19,12 +21,12 @@ STRATEGY_THRESHOLDS = {
 
 
 class PathAnalyzer:
-	def __init__(self, semantic_analyzer=None, network_analyzer=None):
+	def __init__(self, semantic_analyzer: SemanticAnalyzer = None, network_analyzer: NetworkAnalyzer = None):
 		"""Initialize PathAnalyzer."""
 		self.semantic_analyzer = semantic_analyzer
 		self.network_analyzer = network_analyzer
 
-	def analyze_paths(self, paths_finished, paths_unfinished):
+	def analyze_paths(self, paths_finished: pd.DataFrame, paths_unfinished: pd.DataFrame) -> pd.DataFrame:
 		"""Analyze all paths and compute metrics."""
 		try:
 			logger.info("Starting path analysis...")
@@ -70,7 +72,7 @@ class PathAnalyzer:
 			logger.error(f"Error in path analysis: {e!s}")
 			raise ValueError(f"Path analysis failed: {e!s}")
 
-	def compute_basic_metrics(self, paths_df):
+	def compute_basic_metrics(self, paths_df: pd.DataFrame) -> pd.DataFrame:
 		"""Compute basic path metrics."""
 		try:
 			# Existing metrics
@@ -79,7 +81,7 @@ class PathAnalyzer:
 				lambda path: sum(1 for p in path if p == "<"),
 			)
 			paths_df["unique_articles"] = paths_df["path"].apply(
-				lambda path: len(set(p for p in path if p != "<")),
+				lambda path: len({p for p in path if p != "<"}),
 			)
 			paths_df["path_efficiency"] = paths_df["unique_articles"] / paths_df["path_length"]
 			paths_df["avg_time_per_click"] = paths_df["duration_in_seconds"] / paths_df["path_length"]
@@ -101,7 +103,7 @@ class PathAnalyzer:
 			logger.error(f"Error computing basic metrics: {e!s}")
 			raise ValueError(f"Basic metrics computation failed: {e!s}")
 
-	def classify_strategies(self, paths_df):
+	def classify_strategies(self, paths_df: pd.DataFrame) -> pd.DataFrame:
 		"""Classify navigation strategies for each path."""
 		try:
 
@@ -139,7 +141,7 @@ class PathAnalyzer:
 			logger.error(f"Error classifying strategies: {e!s}")
 			raise ValueError(f"Strategy classification failed: {e!s}")
 
-	def compute_path_statistics(self, paths_df):
+	def compute_path_statistics(self, paths_df: pd.DataFrame) -> dict:
 		"""Compute comprehensive path statistics."""
 		try:
 			stats = {
@@ -162,7 +164,7 @@ class PathAnalyzer:
 			logger.error(f"Error computing path statistics: {e!s}")
 			raise ValueError(f"Statistics computation failed: {e!s}")
 
-	def analyze_time_patterns(self, paths_df):
+	def analyze_time_patterns(self, paths_df: pd.DataFrame) -> dict:
 		"""Analyze temporal patterns in navigation."""
 		try:
 			# Extract time components

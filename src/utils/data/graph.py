@@ -1,4 +1,4 @@
-from typing import Any, Set
+from typing import Any
 
 import networkx as nx
 import pandas as pd
@@ -10,7 +10,7 @@ Edge = tuple[str, str]
 def _get_edge_weights(
 	graph_data: dict[str, Any],
 	paths: pd.DataFrame,
-) -> tuple[dict[Edge, int], Set[Edge]]:
+) -> tuple[dict[Edge, int], set[Edge]]:
 	"""Return a dictionary where the keys are tuples representing an edge (u, v) and values are the edges weights.
 
 	The weight of an edge (u, v) is the number of times users went from u to v in their path.
@@ -60,7 +60,7 @@ def _get_edge_weights(
 
 
 def extract_players_graph(graph_data: dict, paths: pd.DataFrame) -> nx.DiGraph:
-	"""Generates a directed graph from the provided graph_data.
+	"""Generate a directed graph from the provided graph_data.
 
 	- Nodes: Each node in the graph represents an article.
 	- Edges: A directed edge (u, v) exists if there is a hyperlink from article u to article v.

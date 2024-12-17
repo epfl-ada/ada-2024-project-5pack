@@ -16,7 +16,7 @@ sns.set_theme()
 sns.set_style(style="whitegrid")
 
 
-def plot_navigation_patterns(paths_df: pd.DataFrame, stats):
+def plot_navigation_patterns(paths_df: pd.DataFrame, stats: dict) -> plt.Figure:
 	"""Create visualization of navigation patterns.
 
 	Parameters
@@ -66,7 +66,7 @@ def plot_navigation_patterns(paths_df: pd.DataFrame, stats):
 	return figure
 
 
-def plot_network_structure(graph: nx.Graph, centrality_metrics):
+def plot_network_structure(graph: nx.Graph, centrality_metrics) -> plt.Figure:
 	"""Visualize network structure and metrics.
 
 	Parameters
@@ -112,7 +112,7 @@ def plot_network_structure(graph: nx.Graph, centrality_metrics):
 	return figure
 
 
-def plot_model_performance(model_results: dict):
+def plot_model_performance(model_results: dict) -> plt.Figure:
 	"""Visualize model performance metrics.
 
 	Parameters
@@ -165,7 +165,7 @@ def plot_model_performance(model_results: dict):
 	return figure
 
 
-def plot_temporal_patterns(time_patterns: dict):
+def plot_temporal_patterns(time_patterns: dict) -> plt.Figure:
 	"""Visualize temporal patterns.
 
 	Parameters
