@@ -64,7 +64,13 @@ Done in 56 seconds as follows
 
 ### Hub-focused strategy
 
-[Peter]
+Among the players we discovered a first strategy that clearly splits them into two groups, and this has to do with the hub usage of the players. During their navigation, players tend to have different behaviors in the use of hubs. When hubs are defined to be the top 200 articles by highest page rank. Indeed, we see a clear drop in the pagerank score for top articles, indicating a gap in their importance in the Wikispeedia network.
+
+[plot of distribution of page rank among the top articles]
+
+We perfomed an analysis on all the finished paths to determine how different players use the hubs. We observe that, many players do not tend to use hubs as defined above, while the rest of the players exhibit a normal distribution around 0.5 in the hub usage ratio for their paths.
+
+[plot of the distribution of hub usage ratio and show clearly the two modes]
 
 ### Semantic navigationm
 
