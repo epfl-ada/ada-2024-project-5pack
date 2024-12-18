@@ -1,30 +1,27 @@
 import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
+from src.utils.metrics import rank_length_analysis
 
-
+# Define color map
+color_map = {'positive': 'blue', 'negative': 'orange'}
 # Sample data similar to your plot
-def rank_length_plot():
-	np.random.seed(42)
-	n = 100
-	spearman = np.random.uniform(-1, 1, n)  # Random spearman values between -1 and 1
-	pvalues = np.random.uniform(0.005, 0.05, n)  # Random p-values between 0.005 and 0.05
-	sign = ["positive" if s > 0 else "negative" for s in spearman]  # Sign labels
 
-	# Create a DataFrame for easy handling
-	df = pd.DataFrame({"spearman": spearman, "pvalue": pvalues, "sign": sign})
-
-	# Define color map
-	color_map = {"positive": "blue", "negative": "orange"}
-
-	# Main scatter plot
-	scatter = go.Scatter(
-		x=df["spearman"],
-		y=df["pvalue"],
-		mode="markers",
-		marker=dict(size=10, color=[color_map[s] for s in df["sign"]], opacity=0.7),
-		name="scatter",
-	)
+def rank_length_plot(graph_data):
+    df = rank_length_analysis(graph_data['paths_finished'])[lambda x: x['count'] > 5][lambda x: x['source'] != '<']
+    df['sign'] = df['spearman'].apply(lambda x: 'negative' if x < 0 else 'positive')
+    # Main scatter plot
+    scatter = go.Scatter(
+        x=df['spearman'],
+        y=df['pvalue'],
+        mode='markers',
+        marker=dict(
+            size=10,
+            color=[color_map[s] for s in df['sign']],
+            opacity=0.7
+        ),
+        name='scatter'
+    )
 
 	# Marginal histograms
 	hist_x = go.Histogram(
