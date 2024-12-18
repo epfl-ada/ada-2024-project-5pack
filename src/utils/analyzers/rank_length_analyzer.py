@@ -24,7 +24,7 @@ def rank_length_plot(graph_data):
     )
 
 	# Marginal histograms
-	hist_x = go.Histogram(
+    hist_x = go.Histogram(
 		x=df["spearman"],
 		marker_color=df["sign"].map(color_map),
 		opacity=0.7,
@@ -33,7 +33,7 @@ def rank_length_plot(graph_data):
 		showlegend=False,
 	)
 
-	hist_y = go.Histogram(
+    hist_y = go.Histogram(
 		y=df["pvalue"],
 		marker_color=df["sign"].map(color_map),
 		opacity=0.7,
@@ -43,9 +43,9 @@ def rank_length_plot(graph_data):
 	)
 
 	# Combine plots into a figure with subplots
-	from plotly.subplots import make_subplots
+    from plotly.subplots import make_subplots
 
-	fig = make_subplots(
+    fig = make_subplots(
 		rows=2,
 		cols=2,
 		specs=[[{"type": "histogram"}, None], [{"type": "scatter"}, {"type": "histogram"}]],
@@ -57,19 +57,19 @@ def rank_length_plot(graph_data):
 		vertical_spacing=0.02,
 	)
 
-	# Add scatter plot
-	fig.add_trace(scatter, row=2, col=1)
+    # Add scatter plot
+    fig.add_trace(scatter, row=2, col=1)
 
-	# Add histograms
-	fig.add_trace(hist_x, row=1, col=1)
-	fig.add_trace(hist_y, row=2, col=2)
+    # Add histograms
+    fig.add_trace(hist_x, row=1, col=1)
+    fig.add_trace(hist_y, row=2, col=2)
 
-	# Update layout
-	fig.update_layout(
-		title="Scatter Plot with Marginal Histograms",
-		xaxis=dict(title="spearman", showgrid=True),
-		yaxis=dict(title="pvalue", showgrid=True),
-		bargap=0.05,
-		showlegend=True,
-	)
-	return fig
+    # Update layout
+    fig.update_layout(
+    	title="Scatter Plot with Marginal Histograms",
+    	xaxis=dict(title="spearman", showgrid=True),
+    	yaxis=dict(title="pvalue", showgrid=True),
+    	bargap=0.05,
+    	showlegend=True,
+    )
+    return fig
