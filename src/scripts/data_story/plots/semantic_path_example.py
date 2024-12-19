@@ -7,8 +7,20 @@ def generate_plot(data, output_dir):
 	fig.write_html(output_dir / "semantic_path_example.html", include_plotlyjs=True, full_html=True)
 
 
-def semantic_path_example() -> go:
-	path = ["Internet", "North_America", "South_America", "Peru", "Alpaca"]
+def semantic_path_example(path: list[str] = None) -> go:
+	if path is None:
+		path = [
+			"Cinema_of_the_United_States",
+			"20th_century",
+			"Vitamin",
+			"Anemia",
+			"Sickle-cell_disease",
+			"Malaria",
+			"Yellow_fever",
+			"Virus",
+			"Common_cold",
+		]  # Path 9876
+
 	similarities = get_semantic_similarities(path, path[-1])
 
 	fig = go.Figure()

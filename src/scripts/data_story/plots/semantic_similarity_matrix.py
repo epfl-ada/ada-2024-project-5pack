@@ -24,9 +24,6 @@ def similarity_matrix_figure() -> ff:
 		title="Semantic Similarity Confusion Matrix",
 		xaxis_title="Articles",
 		yaxis_title="Articles",
-		autosize=False,
-		width=500,
-		height=500,
 	)
 
 	# Add color bar

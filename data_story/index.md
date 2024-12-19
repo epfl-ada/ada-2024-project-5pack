@@ -94,13 +94,17 @@ To do the last step, we use Spearman's rank correlation, which evaluates how wel
 
 For instance computing the TF-IDF matrix will give us the following similarities for the top 5 articles:
 
-[TODO Insert Matrix]
+<div class="plot">
+  <iframe src="assets/plots/similarity_matrix.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
 
 Using this similarity matrix, we can compute how the similarity evolves as players progress along their path
 
-[TODO Insert Path evolving graph]
+<div class="plot">
+  <iframe src="assets/plots/semantic_path_example.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
 
-Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of `TODO`
+Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of **0.738** which indicates that the semantic similarity is generally increasing along the path.
 
 
 ### Link strategy
