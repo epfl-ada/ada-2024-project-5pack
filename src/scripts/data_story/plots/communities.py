@@ -1,7 +1,8 @@
+from pathlib import Path
 import plotly.graph_objects as go
 
 
-def generate_plot(data, output_dir):
+def generate_plot(data: dict, output_dir: Path) -> None:
 	communities = ["Europe 🇪🇺", "Biology 🌱", "Americas 🌎", "Africa and Asia 🌍", "United Kingdom 🇬🇧", "Fundamental sciences ⚛️"]
 	articles = [885, 820, 757, 713, 645, 622]
 
@@ -13,7 +14,7 @@ def generate_plot(data, output_dir):
 			text=communities,
 			textposition="inside",
 			insidetextanchor="middle",
-			textfont=dict(size=14),
+			textfont={"size": 14},
 			textangle=0,
 			marker_color="#48a23a",
 		)
@@ -25,7 +26,7 @@ def generate_plot(data, output_dir):
 		xaxis_title="Number of Articles",
 		yaxis={"categoryorder": "total ascending", "showticklabels": False},
 		height=500,
-		margin=dict(l=50),
+		margin={"l": 50},
 		showlegend=False,
 		yaxis_title=None,
 	)

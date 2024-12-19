@@ -9,7 +9,13 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
 
 ## Introduction
 
-[TODO: Explanation on the website and the data. Mention Stanford's page.]
+This research is based on a dataset collected in the context of [Wikispeedia](https://dlab.epfl.ch/wikispeedia/play/){:target="_blank"}, a game where players are tasked to reach one article from another only using hyperlinks on a subset of Wikipedia. A quick analysis shows that humans are not optimal, as they usually take paths longers than the shortest paths, as they visit on average **x2.4** more articles than needed.
+
+<div class="plot">
+  <iframe src="assets/plots/game_stats_intro.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+This leads us to study the specificities of human navigation patterns in Wikipedia, and understand what the most efficient strategies are for browsing the Wikipedia network.
 
 <div id="wikispeedia-stats">
   <div>Wikispeedia Website</div>
@@ -19,6 +25,8 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
   </div>
 </div>
 
+Quite naturally the network of articles reveals dominant subjects or articles in Wikispeedia.
+
 <div id="side-by-side-plots">
   <iframe src="assets/plots/communities_graph.html" width="100%" height="550px" frameborder="0"></iframe>
   <div>
@@ -27,16 +35,17 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
       <thead>
           <tr>
               <th>Article</th>
-              <th>HITS Score</th>
+              <th>Pagerank Score</th>
           </tr>
       </thead>
       <tbody>
-          <tr><td>United States, North America</td><td>0.0546, 0.0266</td></tr>
-          <tr><td>Europe</td><td>0.0302</td></tr>
-          <tr><td>Earth</td><td>0.0210</td></tr>
-          <tr><td>United Kingdom, England</td><td>0.0177, 0.0163</td></tr>
-          <tr><td>English language</td><td>0.0171</td></tr>
-          <tr><td>World War II</td><td>0.0145</td></tr>
+          <tr><td>United States</td><td>0.032</td></tr>
+          <tr><td>Europe</td><td>0.014</td></tr>
+          <tr><td>United Kingdom</td><td>0.014</td></tr>
+          <tr><td>England</td><td>0.0112</td></tr>
+          <tr><td>Africa</td><td>0.009</td></tr>
+          <tr><td>Earth</td><td>0.008</td></tr>
+          <tr><td>World War II</td><td>0.008</td></tr>
       </tbody>
   </table>
   </div>
@@ -45,7 +54,7 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
 The next community is **Computer Science 🤖** with only 124 articles.
 
 ### Game Data
-The Wikispeedia dataset contains games of Wikispeedia. In this game, a player is given a pair of two articles present on the website, and his goal is to go from the first to the second article by taking hyperlinks on Wikispeedia.
+The Wikispeedia dataset contains games of Wikispeedia. In this game, a player is given a pair of two articles present on the website, and his goal is to go from the first to the second article by taking hyperlinks on Wikispeedia. The dataset contains paths taken by the players for different games and players and their overall time.
 
 **Example** Joining *Yarralumla* to *Abraham Lincoln*\
 Done in 56 seconds as follows
@@ -60,9 +69,9 @@ Done in 56 seconds as follows
 
 ## Players' strategies
 
-[TODO Timothée, Fred, Peter]
+### Hub-focused strategy
 
-{peter + timothee}
+Among the players we discovered a first strategy that clearly splits them into two groups, and this has to do with the hub usage of the players. During their navigation, players tend to have different behaviors in the use of hubs. When hubs are defined to be the top 200 articles by highest page rank. Indeed, we see a clear drop in the pagerank score for top articles, indicating a gap in their importance in the Wikispeedia network.
 
 
 Link strategy:
@@ -72,13 +81,57 @@ We want to determine if this strategy pays off compared to players who click any
 
 {faire plot distribution hub usage ratio}
 {gabriel}
+[plot of distribution of page rank among the top articles]
 
-## Optimal strategy
+We perfomed an analysis on all the finished paths to determine how different players use the hubs. We observe that, many players do not tend to use hubs as defined above, while the rest of the players exhibit a normal distribution around 0.5 in the hub usage ratio for their paths.
+
+[plot of the distribution of hub usage ratio and show clearly the two modes]
+
+### Semantic navigation strategy
+
+In this strategy, the player will click on links to articles that are semantically closer to the target article.
+
+We want to check whether the semantic similarity between the current article and the target article increases as players progress along their path. If this similarity grows, it would suggest that the player is following the strategy of selecting more semantically related articles.
+
+We will do the following steps to answer that question:
+1. Compute the TF-IDF matrix to represent the documents as embeddings
+2. Compute the cosine similarity between two embeddings to assess how similar two articles are.
+3. Verify whether the semantic similarity increases as players progress along their path. 
+
+To do the last step, we use Spearman's rank correlation, which evaluates how well the order of semantic similarity aligns with a strictly increasing sequence. The correlation score ranges from -1 to 1, with 1 indicating a perfect monotonic increase in similarity. We will refer to this score as the semantic_increase_score (SIS).p
+
+For instance computing the TF-IDF matrix will give us the following similarities for the top 5 articles:
+
+<div class="plot">
+  <iframe src="assets/plots/similarity_matrix.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+Using this similarity matrix, we can compute how the similarity evolves as players progress along their path
+
+<div class="plot">
+  <iframe src="assets/plots/semantic_path_example.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of **0.738** which indicates that the semantic similarity is generally increasing along the path.
+
+
+### Link strategy
+
+[Timothee]
+
+### Fast exploration
+
+[Backtrack, Peter]
+
+## Discussing the best strategy
 
 [TODO Gabriel]
 
 {analyse du shortest path}
 {déterminer les stratégies qui correspondent}
+<div class="plot">
+  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="620px" frameborder="0"></iframe>
+</div>
 
 ## Conclusion
 

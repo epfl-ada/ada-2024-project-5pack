@@ -48,7 +48,7 @@ The website will be available at http://localhost:4000
 
 To generate new plots for the website:
 ```bash
-poetry run python -m src.scripts.data_story.generate_story
+poetry run python -m src.scripts.data_story.generate_plots
 ```
 
 ## Project Structure

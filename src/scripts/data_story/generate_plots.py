@@ -2,25 +2,18 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Dict
 
-from src.utils.data_utils import load_graph_data
+from src.utils.data import load_graph_data
 
 from .plots import communities as communities_plot
+from .plots import rank_vs_length as rank_plot
+from .plots import game_stats_intro as intro_plot
+from .plots import semantic_similarity_matrix as similarity_plot
+from .plots import semantic_path_example as semantic_path
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-def prepare_data() -> Dict[str, Any]:
-	"""Prepare all data needed for plot generation."""
-	logger.info("Loading and preparing data...")
-
-	# Load base data
-	data = load_graph_data()
-
-	return data
 
 
 def generate_all_plots() -> None:
@@ -29,11 +22,11 @@ def generate_all_plots() -> None:
 	output_dir = Path("data_story/assets/plots")
 	output_dir.mkdir(parents=True, exist_ok=True)
 
-	data = prepare_data()
+	data = load_graph_data()
 
 	logger.info("Generating plots...")
 
-	plot_modules = [communities_plot]
+	plot_modules = [communities_plot, rank_plot, intro_plot, similarity_plot, semantic_path]
 
 	for plot_module in plot_modules:
 		try:

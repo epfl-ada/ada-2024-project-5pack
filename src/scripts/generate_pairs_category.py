@@ -1,10 +1,10 @@
+from collections.abc import Generator
+
 import numpy as np
 import pandas as pd
-
 from tqdm import tqdm
-from typing import List, Tuple, Generator
 
-from src.utils.data_utils import load_graph_data
+from src.utils.data import load_graph_data
 from src.utils.llm import get_tokenizer_and_model, next_token_probs
 
 BATCH_SIZE = 16
@@ -15,11 +15,12 @@ def get_category_prompt(article_1: str, article_2: str) -> str:
 	"""Returning few-shot LLM prompt for categorizing relationship between two articles.
 
 	Args:
-		article_1 (str): first article to consider
-		article_2 (str): second article to consider
+	        article_1 (str): first article to consider
+	        article_2 (str): second article to consider
 
 	Returns:
-		str: a prompt designed for language models following the Granite-3.0 Instruct chat template.
+	        str: a prompt designed for language models following the Granite-3.0 Instruct chat template.
+
 	"""
 	return f"""<|start_of_role|>user<|end_of_role|>
 You are acting as a classifier. I will give you two words corresponding to two concepts.
@@ -60,11 +61,12 @@ Your answer:<|end_of_text|>
 <|start_of_role|>assistant<|end_of_role|>"""
 
 
-def categories_generator() -> Generator[Tuple[List[Tuple[str, str]], List[Tuple]], None, None]:
+def categories_generator() -> Generator[tuple[list[tuple[str, str]], list[tuple]], None, None]:
 	"""Generator of LLM probs for next token using the get category prompt.
 
 	Yields:
-		Tuple[List[Tuple[str, str]], List[Tuple]]: _description_
+			Tuple[List[Tuple[str, str]], List[Tuple]]: _description_
+
 	"""
 	for i in range(len(unique_pairs) // BATCH_SIZE):
 		batch = [unique_pairs[i * BATCH_SIZE + j] for j in range(BATCH_SIZE)]
@@ -74,7 +76,9 @@ def categories_generator() -> Generator[Tuple[List[Tuple[str, str]], List[Tuple]
 
 		results = []
 		for i in range(BATCH_SIZE):
-			dist = np.array([probs[i, ...][numbers[str(answer)]] for answer in [1, 2, 3, 4]])
+			dist = np.array(
+				[probs[i, ...][numbers[str(answer)]] for answer in [1, 2, 3, 4]],
+			)
 			total_llm_probs = dist.sum()
 
 			dist /= total_llm_probs
@@ -87,11 +91,12 @@ def categories_generator() -> Generator[Tuple[List[Tuple[str, str]], List[Tuple]
 		yield batch, results
 
 
-def retrieve_unique_pairs() -> List[Tuple[str, str]]:
+def retrieve_unique_pairs() -> list[tuple[str, str]]:
 	"""Retrieve and returns all the unique pairs of consecutive articles (corresponding to links) in realised paths.
 
 	Returns:
-		List[Tuple[str, str]]: a list of unique pairs of consecutive articles present in user paths.
+	        list[tuple[str, str]]: a list of unique pairs of consecutive articles present in user paths.
+
 	"""
 	# retrieve all distinct links used by the players
 	graph_data = load_graph_data()
@@ -120,14 +125,19 @@ def retrieve_unique_pairs() -> List[Tuple[str, str]]:
 
 if __name__ == "__main__":
 	tokenizer = get_tokenizer_and_model()[0]
-	numbers = {str(number): tokenizer(str(number), return_tensors="pt")["input_ids"].flatten()[0] for number in range(0, 10)}
+	numbers = {str(number): tokenizer(str(number), return_tensors="pt")["input_ids"].flatten()[0] for number in range(10)}
 
 	unique_pairs = retrieve_unique_pairs()
 
 	with open(RESULT_FILE_PATH, "w") as file:
-		file.write("Article 1,Article 2,Geographical,Temporal,Categorical,Other,Total\n")
+		file.write(
+			"Article 1,Article 2,Geographical,Temporal,Categorical,Other,Total\n",
+		)
 
-		for batch, results in tqdm(categories_generator(), total=(len(unique_pairs) // BATCH_SIZE)):
+		for batch, results in tqdm(
+			categories_generator(),
+			total=(len(unique_pairs) // BATCH_SIZE),
+		):
 			for i, (article_1, article_2) in enumerate(batch):
 				file.write(f"{article_1},{article_2}," + ",".join(results[i]))
 				file.write("\n")
