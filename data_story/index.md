@@ -83,8 +83,21 @@ The top 200 articles (representing only 4.3% of all articles) account for 44.1% 
 
 By selecting the top 200 articles, we balance between capturing the most influential hubs and maintaining a manageable set. Including too many articles would dilute the concept of "hub" and reduce the navigation strategy's precision.
 
-Moreover, examining the top 5 hubs—United States, Europe, United Kingdom, England, and Africa—reveals that they are broad, general-knowledge topics that naturally act as checkpoints for navigation. Beyond these, the PageRank scores drop significantly (from 0.032 for United States to 0.0093 for Africa). This supports the 200-article cutoff as an optimal choice.
+Moreover, examining the top 5 hubs **—United States, Europe, United Kingdom, England, and Africa—** reveals that they are broad, general-knowledge topics that naturally act as checkpoints for navigation. Beyond these, the PageRank scores drop significantly (from 0.032 for United States to 0.0093 for Africa). This supports the 200-article cutoff as an optimal choice.
 
+To quantify the extent to which players rely on hubs in their navigation paths, we define the **Hub Usage Ratio (HUR)** as follows:
+
+$$
+\text{Hub Usage Ratio (HUR)} = \frac{\text{Number of Hub Articles in the Path}}{\text{Total Number of Articles in the Path}}
+$$
+
+Where:
+- **Hub Articles**: Articles in the top 200 by PageRank.
+- **Path**: The sequence of articles visited by the player during navigation.
+
+This metric allows us to evaluate the degree to which players utilize hubs in their navigation. For example:
+- A **HUR of 1.0** indicates that the player's path consists entirely of hub articles.
+- A **HUR of 0.0** indicates that no hub articles were used in the path.
 
 ### Semantic navigation strategy
 
