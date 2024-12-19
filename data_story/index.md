@@ -75,7 +75,7 @@ Among the players we discovered a first strategy that clearly splits them into t
 
 [plot of distribution of page rank among the top articles]
 
-We perfomed an analysis on all the finished paths to determine how different players use the hubs. We observe that, many players do not tend to use hubs as defined above, while the rest of the players exhibit a normal distribution around 0.5 in the hub usage ratio for their paths.
+We performed an analysis on all the finished paths to determine how different players use the hubs. We observe that, many players do not tend to use hubs as defined above, while the rest of the players exhibit a normal distribution around 0.5 in the hub usage ratio for their paths.
 
 [plot of the distribution of hub usage ratio and show clearly the two modes]
 
@@ -116,6 +116,35 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 [Backtrack, Peter]
 
 ## Discussing the best strategy
+
+### Causal Analysis
+
+[TODO: Define what is winning a game]
+[TODO: Improve images below]
+
+To figure out which strategy is the best, we need a solid metric to measure how well a strategy performs. A straightforward way to do this is to calculate the **average game time** when a strategy is used. We can then compare this number to the overall average game time to see if the strategy is effective.
+
+However, this simple approach might lead to misleading results because of—you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
+
+<div style="text-align:center;">
+  <img src="assets/images/confounding1.png" alt="Diagram of current situation" style="width:80%;">
+</div>
+
+To address this issue, we can compare the effect of using (vs. not using) the strategy on games with the same (source, target) pair. By isolating comparisons to identical game pairs, we remove the influence of difficulty differences caused by the specific pair. This way, if the strategy consistently performs better within the same pair, we can confidently say it’s not because of a confounding variable like game difficulty.
+
+<div style="text-align:center;">
+  <img src="assets/images/confounding2.png" alt="Diagram of current situation" style="width:70%;">
+</div>
+
+Unfortunately, grouping games by (source, target) pairs has a big downside: it results in a huge loss of data. Most (source, target) pairs are only played once, so they would get discarded! To solve this, we decided to simplify our approach by grouping on just the target article to quantify game difficulty. This decision wasn’t random—it came after hours of playing Wikispeedia and noticing something interesting:
+
+The difficulty of a game depends **mostly** on the target article and **barely** on the starting article.
+
+Here’s why: Imagine the very isolated article "Black Robin" 🐦‍⬛.
++ If "Black Robin" is the starting article, it’s not a big deal—you can quickly hop to "Animal," a great hub, and move on from there.
++ But if "Black Robin" is the target article, you’re in trouble. Getting to an isolated article from another location is significantly harder!
+
+Therefore, in the subsequent analysis, all metrics are calculated with the confounding variable carefully accounted for.
 
 [TODO Gabriel]
 
