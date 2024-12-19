@@ -19,13 +19,14 @@ def get_click_positions(paths, all_links_dict):
         for i in range(len(path) - 1):
             before = path[i]
             next = path[i + 1]
-
             if before in all_links_dict:
+                
                 for link in all_links_dict[before]:
                     if link.get('title') == next:
                         if 'position' in link:
                             c.append(link['position'])
                         break
+    
     return c
 
 
@@ -40,8 +41,9 @@ def get_probability_link(path_click_positions, threshold = 0.3):
     Returns:
     A probability (float) in [0,1]
     """
-
     top_clicks = sum(1 for pos in path_click_positions if pos <= threshold)
+    if not path_click_positions:
+        return 0
 
     return top_clicks/len(path_click_positions)
 

@@ -261,6 +261,10 @@ def rank_length_analysis(paths: pd.DataFrame) -> pd.DataFrame:
 
 	return corr_data
 
+
+import urllib.parse
+
+
 def get_links_with_position(file_name):
 	#In this function we calculate all of the links rank in the article
     with open(file_name, 'rb') as f:
@@ -287,8 +291,9 @@ def get_links_with_position(file_name):
             if 'wp/' not in href or 'wikipedia' in href or 'favicon' in href or 'Wikipedia' in href:
                 continue
 
-            title = os.path.splitext(os.path.basename(href))[0]  # Get the title without the extension
-            links_info.append({'title': title, 'position': rank})
+            title = urllib.parse.unquote(os.path.splitext(os.path.basename((href)))[0])  # Get the title without the extension
+
+            links_info.append({'title': urllib.parse.unquote(title), 'position': rank})
             rank += 1
 			# BEFORE : To get position relative in source code. Very similar results
             # pos = content.find(str(tag))
@@ -305,7 +310,7 @@ def get_links_from_html_files():
 		#Here we browse through all of the htm files and add their links position in a dictionary
         for file in files:
             if file.endswith('.htm'):
-                article_title = os.path.splitext(file)[0]  # Don't get extension
+                article_title = urllib.parse.unquote(os.path.splitext(file)[0])  # Don't get extension PARSELIB BECAUSE AT%26T to AT&T for ex
                 linkandpos = get_links_with_position(os.path.join(root, file))
                 all_links_info[article_title] = linkandpos
     return all_links_info

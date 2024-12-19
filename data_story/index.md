@@ -64,6 +64,12 @@ Done in 56 seconds as follows
 
 {peter + timothee}
 
+
+Link strategy:
+The goal of the game is to get to the target pair the fastest possible. Therefore it is possible that players are biased towards clicking on the top links instead of reading through the whole article and then clicking on the best one.
+We want to determine if this strategy pays off compared to players who click anywhere on the page.
+{Plot de la position des clics}
+
 {faire plot distribution hub usage ratio}
 {gabriel}
 
