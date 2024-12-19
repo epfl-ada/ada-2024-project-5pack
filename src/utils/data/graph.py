@@ -46,12 +46,6 @@ def _get_edge_weights(
 
 			edge_weights[edge] += 1
 
-	if len(unrecognized_edges) > 0:
-		print(
-			f"Note that {len(unrecognized_edges)} edges are present in 'paths_(un)finished.tsv' but not in 'links.tsv':",
-		)
-		print(unrecognized_edges)
-
 	assert sum(edge_weights.values()) == sum(paths["path"].apply(len)) - 2 * sum(
 		paths["path"].apply(lambda list: list.count("<")),
 	) - len(paths)

@@ -23,6 +23,18 @@ def describe_value(value: Any) -> str:
 
 	if isinstance(value, nx.DiGraph):
 		return f"DiGraph {len(value.nodes), len(value.edges)}"
+	
+	if isinstance(value, set):
+		return f"Set ({len(value)})"
+	
+	if isinstance(value, list):
+		return f"List ({len(value)})"
+
+	if isinstance(value, dict):
+		return f"Dict ({len(value)})"
+	
+	if isinstance(value, tuple):
+		return f"Tuple ({len(value)})"
 
 	raise ValueError(f"Cannot describe type {type(value)}")
 
