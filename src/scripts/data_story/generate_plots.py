@@ -9,6 +9,7 @@ from .plots import communities as communities_plot
 from .plots import rank_vs_length as rank_plot
 from .plots import game_stats_intro as intro_plot
 from .plots import semantic_similarity_matrix as similarity_plot
+from .plots import semantic_path_example as semantic_path
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,7 +26,7 @@ def generate_all_plots() -> None:
 
 	logger.info("Generating plots...")
 
-	plot_modules = [communities_plot, rank_plot, intro_plot, similarity_plot]
+	plot_modules = [communities_plot, rank_plot, intro_plot, similarity_plot, semantic_path]
 
 	for plot_module in plot_modules:
 		try:
