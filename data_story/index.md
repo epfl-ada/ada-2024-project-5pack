@@ -72,9 +72,29 @@ We perfomed an analysis on all the finished paths to determine how different pla
 
 [plot of the distribution of hub usage ratio and show clearly the two modes]
 
-### Semantic navigationm
+### Semantic navigation strategy
 
-[Frederic]
+In this strategy, the player will click on links to articles that are semantically closer to the target article.
+
+We want to check whether the semantic similarity between the current article and the target article increases as players progress along their path. If this similarity grows, it would suggest that the player is following the strategy of selecting more semantically related articles.
+
+We will do the following steps to answer that question:
+1. Compute the TF-IDF matrix to represent the documents as embeddings
+2. Compute the cosine similarity between two embeddings to assess how similar two articles are.
+3. Verify whether the semantic similarity increases as players progress along their path. 
+
+To do the last step, we use Spearman's rank correlation, which evaluates how well the order of semantic similarity aligns with a strictly increasing sequence. The correlation score ranges from -1 to 1, with 1 indicating a perfect monotonic increase in similarity. We will refer to this score as the semantic_increase_score (SIS).p
+
+For instance computing the TF-IDF matrix will give us the following similarities for the top 5 articles:
+
+[TODO Insert Matrix]
+
+Using this similarity matrix, we can compute how the similarity evolves as players progress along their path
+
+[TODO Insert Path evolving graph]
+
+Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of `TODO`
+
 
 ### Link strategy
 
