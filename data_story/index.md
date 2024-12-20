@@ -352,7 +352,6 @@ Through our analysis of different navigation approaches, we've identified severa
 - It shows the highest success rate among all strategies. 
 - The Mixed Linear Model confirms that increasing semantic similarity to the target reduces completion time by 21 seconds on average. 
 - This suggests players should prioritize choosing articles semantically related to their target
-
 2. Link Position Strategy proves surprisingly effective:
 - Clicking top-positioned links reduces completion time by about 8 seconds
 - 44.9% of all clicks are on the top 20% of links
