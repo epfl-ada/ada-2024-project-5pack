@@ -1,20 +1,17 @@
 import pandas as pd
 import numpy as np
-from src.utils.link_strategy import get_click_positions, get_probability_link
+from src.utils.strategies.link_strategy import get_click_positions, get_probability_link
 
 
 import plotly.express as px
-import numpy as np
-from src.utils.link_strategy import get_click_positions, build_link_order
+from src.utils.strategies.link_strategy import get_click_positions, build_link_order
 from src.utils.strategies.comparison import build_comparison_df
 from src.utils.metrics import average_on_paths, pagerank
+import matplotlib.pyplot as plt
+
+from src.utils.data_utils import load_graph_data
 
 def generate_plot(data, output_dir):
-	import pandas as pd
-	import numpy as np
-	import matplotlib.pyplot as plt
-
-	from src.utils.data_utils import load_graph_data
 
 	graph_data = load_graph_data()
 
@@ -25,7 +22,7 @@ def generate_plot(data, output_dir):
 	finished, unfinished = build_comparison_df(graph_data, all_links_dict)
 	
 
-	barplot_success, barplot_times = comparison_performance(graph_data, all_links_dict, finished, unfinished)
+	barplot_success, barplot_times = comparison_performance(finished, unfinished)
 	barplot_success.write_html(output_dir / "barplot_success.html", include_plotlyjs=True, full_html=True)
 	barplot_times.write_html(output_dir / "barplot_times.html", include_plotlyjs=True, full_html=True)
 
@@ -105,7 +102,7 @@ def times_comparison(finished):
 
 
 
-def comparison_performance(graph_data, all_links_dict, finished, unfinished):
+def comparison_performance(finished, unfinished):
 	all_paths = pd.concat([finished, unfinished])
 
 	#success

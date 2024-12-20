@@ -1,7 +1,7 @@
 from src.utils.strategies.semantic_strategy import semantic_increase_score
 
 from src.utils.metrics import pagerank
-from src.utils.link_strategy import get_click_positions, get_probability_link
+from src.utils.strategies.link_strategy import get_click_positions, get_probability_link
 
 import pandas as pd
 
