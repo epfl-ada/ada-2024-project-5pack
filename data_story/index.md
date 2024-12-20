@@ -308,41 +308,6 @@ Finally, the interaction effect terms provide information into how strategies in
 
 On its own, a higher hub ratio tends to increase the average game duration. However, when combined with other strategies, it will trigger an interaction term that will reduce the average game time.
 
-We have measured the efficiency of strategies in terms of completion time and in terms of path length.
-
-We will now measure them considering the length of the path.
-This metric has the advantage that we are allowed to **explode** the game paths which allows us to increase
-the number of datapoints.
-To explain what we mean by exploding the game paths, let's consider the following game from `Global warming` to `Sun`:
-
-```
-Global warming > Greenhouse effect > Planet > Sun
-```
-Indeed, everytime thee player clicks on a new article, the player then starts to look for ways to reach
-the target from the new article, which effectively means that it is playing a game from the current article
-to the target.
-Thus, we can **explode** the previous game into three different games:
-```
-Global warming > Greenhouse effect > Planet > Sun
-Greenhouse effect > Planet > Sun
-Planet > Sun
-```
-Increasing the number of datapoints has multiple advantages:
-- The statistical significance of our general results is improved.
-- We can condition our computations on (source, target) pairs and still have statistically significant results, which allows us to mitigate the fact that different (source, target) pairs might inherently have higher/lower difficulty and encourage specific strategies.
-
-{analyse du shortest path}
-{déterminer les stratégies qui correspondent}
-```
-Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar System > Sun 
-```
-<div class="plot">
-  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1040px" frameborder="0"></iframe>
-</div>
-
-<div class="plot">
-  <iframe src="assets/plots/score_vs_length.html" width="100%" height="600px" frameborder="0"></iframe>
-</div>
 
 ## Conclusion
 
