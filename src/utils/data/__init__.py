@@ -237,8 +237,30 @@ def load_graph_data(top_n=200) -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDAr
 
 	return graph_data
 
+import pandas as pd
 
-def explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
+def clean_path(input: list[str] | pd.Series) -> list[str] | pd.Series:
+	"""Remove backticks from path"""
+	if isinstance(input, pd.Series):
+		# We look for the path in the series
+		output = input.copy(deep=True)
+		output['path'] = clean_path(input['path'])	
+		output['path_length'] = len(output['path'])
+		return output
+	else:
+		# We actually clean the path
+		new_path = []
+		for article in input:
+			if article == '<':
+				if new_path:
+					new_path.pop()
+				else:
+					raise ValueError("Attempted to clean a path that had an unmatched backtick.")
+			else:
+				new_path.append(article)
+		return new_path
+
+def explode_paths(paths: pd.DataFrame, threshold: int = 500, clear_backticks: bool = False) -> pd.DataFrame:
 	"""Explode each path by creating one row for each article visited in the path.
 
 	Args:
@@ -249,10 +271,17 @@ def explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
 			exploded_paths:			pd.DataFrame, one row for each article visited in each path.
 			`source` is the article visited and `target` is the original target.
 			The original path is kept in the column `path` and the rank is represented in the column `rank`.
-			The column `path_length` holds the distance between the new `source` and `target.
+			The column `path_length` holds the distance between the new `source` and the end of the path.
 
 	"""
 	exploded_paths = paths[lambda x: x["path_length"] <= threshold].copy(deep=True)
+
+	# Clean backticks from the path if necessary:
+	if clear_backticks:
+		exploded_paths = exploded_paths.transform(
+			axis='columns',
+			func=clean_path
+		)
 
 	# Explode the paths
 	exploded_paths["source"] = exploded_paths["path"].map(
@@ -267,9 +296,6 @@ def explode_paths(paths: pd.DataFrame, threshold: int = 500) -> pd.DataFrame:
 
 	# Remove paths to self
 	exploded_paths = exploded_paths[lambda x: x["source"] != x["target"]]
-
-	# Irrelevant rows
-	# exploded_paths = exploded_paths[lambda x: x['path_length'] < 20]
 
 	return exploded_paths
 
@@ -304,6 +330,7 @@ def _get_links_with_position(file_name: str):
 	return links_info
 
 
+@cache
 def get_links_from_html_files() -> dict:
 	all_links_info = {}
 	for root, _, files in os.walk(WP_SOURCE_DATA_FOLDER):

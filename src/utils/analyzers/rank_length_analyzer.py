@@ -4,11 +4,9 @@ import pandas as pd
 from src.utils.metrics import rank_length_analysis
 from plotly.subplots import make_subplots
 
-# Define color map
-color_map = {'positive': 'blue', 'negative': 'orange'}
-# Sample data similar to your plot
 
 def rank_length_plot_old(graph_data):
+	color_map = {'positive': 'blue', 'negative': 'orange'}
 	# Load and prepare data
 	df = rank_length_analysis(graph_data['paths_finished'])[lambda x: x['count'] > 5][lambda x: x['source'] != '<']
 	df['sign'] = df['spearman'].apply(lambda x: 'negative' if x < 0 else 'positive')
@@ -76,7 +74,6 @@ def rank_length_plot_old(graph_data):
 
 
 def rank_length_plot(graph_data):
-	# Load and prepare data
 	df = rank_length_analysis(graph_data['paths_finished'])[
 		lambda x: (x['count'] > 5) & (x['source'] != '<')
    	]
@@ -85,7 +82,6 @@ def rank_length_plot(graph_data):
 def rank_length_plot_from_analysis_data(df_from_analysis, pvalue_threshold = 0.05):
 	df = df_from_analysis[lambda x: x['pvalue'] < pvalue_threshold]
 
-	# Separate data by sign
 	df_positive = df[df['spearman'] >= 0]
 	df_negative = df[df['spearman'] < 0]
 
@@ -99,7 +95,7 @@ def rank_length_plot_from_analysis_data(df_from_analysis, pvalue_threshold = 0.0
 		end=pvalue_threshold,
 		size=0.005
 	)
-	# Create separate heatmaps for positive and negative samples
+
 	heatmap_positive = go.Histogram2d(
 		x=df_positive['spearman'],
 		y=df_positive['pvalue'],
@@ -128,7 +124,6 @@ def rank_length_plot_from_analysis_data(df_from_analysis, pvalue_threshold = 0.0
 		name='Negative Samples',
 	)
 
-	# Histograms for each sign
 	hist_x_positive = go.Histogram(
 		x=df_positive['spearman'],
 		marker=dict(color='blue'),
@@ -187,34 +182,30 @@ def rank_length_plot_from_analysis_data(df_from_analysis, pvalue_threshold = 0.0
 		vertical_spacing=0.07
 	)
 
-	# Add heatmaps
 	fig.add_trace(heatmap_positive, row=2, col=1)
 	fig.add_trace(heatmap_negative, row=2, col=1)
 
 
-	# Add histograms
 	fig.add_trace(hist_x_positive, row=1, col=1)
 	fig.add_trace(hist_x_negative, row=1, col=1)
 	fig.add_trace(hist_y_positive, row=2, col=2)
 	fig.add_trace(hist_y_negative, row=2, col=2)
 
-	# Update layout
 	fig.update_layout(
-		title="Spearman correlation and associated p-values",
+		title="histogram of spearman correlation coefficients conditioned on (source, target) pairs and associated p-value heatmap",
 		bargap=0.05,
 		barmode='stack',
 		height=1000,
-		width=750,
+		width=800,
 		showlegend=True,
 	)
 
-	# Set axis titles
-	fig.update_xaxes(title_text="Spearman Correlation Coefficient", row=2, col=1, showgrid=True)
+	fig.update_xaxes(title_text="spearman correlation coefficient", row=2, col=1, showgrid=True)
 	fig.update_yaxes(title_text="p-value", row=2, col=1, showgrid=True)
 
-	fig.update_xaxes(showticklabels=True, title_text="Spearman Correlation Coefficient", row=1, col=1)
+	fig.update_xaxes(showticklabels=True, row=1, col=1)
 	fig.update_yaxes(showticklabels=True, title_text="count", row=1, col=1)
 	fig.update_xaxes(showticklabels=True, title_text="count (cumulative)", row=2, col=2)
-	fig.update_yaxes(showticklabels=True, title_text="p-value", row=2, col=2)
+	fig.update_yaxes(showticklabels=True, row=2, col=2)
 
 	return fig
