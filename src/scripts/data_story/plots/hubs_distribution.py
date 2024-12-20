@@ -14,7 +14,6 @@ def create_hub_usage_ratio_plot(data: dict) -> go.Figure:
     Create visualization of hub usage ratios in paths for finished and unfinished paths.
     """
     
-    # Compute hub usage ratios for finished and unfinished paths
     def compute_ratios(paths):
         return [
             compute_hub_usage_ratio(path)
@@ -24,13 +23,11 @@ def create_hub_usage_ratio_plot(data: dict) -> go.Figure:
     finished_ratios = compute_ratios(data["paths_finished"])
     unfinished_ratios = compute_ratios(data["paths_unfinished"])
 
-    # Compute mean ratios
     mean_finished = np.mean(finished_ratios)
     mean_unfinished = np.mean(unfinished_ratios)
 
     fig = go.Figure()
 
-    # Add histograms
     for label, ratios, color in [
         ("Finished", finished_ratios, "#2ecc71"),
         ("Unfinished", unfinished_ratios, "#e74c3c")
@@ -60,7 +57,6 @@ def create_hub_usage_ratio_plot(data: dict) -> go.Figure:
         name="Mean HUR (Unfinished)"
     ))
 
-    # Add mean values above dashed lines
     fig.add_annotation(
         x=mean_finished,
         y=8500,  # Position slightly above the maximum y value
@@ -78,7 +74,6 @@ def create_hub_usage_ratio_plot(data: dict) -> go.Figure:
         align="center"
     )
 
-    # Add layout
     fig.update_layout(
         title="Hub Usage Ratio Distribution<br><sup>Comparing finished vs unfinished paths</sup>",
         xaxis_title="Hub Usage Ratio (Top 200 Hubs in Path / Path Length)",
@@ -107,7 +102,7 @@ def create_pagerank_distribution_plot(data: dict) -> go.Figure:
     """
     # Calculate and sort PageRank scores
     scores = sorted(nx.pagerank(data["graph"]).items(), key=lambda x: x[1], reverse=True)
-    articles, values = zip(*scores)
+    _, values = zip(*scores)
 
     # Calculate statistics
     top_200_percentage = sum(values[:200]) / sum(values) * 100
@@ -138,7 +133,6 @@ def create_pagerank_distribution_plot(data: dict) -> go.Figure:
         for i, (art, score) in enumerate(scores[:5])
     )
 
-    # Layout
     fig.update_layout(
         title="PageRank Score Distribution",
         xaxis_title="Article Rank",
@@ -195,10 +189,8 @@ def generate_plot(data: dict, output_dir: Path) -> None:
     plot_gen = generality_behavior(graph_data)
     plot_gen.write_html(output_dir / "plot_gen.html", include_plotlyjs=True, full_html=True)
 
-    # Generate PageRank distribution plot
     pagerank_fig = create_pagerank_distribution_plot(data)
     pagerank_fig.write_html(output_dir / "pagerank_distribution.html", include_plotlyjs=True, full_html=True)
 
-    # Generate hub usage ratio plot
     hub_usage_fig = create_hub_usage_ratio_plot(data)
     hub_usage_fig.write_html(output_dir / "hub_usage_ratios.html", include_plotlyjs=True, full_html=True)

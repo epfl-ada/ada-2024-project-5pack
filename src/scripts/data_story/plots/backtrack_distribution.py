@@ -8,7 +8,6 @@ def compute_backtrack_statistics(data: dict) -> dict:
     finished_paths = data["paths_finished"]
     unfinished_paths = data["paths_unfinished"]
     
-    # Calculate statistics for both path types
     stats = {}
     for path_type, paths_df in [("Finished", finished_paths), ("Unfinished", unfinished_paths)]:
         paths_stats = []
@@ -33,7 +32,6 @@ def create_backtrack_analysis_plot(data: dict) -> go.Figure:
     colors = {"Finished": "#2ecc71", "Unfinished": "#e74c3c"}
     means = {}
     
-    # Add histograms for finished and unfinished paths
     for path_type in ["Finished", "Unfinished"]:
         df = stats[path_type]
         mean_ratio = df["backtrack_ratio"].mean()
@@ -94,15 +92,12 @@ def create_backtrack_analysis_plot(data: dict) -> go.Figure:
         yshift=25  # Higher than the "Finished" annotation to avoid overlap
     )
     
-    # Calculate statistics for annotations
     total_paths = len(data['paths_finished']) + len(data['paths_unfinished'])
     finished_pct = len(data['paths_finished']) / total_paths * 100
     
-    # Create x-axis ticks (regular intervals)
     tick_vals = list(np.arange(0, 0.6, 0.1))
     tick_text = [f"{x:.1f}" for x in tick_vals]
     
-    # Update layout
     fig.update_layout(
         title="Distribution of Backtrack Ratios<br><sup>Comparing finished vs unfinished paths</sup>",
         xaxis=dict(
@@ -137,7 +132,7 @@ def create_backtrack_analysis_plot(data: dict) -> go.Figure:
         margin=dict(r=300, t=100, b=100, l=100)
     )
     
-    # Add statistics box annotation
+    # Add the stats that we got from the compute_backtrack_statistics
     fig.add_annotation(
         x=1.02,
         y=0.99,
