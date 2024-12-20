@@ -107,6 +107,12 @@ This metric allows us to evaluate the degree to which players utilize hubs in th
 - A **HUR of 1.0** indicates that the player's path consists entirely of hub articles.
 - A **HUR of 0.0** indicates that no hub articles were used in the path.
 
+<div class="plot">
+  <iframe src="assets/plots/hub_usage_ratios.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+This plot shows that finished paths tend to have a higher mean Hub Usage Ratio (HUR) compared to unfinished paths, suggesting that using hubs is a key factor in successful navigation.
+
 ### Semantic navigation strategy
 
 In this strategy, the player will click on links to articles that are semantically closer to the target article.
