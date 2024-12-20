@@ -26,7 +26,7 @@ def build_comparison_df(graph_data, all_links_dict, top_hubs = 200, threshold_se
         
         path = row['path']
         time = row['duration_in_seconds']
-        click_positions = get_click_positions(pd.DataFrame({'path': [path]}), all_links_dict)
+        click_positions = get_click_positions(pd.DataFrame({'path': [path]}))
         prob = get_probability_link(click_positions)
         semantic, pval = semantic_increase_score(path, row['target'])
         max_gen = article_gen_score.loc[path].max()
@@ -52,7 +52,7 @@ def build_comparison_df(graph_data, all_links_dict, top_hubs = 200, threshold_se
     for _, row in graph_data['paths_unfinished'].iterrows():
         path = row['path']
         time = row['duration_in_seconds']
-        click_positions = get_click_positions(pd.DataFrame({'path': [path]}), all_links_dict)
+        click_positions = get_click_positions(pd.DataFrame({'path': [path]}))
         prob = get_probability_link(click_positions)
         semantic, pval = semantic_increase_score(path, row['target'])
         max_gen = article_gen_score.loc[path].max()
