@@ -164,9 +164,9 @@ The **Backtrack Strategy** aims to quantify exploratory behavior in navigation p
 
 The Backtrack Ratio (BR) is defined as:
 
-$
+$$
 BR = \frac{\text{Number of Backtrack Steps in Path}}{\text{Total Number of Steps in Path}}
-$
+$$
 
 Where:
 - **Backtrack Steps**: Moves represented by `<` in the path.
