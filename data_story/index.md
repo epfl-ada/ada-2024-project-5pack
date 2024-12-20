@@ -25,7 +25,7 @@ This leads us to study the specificities of human navigation patterns in Wikiped
   </div>
 </div>
 
-Quite naturally the network of articles reveals dominant subjects or articles in Wikispeedia. Some articles are more popular then others, thus connected to more articles. This is in adequation with humans' world model, where a topic like "Animal" would be the way more general than more specific things like "keyboard". Intuitively, players might want to pass by these articles early in their search to expand the tree of reachable articles, before diving to their target article.
+Quite naturally the network of articles reveals dominant subjects or articles in Wikispeedia. Some articles are more popular then others, thus connected to more articles. This is in adequation with humans' world model, where a topic like "Animal" would be the way more general than more specific things like "keyboard". Intuitively, players might want to pass by these articles early in their search to expand the tree of reachable articles, before diving to their target article. Using Leiden and PageRank algorithms, we determine the following important communities and articles in the network:
 
 <div id="side-by-side-plots">
   <iframe src="assets/plots/communities_graph.html" width="100%" height="550px" frameborder="0"></iframe>
