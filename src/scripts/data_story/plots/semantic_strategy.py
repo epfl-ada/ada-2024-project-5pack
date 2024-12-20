@@ -48,8 +48,7 @@ def similarity_matrix_figure():
 		for j, article2 in enumerate(articles):
 			confusion_matrix[i, j] = get_semantic_similarity(article1, article2)
 
-	# TODO Fred: Fix color scale
-	fig = ff.create_annotated_heatmap(z=np.round(confusion_matrix, 3), x=articles, y=articles, colorscale="Viridis")
+	fig = ff.create_annotated_heatmap(z=np.round(confusion_matrix, 3), x=articles, y=articles, colorscale="Sunset")
 
 	fig.update_layout(
 		title="Semantic Similarity Confusion Matrix",

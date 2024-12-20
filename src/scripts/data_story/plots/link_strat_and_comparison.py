@@ -2,7 +2,6 @@ import pandas as pd
 import plotly.express as px
 
 from src.utils.data import load_graph_data
-from src.utils.metrics import average_on_paths, pagerank
 from src.utils.strategies.comparison import build_comparison_df
 from src.utils.strategies.link_strategy import get_click_positions
 
@@ -18,14 +17,9 @@ def generate_plot(data, output_dir):
 	link_barplot = times_comparison(finished)
 	link_barplot.write_html(output_dir / "link_barplot.html", include_plotlyjs=True, full_html=True)
 
-
-
 	barplot_success, barplot_times = comparison_performance(finished, unfinished)
 	barplot_success.write_html(output_dir / "barplot_success.html", include_plotlyjs=True, full_html=True)
 	barplot_times.write_html(output_dir / "barplot_times.html", include_plotlyjs=True, full_html=True)
-
-
-
 
 
 def pie(graph_data) -> px:
@@ -46,9 +40,6 @@ def pie(graph_data) -> px:
 
 	pie_link.update_traces(texttemplate="%{percent:.1%}", textposition="inside")
 	return pie_link
-
-
-
 
 
 def times_comparison(finished):
@@ -106,7 +97,7 @@ def comparison_performance(finished, unfinished):
 	time_link = finished[finished["top_link_usage"]]["time"].mean()
 	time_semantic = finished[finished["semantic"]]["time"].mean()
 	time_maxgen = finished[finished["hub_usage"]]["time"].mean()
-	time_backtrack= finished[finished["backtrack"]]["time"].mean()
+	time_backtrack = finished[finished["backtrack"]]["time"].mean()
 
 	categories = ["Global", "Link>0.8", "Semantic>0.8", "Hub>0.8", "Backtrack>0.1"]
 
@@ -120,7 +111,7 @@ def comparison_performance(finished, unfinished):
 		title="Success Rates Comparison",
 		labels={"Success Rate": "Success Rate"},
 		color="Category",
-		color_discrete_sequence=px.colors.sequential.Plasma,
+		color_discrete_sequence=px.colors.qualitative.Plotly,
 	)
 
 	avg_times = [global_avg_time, time_link, time_semantic, time_maxgen, time_backtrack]
@@ -133,7 +124,7 @@ def comparison_performance(finished, unfinished):
 		title="Average time (Finished Only)",
 		labels={"Average time (seconds)": "Average time (seconds)"},
 		color="Category",
-		color_discrete_sequence=px.colors.sequential.Viridis,
+		color_discrete_sequence=px.colors.qualitative.Plotly,
 	)
 
 	return barplot_success, barplot_times
