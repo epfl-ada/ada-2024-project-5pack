@@ -9,7 +9,7 @@ In the Wikispeedia game players are tasked to rapidly navigate from one article 
 
 ## Introduction
 
-This research is based on a dataset collected in the context of [Wikispeedia](https://dlab.epfl.ch/wikispeedia/play/){:target="_blank"}, a game where players are tasked to reach one article from another only using hyperlinks on a subset of Wikipedia. A quick analysis shows that humans are not optimal, as they usually take paths longers than the shortest paths, as they visit on average **x2.4** more articles than needed.
+This research is based on a dataset collected in the context of [Wikispeedia](https://dlab.epfl.ch/wikispeedia/play/){:target="_blank"}, a game where players are tasked to reach one article from another only using hyperlinks on a subset of Wikipedia. A quick analysis shows that humans are not optimal, as they usually take paths longer than the shortest paths, as they visit on average **x2.4** more articles than needed.
 
 <div class="plot">
   <iframe src="assets/plots/game_stats_intro.html" width="100%" height="550px" frameborder="0"></iframe>
@@ -25,7 +25,7 @@ This leads us to study the specificities of human navigation patterns in Wikiped
   </div>
 </div>
 
-Quite naturally the network of articles reveals dominant subjects or articles in Wikispeedia.
+Quite naturally the network of articles reveals dominant subjects or articles in Wikispeedia. Some articles are more popular then others, thus connected to more articles. This is in adequation with humans' world model, where a topic like "Animal" would be the way more general than more specific things like "keyboard". Intuitively, players might want to pass by these articles early in their search to expand the tree of reachable articles, before diving to their target article. Using Leiden and PageRank algorithms, we determine the following important communities and articles in the network:
 
 <div id="side-by-side-plots">
   <iframe src="assets/plots/communities_graph.html" width="100%" height="550px" frameborder="0"></iframe>
@@ -42,7 +42,7 @@ Quite naturally the network of articles reveals dominant subjects or articles in
           <tr><td>United States</td><td>0.032</td></tr>
           <tr><td>Europe</td><td>0.014</td></tr>
           <tr><td>United Kingdom</td><td>0.014</td></tr>
-          <tr><td>England</td><td>0.0112</td></tr>
+          <tr><td>England</td><td>0.012</td></tr>
           <tr><td>Africa</td><td>0.009</td></tr>
           <tr><td>Earth</td><td>0.008</td></tr>
           <tr><td>World War II</td><td>0.008</td></tr>
@@ -51,7 +51,7 @@ Quite naturally the network of articles reveals dominant subjects or articles in
   </div>
 </div>
 
-The next community is **Computer Science 🤖** with only 124 articles.
+The next community is **Computer Science 🤖** with only 124 articles, far from the previous communities of articles. As seen above, main articles are linked to the main communities of articles, which makes sense as articles flourish around these subjects in the Wikispeedia and Wikipedia network.
 
 ### Game Data
 The Wikispeedia dataset contains games of Wikispeedia. In this game, a player is given a pair of two articles present on the website, and his goal is to go from the first to the second article by taking hyperlinks on Wikispeedia. The dataset contains paths taken by the players for different games and players and their overall time.
@@ -65,20 +65,22 @@ Done in 56 seconds as follows
     <div>Abraham Lincoln</div>
 </div>
 
-{network analysis: fred, debut Peter (stats generales)}
+Importantly, we have access to both finished paths (i.e. when the target was reached, with the corresponding time) and unfinished paths. It is important to consider the latter to avoid survival bias as they also contain relevant information about the difficulty of paths and success measures of different game strategies.
 
 ## Players' strategies
+
+We analyze here the different strategies of the players found from this dataset, understand their impact on the game results, and explain the efficiency of different strategy profiles for different kind of (source, target) pairs.
 
 ### Hub-focused strategy
 
 In this strategy, we hypothesize that players navigate through "hub" articles - highly connected articles that serve as navigation landmarks in the Wikspeedia network. To identify these hubs, we use **PageRank**, which ranks articles based on their centrality and importance in the network. Thus, using this strategy, players can access a broad set of connections and navigate closer to the target. We then analyze whether players tend to use these hub articles in their successful navigation paths.
-To see that there is a clear pattern of paths going through general articles, we analyze the behavior for an average path. In the following graph, we compute the article generality (a measure of how much an article is central, proportional to its pagerank score) and plot this metric averaged on all paths.
+To see that there is a clear pattern of paths going through general articles, we analyze the behavior for an average path.
 
 <div class="plot">
   <iframe src="assets/plots/plot_gen.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more direct links between the source and target (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
+It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However, players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more links between the source and target, and that is generally how the shortest paths are formed in the network (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
 
 
 <div class="plot">
@@ -124,15 +126,15 @@ We will do the following steps to answer that question:
 2. Compute the cosine similarity between two embeddings to assess how similar two articles are.
 3. Verify whether the semantic similarity increases as players progress along their path. 
 
-To do the last step, we use Spearman's rank correlation, which evaluates how well the order of semantic similarity aligns with a strictly increasing sequence. The correlation score ranges from -1 to 1, with 1 indicating a perfect monotonic increase in similarity. We will refer to this score as the semantic_increase_score (SIS).p
+To do the last step, we use Spearman's rank correlation, which evaluates how well the order of semantic similarity aligns with a strictly increasing sequence. The correlation score ranges from -1 to 1, with 1 indicating a perfect monotonic increase in similarity. We will refer to this score as the semantic_increase_score (SIS).
 
-For instance computing the TF-IDF matrix will give us the following similarities for the top 5 articles:
+For instance computing the TF-IDF matrix will give us the following similarities for a given set of 5 articles:
 
 <div class="plot">
   <iframe src="assets/plots/similarity_matrix.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-Using this similarity matrix, we can compute how the similarity evolves as players progress along their path
+Similarly, we can compute how the similarity evolves as players progress along their path.
 
 <div class="plot">
   <iframe src="assets/plots/semantic_path_example.html" width="100%" height="550px" frameborder="0"></iframe>
@@ -143,7 +145,6 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 
 ### Link strategy
 
-
 Since time is the determining winning factor of the game, we consider a strategy to be to click among the first links of the page. We extract the links order from their position in the files, then we check if this strategy appears to be used by players of the game.
 
 Since a significant portion of the clicks are among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly by players, who probably don't have time to read through the whole page.
@@ -153,7 +154,7 @@ Since a significant portion of the clicks are among the top links of the page (w
 </div>
 
 
-We now compare players using this strategy consistently (i.e. making a significant amount of clicks on the top links) are performing better or worse than average. We compare the average completion time of 3 group of paths depending on the proportion of top clicks they have.
+We now compare players using this strategy consistently (i.e. making a significant amount of clicks on the top links), to see if they are performing better or worse than average. We compare the average completion time of 3 group of paths depending on the proportion of top clicks they have.
 
 <div class="plot">
   <iframe src="assets/plots/link_barplot.html" width="100%" height="550px" frameborder="0"></iframe>
@@ -207,12 +208,7 @@ The link strategy appears to have the shortest times while the semantic strategy
 
 ### Causal Analysis
 
-[TODO: Define what is winning a game]
-[TODO: Improve images below]
-
-To figure out which strategy is the best, we need a solid metric to measure how well a strategy performs. A straightforward way to do this is to calculate the **average game time** when a strategy is used. We can then compare this number to the overall average game time to see if the strategy is effective.
-
-However, this simple approach might lead to misleading results because of—you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
+An important consideration in our initial comparison of strategies using metrics like success rate and completion time might lead to misleading results because of —you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
 
 <div style="text-align:center;">
   <img src="assets/images/confounding1.png" alt="Diagram of current situation" style="width:80%;">
@@ -234,7 +230,7 @@ Here’s why: Imagine the very isolated article "Black Robin" 🐦‍⬛.
 
 Therefore, in the subsequent analysis, all metrics are calculated with the confounding variable carefully accounted for.
 
-### Regression Analysis [TODO: Make sure the formula display nice, Make sure the summary is correct, Make sure numbers are correct, remove outliers]
+### Regression Analysis
 
 Now, let's actually start analyzing the strategies performance.
 
@@ -324,7 +320,7 @@ Planet > Sun
 Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar System > Sun 
 ```
 <div class="plot">
-  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1000px" frameborder="0"></iframe>
+  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1040px" frameborder="0"></iframe>
 </div>
 
 <div class="__vue-root player"></div>
