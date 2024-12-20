@@ -36,8 +36,8 @@ def generate_all_plots() -> None:
 		semantic_plot,
 		regression_plot,
 		hubs_plot,
-		link_strat,
 		backtrack_plot,
+		link_strat,
 	]
 
 	for plot_module in plot_modules:
