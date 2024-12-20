@@ -229,6 +229,60 @@ Here’s why: Imagine the very isolated article "Black Robin" 🐦‍⬛.
 
 Therefore, in the subsequent analysis, all metrics are calculated with the confounding variable carefully accounted for.
 
+### Regression Analysis [TODO: Make sure the formula display nice, Make sure the summary is correct, Make sure numbers are correct, remove outliers]
+
+Now, let's actually start analyzing the strategies performance.
+
+To do that, we will use regression analysis. While using OLS might sounds tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
+
+Let's take a look at that equation:
+$$
+\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{hub_usage_ratio}_{ij} + \beta_2 \cdot \text{backtrack_ratio}_{ij} + \beta_3 \cdot \text{top_link_usage_ratio}_{ij} + \beta_4 \cdot \text{semantic_increase_score}_{ij} + u_{i} + \epsilon
+$$
+
+Where, for a given path $j$ ending at target $i$:
+- $\beta_0$ is the fixed intercept, representing the average game time when all predictors are zero.
+- $\beta_1, \beta_2, \beta_3, \beta_4$: Fixed effects for the strategies. These coefficients measure the global effectiveness of each strategy.
+- $u_i$: The random effect for the i-th target, capturing the difficulty of reaching that target.
+- $\epsilon_{ij}$: Residual error term.
+
+Great! Now let us look at the results:
+
+```
+              Mixed Linear Model Regression Results
+=================================================================
+Model:            MixedLM Dependent Variable: duration_in_seconds
+No. Observations: 50509   Method:             REML               
+No. Groups:       3324    Scale:              125535.8397        
+Min. group size:  1       Log-Likelihood:     -368549.1586       
+Max. group size:  1134    Converged:          Yes                
+Mean group size:  15.2                                           
+-----------------------------------------------------------------
+                 Coef.   Std.Err.    z    P>|z|  [0.025   0.975] 
+-----------------------------------------------------------------
+Intercept        254.881    6.813  37.408 0.000  241.527  268.235
+sis             -116.706    6.532 -17.867 0.000 -129.509 -103.904
+hub_ratio        -34.216    8.971  -3.814 0.000  -51.799  -16.633
+backtrack_ratio  666.752   21.531  30.968 0.000  624.553  708.951
+Group Var       2601.550    1.119                                
+=================================================================
+```
+
+Let's analyze those results:
+- $\beta_4 = 116.7$: The coefficient for the semantic increase score (SIS) suggests that having a semantic increase score of 1 decreases the average game completion time by 116.7 seconds. That’s an impressive reduction!
+- $\beta_1 = -34.2$: A high hub usage ratio also decreases completion time, but to a lesser extent compared to SIS
+- $\beta_2 = 666.8$: Backtracking, on the other hand, has a significant negative impact, increasing the average game time by 666.8 seconds for a backtracking ratio of 1. This number makes sense in some ways as a game with a backtracking ration of 1 will never finish in theory.
+
+Furthermore, all of the p-values are 0 which is great news as this indicate that the results are statistically significant.
+
+[TODO: Insert plot]
+
+Another advantage of the Mixed Linear Model is that it allows us to extract the random effect term for each target. This term captures how difficult it is to reach a particular target, independent of the strategies used.
+
+[TODO: Insert Plot]
+
+For instance, the target article with the highest random effect is the US, with a random effect of -50, which indicates that games ending at US takes on average 50 seconds less than the average game time.
+
 [TODO Gabriel]
 
 {analyse du shortest path}
