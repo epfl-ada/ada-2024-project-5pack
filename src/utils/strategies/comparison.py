@@ -39,6 +39,9 @@ def get_strategies_scores() -> pd.DataFrame:
 
 
 def get_normalized_strategies_scores() -> pd.DataFrame:
+	"""
+	Same as get_strategies_scores(), but the scores and ratios are normalized using z-score normalization
+    """
 	paths_scores = get_strategies_scores
 
 	# Normalize the scores using z-score normalization
