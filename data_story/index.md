@@ -158,7 +158,7 @@ So clicking on the top links seems to be decreasing completion time.
 
 
 
-### Exploratory strategy
+### Backtrack strategy
 
 The **Backtrack Strategy** aims to quantify exploratory behavior in navigation paths by analyzing how frequently players revisit previously visited nodes (backtracking). This behavior is measured using the **Backtrack Ratio (BR)**.
 
