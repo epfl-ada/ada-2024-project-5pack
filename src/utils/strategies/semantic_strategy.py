@@ -78,7 +78,7 @@ def get_semantic_similarities(path: list[str], target_article: str) -> list[floa
 	return similarities
 
 
-def semantic_increase_score(path: list[str], target_article: str) -> tuple[float, float]:
+def semantic_increase_score(path: list[str], target_article: str = None) -> float | None:
 	"""Compute the Semantic Increase Score (SIS) for a given path of articles relative to a target article.
 
 	The SIS quantifies how well the similarity to the target article increases as players progress
@@ -92,22 +92,21 @@ def semantic_increase_score(path: list[str], target_article: str) -> tuple[float
 
 	Args:
 		path (list[str]): A list of article names representing the player's navigation path.
-		target_article (str): The name of the target article.
+		target_article (str): The name of the target article. If None, the last article of the path is
+	                      considered the target article
 
 	Returns:
 		float: The SIS score
-		float: p-value indicating the significance of the correlation.
-	"""
-	# Compute the similarity score of each article in the path with the target article
-	try:
-		similarities = get_semantic_similarities(path, target_article)
-	except KeyError:
-		print(f"Warning: {target_article} was not found in the list of documents")
-		return (-1, 1)
 
+	"""
+	if target_article is None:
+		target_article = path[-1]
+
+	# Compute the similarity score of each article in the path with the target article
+	similarities = get_semantic_similarities(path, target_article)
 	if len(similarities) <= 1:
-		return (-1, 1)  # Ignore paths of small lengths as they are not statistically significant
+		return 1  # Paths with one article have an SIS score of 1
 
 	# Return the semantic increase score
 	correlation, p_value = spearmanr(range(len(similarities)), similarities)
-	return correlation, p_value
+	return correlation
