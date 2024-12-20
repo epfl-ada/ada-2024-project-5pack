@@ -56,41 +56,43 @@ We evaluate the performance of navigation strategies by analyzing:
 
 To quantify and isolate the effects of navigation strategies, we use a **Mixed Linear Model (MLM)** that accounts for confounding variables, such as target article difficulty. The MLM is defined as:
 
-$GameTime_{ij} = \beta_0 + \beta_1 \cdot SIS_{ij} + \beta_2 \cdot TopLinksRatio_{ij} + \beta_3 \cdot HUR_{ij} + \beta_4 \cdot BR_{ij} + u_i + \epsilon_{ij}$
+$GameTime_{ij} = \beta_0 + \beta_1 \cdot SIS_{ij} + \beta_2 \cdot TopLinksRatio_{ij} + \beta_3 \cdot HUR_{ij} + \beta_4 \cdot BR_{ij} + interaction terms + u_i + \epsilon_{ij}$
 
 Where:
 
 - $\beta_0$ is the intercept (baseline completion time).
 - $\beta_1, \beta_2, \beta_3, \beta_4$ are coefficients representing the global effects of the strategies.
+- ***Interaction terms***: Statistically significant interactions (e.g., $\text{SIS} \times \text{HUR}$) are identified through backward selection to evaluate how strategies influence each other.
 - $u_i$ captures random effects (e.g., difficulty of the target article).
 - $\epsilon_{ij}$ represents the residual error.
 
-This model allows us to:
+We use backward selection in our regression analysis to identify significant predictors and ensure that the strategies we include in the model are not highly correlated, allowing us to isolate the independent effects of each strategy on game performance.
+
+Thus, this model allows us to:
 
 - Compare strategy effectiveness while controlling for game difficulty.
 - Quantify the impact of individual strategies on navigation success and efficiency.
 
 ## Timeline
 
-Week 1: Strategy metric implementation and initial analysis
+Week 1: Prepare the dataset, set up the workflow, and implement strategy metrics.
 
-Week 2: Statistical analysis and strategy comparison
+Week 2: Perform network analysis, generate initial statistics, and compare strategies.
 
-Week 3: Difference in performance and visualization
+Week 3: Refine visualizations and develop the data story framework.
 
-Week 4: Data story development and website preparation
+Week 4: Conduct causal analysis, build the mixed linear model, and apply backward selection.
 
-Week 5: Regression Analysis, redaction and final plottings
+Week 5: Finalize regression analysis, polish the report, and complete visualizations.
 
 ## Organization
 
-- Strategy Implementation & Analysis:
-  - Hub Strategy & Backtrack Strategy (Peter)
-  - Shortest paths Analysis + initial statistics (Gabriel)
-  - Link Position Stratgy, discussion on best strategy (Timothée)
-  - Causal/Regression Analysis & Semantic Strategy (Frédéric)
-  - Introduction, website setup/workflow, code organization & initial plotting (Antoine)
-  - Performance Metrics & most visualization (Team)
+- Peter: Problem formulation, Implementing and analyzing the Hub Strategy and Backtrack Strategy, refining methodologies, writing the conclusion and coding up the algorithms.
+- Gabriel: Conducting shortest path analysis, generating initial statistics, analyzing the connectivity of articles and assisting in evaluating article centrality metrics such as PageRank
+- Timothée: Implementing the Link Position Strategy and contributing to discussions on identifying the best strategy and coding up the algorithms.
+- Frédéric: Performing Causal/Regression with backward selection Analysis, implementing the Semantic Strategy and coding up the algorithms.
+- Antoine: Writing the introduction, setting up the website and workflow, implementing backward selection in regression analysis, and creating JavaScript-based regression plots.
+- Team: Defining performance metrics, producing most visualizations, and collaboratively writing the final report and data story.
 
 ## Quickstart for the project
 
