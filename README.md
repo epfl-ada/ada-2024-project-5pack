@@ -16,7 +16,7 @@ The Wikispeedia game challenges players to navigate from one Wikipedia article t
   - **Hub-based navigation**: Relying on high-PageRank nodes.
   - **Semantic guidance**: Choosing links that are semantically closer to the target.
   - **Link positioning**: Clicking on top-ranked hyperlinks within the page.
-- How does **backtracking behavior** correlate with success or failure in navigation?
+  - **backtracking behavior**: Going back to previous articles, more streamlined or exploratory path.
 
 ### 3. How can navigation strategies be quantified and evaluated?
 - Can we model the effectiveness of strategies using regression analysis to account for **confounding variables** like target difficulty?
@@ -56,9 +56,9 @@ We evaluate the performance of navigation strategies by analyzing:
 
 To quantify and isolate the effects of navigation strategies, we use a **Mixed Linear Model (MLM)** that accounts for confounding variables, such as target article difficulty. The MLM is defined as:
 
-$$
+$
 \text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{SIS}_{ij} + \beta_2 \cdot \text{Top Links Ratio}_{ij} + \beta_3 \cdot \text{HUR}_{ij} + \beta_4 \cdot \text{BR}_{ij} + u_i + \epsilon_{ij}
-$$
+$
 
 Where:
 
