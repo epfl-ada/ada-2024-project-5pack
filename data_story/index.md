@@ -72,13 +72,13 @@ Done in 56 seconds as follows
 ### Hub-focused strategy
 
 In this strategy, we hypothesize that players navigate through "hub" articles - highly connected articles that serve as navigation landmarks in the Wikspeedia network. To identify these hubs, we use **PageRank**, which ranks articles based on their centrality and importance in the network. Thus, using this strategy, players can access a broad set of connections and navigate closer to the target. We then analyze whether players tend to use these hub articles in their successful navigation paths.
-To see that there is a clear pattern of paths going through general articles, we analyze the behavior for an average path.
+To see that there is a clear pattern of paths going through general articles, we analyze the behavior for an average path. In the following graph, we compute the article generality (a measure of how much an article is central, proportional to its pagerank score) and plot this metric averaged on all paths.
 
 <div class="plot">
   <iframe src="assets/plots/plot_gen.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more links between the source and target (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
+It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more direct links between the source and target (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
 
 
 <div class="plot">
@@ -143,11 +143,10 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 
 ### Link strategy
 
-[Timothee]
 
 Since time is the determining winning factor of the game, we consider a strategy to be to click among the first links of the page. We extract the links order from their position in the files, then we check if this strategy appears to be used by players of the game.
 
-Since a significant portion of the clicks are among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly among players who don't have the time to read through the whole page.
+Since a significant portion of the clicks are among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly by players, who probably don't have time to read through the whole page.
 
 <div class="plot">
   <iframe src="assets/plots/pie_top_clicks.html" width="100%" height="550px" frameborder="0"></iframe>
@@ -204,7 +203,7 @@ To measure the strengths of each strategies, we will be comparing 2 metrics : su
   <iframe src="assets/plots/barplot_times.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-The link strategy appears to have the shortest times while the semantic strategy has the best success rate. The hub strategy underperforms both of these strategies and also the average path, signaling that this strategy might be too naive and be used when players don't have a specific plan in mind.
+The link strategy appears to have the shortest times while the semantic strategy has the best success rate. Backtracking is increasing the time significantly, which makes sense because returning from an article takes time. We also note that while going through the most important hubs is associated with lower completion time, it is also associated with lower success rates. This is maybe because this strategy is also used by players who don't have a specific goal in mind and are trying to go to articles that they are familiar with.
 
 ### Causal Analysis
 
