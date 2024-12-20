@@ -292,10 +292,34 @@ For instance, the target article with the highest random effect is _Cultural Div
 
 [TODO Gabriel]
 
+We have measured the efficiency of strategies in terms of completion time and in terms of path length.
+
+We will now measure them considering the length of the path.
+This metric has the advantage that we are allowed to **explode** the games to multiply our datapoints and 
+improve the statistical significance of our results.
+To explain what we mean by exploding the paths, let's consider the following game:
+No, actually let's consider this other game:
+
+```
+Global warming > Greenhouse effect > Planet > Sun
+```
+Indeed, everytime thee player clicks on a new article, the player then starts to look for ways to reach
+the target from the new article, which effectively means that it is playing a game from the current article
+to the target.
+Thus, we can **explode** the previous game into three different games:
+```
+Global warming > Greenhouse effect > Planet > Sun
+Greenhouse effect > Planet > Sun
+Planet > Sun
+```
+
 {analyse du shortest path}
 {déterminer les stratégies qui correspondent}
+```
+Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar System > Sun 
+```
 <div class="plot">
-  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="620px" frameborder="0"></iframe>
+  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1000px" frameborder="0"></iframe>
 </div>
 
 <div class="__vue-root player"></div>

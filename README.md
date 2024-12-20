@@ -1,89 +1,96 @@
-# Information Pursuit: A Wikispeedia Analysis
+# Are We Playing Wikispeedia All Wrong?
 Team *5Pack* - Applied Data Analysis 2024 EPFL
 
-**Abstract**
-The Wikispeedia project explores human navigation patterns within a simplified Wikipedia network, analyzing how players find paths between articles using only hyperlinks. With a dataset of over 75,000 gameplay paths (51,000 completed, 25,000 abandoned), we aim to uncover the strategies players employ when navigating this knowledge network. Our analysis focuses on identifying navigation patterns, such as the use of hub articles and hierarchical thinking (e.g., moving from specific to general categories), and investigating how link positioning within articles influences player choices. By combining network analysis with behavioral data, we seek to understand what makes certain paths more challenging than others and how players' internal mental models of knowledge organization affect their navigation strategies. This research could provide insights into human information seeking behavior and potentially improve website navigation design.
+## Abstract
+The Wikispeedia game challenges players to navigate from one Wikipedia article to another using only hyperlinks. Through analysis of over 75,000 gameplay paths (51,000 completed, 25,000 abandoned), we investigate what makes a successful navigation strategy. Our findings show that players typically take paths 2.4 times longer than optimal, suggesting significant room for improvement in navigation strategies. We analyze several key strategies including hub-based navigation, semantic-guided choices, and backtracking patterns to determine their effectiveness. By combining network analysis with player behavior data, we aim to uncover what distinguishes successful navigation attempts from failures and provide insights into optimal playing strategies.
 
 ## Research Questions
 
-1. To what extent do players rely on their world mental model in their navigation?
-   - Are certain types of hubs (e.g., geographical, temporal, categorical) more frequently used?
-   - How does hub usage correlate with success rates?
+### 1. How does the network structure impact navigation behavior?
+- What role do **hub articles** play in guiding players’ navigation? Are hubs central to successful paths?
+- Do players exhibit **hierarchical navigation patterns**, moving from specific to general topics before narrowing down to the target?
+- How does the **connectivity of articles** (e.g., isolated articles or low in-degree nodes) contribute to game difficulty?
 
-2. What impacts the most the success rates of the players?
-   - How do player-chosen paths compare to shortest possible paths?
-   - What factors correlate with players abandoning their search?
-   - Is there a relationship between path length and completion time?
+### 2. Which navigation strategies improve success rates?
+- How effective are the following strategies:
+  - **Hub-based navigation**: Relying on high-PageRank nodes.
+  - **Semantic guidance**: Choosing links that are semantically closer to the target.
+  - **Link positioning**: Clicking on top-ranked hyperlinks within the page.
+  - **backtracking behavior**: Going back to previous articles, more streamlined or exploratory path.
 
-3. What common strategies distinguish humans from optimal paths?
-   - Do players show evidence of hierarchical navigation (e.g., specific → general → specific)?
-   - How does the position of links within articles affect player choices?
-   - Can we identify common patterns in successful vs. unsuccessful navigation attempts?
-   - How diverse are the paths chosen for the same source-target pairs?
+### 3. How can navigation strategies be quantified and evaluated?
+- Can we model the effectiveness of strategies using regression analysis to account for **confounding variables** like target difficulty?
+- How do random effects (e.g., target article difficulty) influence the success of navigation strategies?
 
 ## Additional Datasets
-
-For this project, no additonal external dataset is required.
-However, we do plan to work with LLMs in order to generate some data as needed. This is particularly handy for repetitive labeling work based on human knowledge. This is something we explore in order to understand what could drive users to prefer some hyperlinks to some others.
-
-In `src/utils/llm.py` you will find that we successfully managed to setup the environment and can retrieve next token prediction distributions. One usage example is the automatic labelling of pairs of articles to bucket them in four distinct categories. This work is externalized from the core library in `src/scripts/generate_pairs_category.py` for efficiency reasons, as it still take quite some time to generate the data.
+No additional external datasets required. We leverage network analysis tools (NetworkX for PageRank, centrality measures) and natural language processing techniques (TF-IDF for semantic analysis) to extract insights from the existing Wikispeedia dataset.
 
 ## Methods
 
-1. Data Preprocessing and Network Analysis
-   - Construct directed graph representation of the Wikispeedia website
-   - Compute network metrics (centrality measures, clustering coefficients) to identify hubs
-   - Extract link positions from HTML source code
-   - We identified many of the tools we will use from NetworkX (page rank, HITS algorithm...) and lxml
+### 1. Strategy Analysis Framework
 
-2. Path Analysis
-   - Develop metrics for path "efficiency" considering both length and completion time
-   - Analyze distribution of successful vs. abandoned paths, and determine the most statistically significant features
-   - At this step with plan to use ANOVA for Linear Models or Generalized Linear Models
+To evaluate player navigation behavior, we focus on four core strategies:
 
-3. Player Strategy Analysis
-   - Implement algorithms to detect hierarchical navigation patterns
-   - Analyze correlation between link positions and player choices
-   - Develop metrics for path similarity to identify common strategies
-   - Create heatmaps of most traversed edges/nodes
-   - Use clustering algorithms to identify distinct navigation strategies
-   - Subgames extraction already done through the analysis of paths
-     (which we use/compare with actual games and determine interesting insights from)
+- **Hub Strategy**: Analyze the extent to which players rely on high-PageRank articles (hub nodes) as navigation landmarks. These hubs represent highly connected and influential articles in the Wikipedia network.
+- **Semantic Strategy**: Measure the semantic similarity between articles using TF-IDF embeddings and cosine similarity. This assesses whether players select links that progressively move closer in meaning to the target.
+- **Link Position Strategy**: Investigate whether players prioritize clicking on links located at the top of the page and the impact of this behavior on navigation efficiency.
+- **Backtracking Analysis**: Quantify exploratory behavior by analyzing the frequency and impact of revisiting previously visited articles. This behavior is captured using the **Backtrack Ratio**.
 
-\
-**Note:** at the beginning we had the idea of analyzing data related to the time players spend on different articles during in their paths. It would have provided additional interesting insights about how they play, the potential impact of time-pressure, etc. However, this information is not present in the original dataset, so we dropped this idea but note that it could have given us some additional perspectives on human navigation patterns.
+### 2. Performance Metrics
 
-## Proposed timeline
+To measure the effectiveness of these strategies, we employ the following metrics:
 
-There are five weeks between the deadline of the Milestone 2 and the final deadline of the project.
+- **Hub Usage Ratio (HUR)**: The proportion of high-PageRank articles in a navigation path.
+- **Semantic Increase Score (SIS)**: Spearman’s rank correlation to quantify whether semantic similarity increases as players approach the target.
+- **Top Links Click Ratio**: The proportion of clicks on top-ranked hyperlinks within articles.
+- **Backtrack Ratio (BR)**: The ratio of backtracking steps to total steps in a path.
 
-Details are subject to some changes, but as of today this is how we plan to organize our timeline, starting from next week:
+### 3. Comparative Analysis
 
-Week 1: Further development of the initial exploratory work
+We evaluate the performance of navigation strategies by analyzing:
 
-Explore more deeply new ideas that came from the initial analysis performed for the Milestone 2. One example of this could be the use of spectral graph theory to complement our understanding of the extracted Wikispeedia graph.
+- **Success Rates**: The proportion of completed paths for each strategy.
+- **Completion Times**: The average time taken to complete a path under each strategy.
 
-Week 2: Brainstorming of the first findings
+### 4. Regression Analysis
 
-The second week will be used to brainstorm about our results so far. As an important point of research in general, we might adapt our schedule/direction depending on the results that we are getting. Especially here, taking a step back and estimating whether, a priory, our intuitions were right, will allow us to smoothly change the details of the main sections already determined by Milestone 2.
+To quantify and isolate the effects of navigation strategies, we use a **Mixed Linear Model (MLM)** that accounts for confounding variables, such as target article difficulty. The MLM is defined as:
 
-Week 3: Selection of the main points of focus
+$\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{SIS}_{ij} + \beta_2 \cdot \text{Top Links Ratio}_{ij} + \beta_3 \cdot \text{HUR}_{ij} + \beta_4 \cdot \text{BR}_{ij} + u_i + \epsilon_{ij}$
 
-From this week onwards, we will be hardly slowing down the exploratory phase of the project. We anticipate to have enough directions already explored to start pruning our ideas/results and select the most promising/relevant ones. This will help us make sure that we build a coherent progression from the introduction of the project to the conclusion, answer the research questions we highlighted above.
+Where:
 
-Week 4: Preparation of the data story
+- $\beta_0$ is the intercept (baseline completion time).
+- $\beta_1, \beta_2, \beta_3, \beta_4$ are coefficients representing the global effects of the strategies.
+- $u_i$ captures random effects (e.g., difficulty of the target article).
+- $\epsilon_{ij}$ represents the residual error.
 
-Finalize the main notebook and the analysis to focus on the coherence of the story we want to tell.
-Start choosing the most important visualizations we want to highlight and start preparing the website (using ADA Template or Jekyll).
+This model allows us to:
 
-Week 5: Finalization of the project
+- Compare strategy effectiveness while controlling for game difficulty.
+- Quantify the impact of individual strategies on navigation success and efficiency.
 
-Remove any temporary code from GitHub and finalize the data story website on GitHub pages.
-This will leave us with some extra time to review parts we were not able to anticipate.
+## Timeline
 
-## Organization within the team
+Week 1: Strategy metric implementation and initial analysis
 
-Most of the content of the project will be put on this repository, apart from some files that help us in our meetings that we keep externally. One notebook keeps the sole purpose of being the general presentation and summary of the project (`analysis.ipynb`). Because of the way the notebooks are encoded, it is not straightforward to share notebooks between us via GitHub when working on our individual tasks. For this reason, the library is maintained and developed by all the team, but we decided to also work on individual notebooks, pushed to GitHub if needed.
+Week 2: Statistical analysis and strategy comparison
+
+Week 3: Difference in performance and visualization
+
+Week 4: Data story development and website preparation
+
+Week 5: Regression Analysis, redaction and final plottings
+
+## Organization
+
+- Strategy Implementation & Analysis:
+  - Hub Strategy & Backtrack Strategy (Peter)
+  - Shortest paths Analysis + initial statistics (Gabriel)
+  - Link Position Stratgy, discussion on best strategy (Timothée)
+  - Causal/Regression Analysis & Semantic Strategy (Frédéric)
+  - Introduction, website setup/workflow, code organization & initial plotting (Antoine)
+  - Performance Metrics & most visualization (Team)
 
 ## Quickstart for the project
 
@@ -131,10 +138,9 @@ The directory structure of new project looks like this:
 ├── data                        <- Project data files
 │
 ├── src                         <- Source code
-│   ├── data                            <- Data directory
-│   ├── models                          <- Model directory
-│   ├── utils                           <- Utility directory
-│   └── scripts                         <- Shell scripts
+│   ├── models                          <- Model directory (Unused)
+│   ├── utils                           <- Utility directory contains all the strategies=
+│   └── scripts                         <- Shell scripts + plotting
 │
 ├── tests                       <- Tests of any kind
 │
@@ -142,7 +148,9 @@ The directory structure of new project looks like this:
 │
 ├── .gitignore                  <- List of files ignored by git
 ├── .pyproject.toml             <- Configuration file for Poetry
-└── README.md
+├── README.md
+├── setup_website_**.sh         <- Used to install dependencies for website setup
+└── WEBSITE_SETUP.md            <- How to setup the website and get the plots locally
 ```
 
 \

@@ -212,6 +212,7 @@ def load_graph_data(top_n=200) -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDAr
 	)
 
 	# The following piece of code is used to create our success metric for the path strategies
+	logger.info("computing median duration by target...")
 	finished_paths = graph_data["paths_finished"].copy()
 	unfinished_paths = graph_data["paths_unfinished"].copy()
 
@@ -230,6 +231,7 @@ def load_graph_data(top_n=200) -> dict[str, nx.DiGraph | pd.DataFrame | npt.NDAr
 	graph_data["target_median_duration"] = median_duration_df
 
 	# The folowing piece of code is used in the hub_focused strategy to calculate the hub usage ratio
+	logger.info("computing page rank...")
 	pagerank_scores = nx.pagerank(graph_data["graph"])
 	graph_data[f"top_{top_n}_hubs"] = sorted(pagerank_scores.items(), key=lambda x: x[1], reverse=True)[:top_n]
 
