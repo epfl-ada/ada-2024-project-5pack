@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.express as px
 
-from src.utils.data_utils import load_graph_data
+from src.utils.data import load_graph_data
 from src.utils.metrics import average_on_paths, pagerank
 from src.utils.strategies.comparison import build_comparison_df
 from src.utils.strategies.link_strategy import build_link_order, get_click_positions
