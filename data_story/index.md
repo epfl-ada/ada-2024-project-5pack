@@ -144,9 +144,9 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 
 ### Link strategy
 
-Since time is the determining winning factor of the game, we consider a strategy to be to click among the first links of the page. We extract the links order from their position in the files, then we check if this strategy appears to be used by players of the game.
+Since achieving a short time is the goal of the game, we consider a strategy that involves clicking on the first few links on the page. We extract the order of the links based on their positions in the files and then check whether this strategy is being used by the game's players.
 
-Since a significant portion of the clicks are among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly by players, who probably don't have time to read through the whole page.
+Since a significant portion of the clicks is among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly by players, who probably don't have time to read through the entire page.
 
 <div class="plot">
   <iframe src="assets/plots/pie_top_clicks.html" width="100%" height="550px" frameborder="0"></iframe>
