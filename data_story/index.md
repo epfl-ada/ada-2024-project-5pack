@@ -80,7 +80,7 @@ To see that there is a clear pattern of paths going through general articles, we
   <iframe src="assets/plots/plot_gen.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-We define the generality score as the pageRank score of that article over the max pageRank score across all articles. It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However, players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more links between the source and target, and that is generally how the shortest paths are formed in the network (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
+We define the generality score as the pageRank score of that article over the max pageRank score across all articles. It appears that paths follow a pattern as (specific -> general -> specific). This strategy appears very natural as we expect general articles to have more links. However, players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more specific links between the source and target (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity. While the first path goes through a hub (Physics), the second doesn't).
 
 
 <div class="plot">
@@ -144,9 +144,9 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 
 ### Link strategy
 
-Since time is the determining winning factor of the game, we consider a strategy to be to click among the first links of the page. We extract the links order from their position in the files, then we check if this strategy appears to be used by players of the game.
+Since achieving a short time is the goal of the game, we consider a strategy that involves clicking on the first few links on the page. We extract the order of the links based on their positions in the files and then check whether this strategy is being used by the game's players.
 
-Since a significant portion of the clicks are among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly by players, who probably don't have time to read through the whole page.
+Since a significant portion of the clicks is among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly by players, who probably don't have time to read through the entire page.
 
 <div class="plot">
   <iframe src="assets/plots/pie_top_clicks.html" width="100%" height="550px" frameborder="0"></iframe>
@@ -305,9 +305,6 @@ Finally, the interaction effect terms provide information into how strategies in
 </div>
 
 On its own, a higher hub ratio tends to increase the average game duration. However, when combined with other strategies, it will trigger an interaction term that will reduce the average game time.
-
-
-[TODO Gabriel]
 
 We have measured the efficiency of strategies in terms of completion time and in terms of path length.
 

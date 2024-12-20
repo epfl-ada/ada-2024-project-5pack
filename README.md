@@ -140,11 +140,9 @@ The directory structure of new project looks like this:
 ├── data                        <- Project data files
 │
 ├── src                         <- Source code
-│   ├── models                          <- Model directory (Unused)
 │   ├── utils                           <- Utility directory contains all the strategies=
 │   └── scripts                         <- Shell scripts + plotting
 │
-├── tests                       <- Tests of any kind
 │
 ├── results.ipynb               <- a well-structured notebook showing the results
 │
