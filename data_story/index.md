@@ -341,6 +341,10 @@ Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar S
 </div>
 
 <div class="plot">
+  <iframe src="assets/plots/score_vs_length.html" width="100%" height="600px" frameborder="0"></iframe>
+</div>
+
+<div class="plot">
   <iframe src="assets/plots/strategies_combinations.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 

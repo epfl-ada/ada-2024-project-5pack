@@ -109,6 +109,7 @@ def rank_length_analysis(paths: pd.DataFrame) -> pd.DataFrame:
 
 	return corr_data
 
+
 def explode_paths_and_compute_all_scores(paths: pd.DataFrame, compute: bool = False, write: bool = False) -> pd.DataFrame:
 	if compute:
 		from src.utils.data import explode_paths
@@ -131,3 +132,32 @@ def explode_paths_and_compute_all_scores(paths: pd.DataFrame, compute: bool = Fa
 	if write:
 		df.to_csv('./data/generated/strategy_comparison/exploded_paths_data.csv')
 	return df
+
+def compute_correlation_between_scores_and_game_length(path_group: pd.DataFrame) -> pd.Series:
+	count = len(path_group)
+	res = {'count': count }
+	import warnings
+	from scipy.stats import spearmanr, ConstantInputWarning
+	for score in ['hub_usage_ratio', 'top_link_ratio', 'semantic_increase_score']:
+		corr_coeff, pvalue = np.nan, np.nan
+		if count > 1:
+			with warnings.catch_warnings():
+				warnings.simplefilter(action="ignore", category=ConstantInputWarning)
+				corr_coeff, pvalue = spearmanr(path_group[[score, 'path_length']].values)
+		res.update({score + "_corr_coeff": corr_coeff, score + "_pvalue": pvalue})
+	return pd.Series(res)
+
+def scores_vs_length_analysis(graph_data, compute: bool = False, write: bool = False) -> dict[str, pd.DataFrame]:
+	df_exploded = explode_paths_and_compute_all_scores(graph_data['paths_finished'])
+	if compute:
+		df = df_exploded.groupby(['source', 'target']).apply(compute_correlation_between_scores_and_game_length).reset_index()
+	else:
+		df = pd.read_csv('./data/generated/strategy_comparison/general_scores.csv')
+	if write:
+		df.to_csv('./data/generated/strategy_comparison/general_scores.csv')
+	scores_dfs = {}
+	for score in ['hub_usage_ratio', 'top_link_ratio', 'semantic_increase_score']:
+		scores_dfs[score] = df[['source', 'target', 'count']].copy()
+		scores_dfs[score]['spearman'] = df[score + '_corr_coeff']
+		scores_dfs[score]['pvalue'] = df[score + '_pvalue']
+	return scores_dfs
