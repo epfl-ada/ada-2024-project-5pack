@@ -71,8 +71,7 @@ Done in 56 seconds as follows
 
 ### Hub-focused strategy
 
-Among the players we discovered a first strategy that clearly splits them into two groups, and this has to do with the hub usage of the players. During their navigation, players tend to have different behaviors in the use of hubs. When hubs are defined to be the top 200 articles by highest page rank. Indeed, we see a clear drop in the pagerank score for top articles, indicating a gap in their importance in the Wikispeedia network.
-
+In this strategy, we hypothesize that players navigate through "hub" articles - highly connected articles that serve as navigation landmarks in the Wikspeedia network. To identify these hubs, we use **PageRank**, which ranks articles based on their centrality and importance in the network. Thus, using this strategy, players can access a broad set of connections and navigate closer to the target. We then analyze whether players tend to use these hub articles in their successful navigation paths.
 To see that there is a clear pattern of paths going through general articles, we analyze the behavior for an average path.
 
 <div class="plot">
@@ -86,9 +85,31 @@ It appears that paths follow a pattern as (specific -> general -> specific). Thi
 {gabriel}
 [plot of distribution of page rank among the top articles]
 
-We perfomed an analysis on all the finished paths to determine how different players use the hubs. We observe that, many players do not tend to use hubs as defined above, while the rest of the players exhibit a normal distribution around 0.5 in the hub usage ratio for their paths.
+<div class="plot">
+  <iframe src="assets/plots/pagerank_distribution.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
 
-[plot of the distribution of hub usage ratio and show clearly the two modes]
+The choice of the top 200 articles as hubs is justified by both theoretical and empirical observations. **PageRank scores in networks often follow a power-law distribution**, where a small fraction of nodes (articles, in this case) capture a disproportionately large share of the network's importance. This is clearly visible in the distribution plot, where the PageRank scores sharply decline after the top-ranked articles.
+
+The top 200 articles (representing only 4.3% of all articles) account for 44.1% of the total PageRank score. This aligns with the **scale-free property** of networks, where a few highly connected and influential nodes dominate the network structure. These hubs serve as natural navigation location, providing efficient access to many other articles.
+
+By selecting the top 200 articles, we balance between capturing the most influential hubs and maintaining a manageable set. Including too many articles would dilute the concept of "hub" and reduce the navigation strategy's precision.
+
+Moreover, examining the top 5 hubs **—United States, Europe, United Kingdom, England, and Africa—** reveals that they are broad, general-knowledge topics that naturally act as checkpoints for navigation. Beyond these, the PageRank scores drop significantly (from 0.032 for United States to 0.0093 for Africa). This supports the 200-article cutoff as an optimal choice.
+
+To quantify the extent to which players rely on hubs in their navigation paths, we define the **Hub Usage Ratio (HUR)** as follows:
+
+$$
+\text{Hub Usage Ratio (HUR)} = \frac{\text{Number of Hub Articles in the Path}}{\text{Total Number of Articles in the Path}}
+$$
+
+Where:
+- **Hub Articles**: Articles in the top 200 by PageRank.
+- **Path**: The sequence of articles visited by the player during navigation.
+
+This metric allows us to evaluate the degree to which players utilize hubs in their navigation. For example:
+- A **HUR of 1.0** indicates that the player's path consists entirely of hub articles.
+- A **HUR of 0.0** indicates that no hub articles were used in the path.
 
 ### Semantic navigation strategy
 
@@ -161,6 +182,34 @@ To measure the strengths of each strategies, we will be comparing 2 metrics : su
 
 The link strategy appears to have the shortest times while the semantic strategy has the best success rate. The hub strategy underperforms both of these strategies and also the average path, signaling that this strategy might be too naive and be used when players don't have a specific plan in mind.
 
+### Causal Analysis
+
+[TODO: Define what is winning a game]
+[TODO: Improve images below]
+
+To figure out which strategy is the best, we need a solid metric to measure how well a strategy performs. A straightforward way to do this is to calculate the **average game time** when a strategy is used. We can then compare this number to the overall average game time to see if the strategy is effective.
+
+However, this simple approach might lead to misleading results because of—you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
+
+<div style="text-align:center;">
+  <img src="assets/images/confounding1.png" alt="Diagram of current situation" style="width:80%;">
+</div>
+
+To address this issue, we can compare the effect of using (vs. not using) the strategy on games with the same (source, target) pair. By isolating comparisons to identical game pairs, we remove the influence of difficulty differences caused by the specific pair. This way, if the strategy consistently performs better within the same pair, we can confidently say it’s not because of a confounding variable like game difficulty.
+
+<div style="text-align:center;">
+  <img src="assets/images/confounding2.png" alt="Diagram of current situation" style="width:70%;">
+</div>
+
+Unfortunately, grouping games by (source, target) pairs has a big downside: it results in a huge loss of data. Most (source, target) pairs are only played once, so they would get discarded! To solve this, we decided to simplify our approach by grouping on just the target article to quantify game difficulty. This decision wasn’t random—it came after hours of playing Wikispeedia and noticing something interesting:
+
+The difficulty of a game depends **mostly** on the target article and **barely** on the starting article.
+
+Here’s why: Imagine the very isolated article "Black Robin" 🐦‍⬛.
++ If "Black Robin" is the starting article, it’s not a big deal—you can quickly hop to "Animal," a great hub, and move on from there.
++ But if "Black Robin" is the target article, you’re in trouble. Getting to an isolated article from another location is significantly harder!
+
+Therefore, in the subsequent analysis, all metrics are calculated with the confounding variable carefully accounted for.
 
 [TODO Gabriel]
 
