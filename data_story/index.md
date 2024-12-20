@@ -235,7 +235,7 @@ Now, let's actually start analyzing the strategies performance.
 
 To do that, we will use regression analysis. While using OLS might sounds tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
 
-Let's take a look at that equation:
+Let's take a look at Mixed Linear Model equation:
 
 $$
 \text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{semantic_increase_score}_{ij} + \beta_2 \cdot \text{top_links_usage_ratio}_{ij} + \beta_3 \cdot \text{hub_ratio}_{ij} + \beta_4 \cdot \text{backtrack_ratio}_{ij} + u_{i} + \epsilon
@@ -271,10 +271,10 @@ Group Var               2458.259    0.981
 ```
 
 Let's analyze those results:
-- $\beta_1 = -82$: The coefficient for the semantic increase score (SIS) suggests that having a semantic increase score of 1 decreases the average game completion time by 82 seconds. That’s an impressive reduction!
-- $\beta_2 = -34.1$: A high top links click ratio also decreases completion time on average, but to a lesser extent compared to SIS
-- $\beta_3 = 16.8$: A high hub usage does not seem to improve the completion time
-- $\beta_4 = 533$: Backtracking, on the other hand, has a significant negative impact, increasing the game time by 533 seconds on average for a backtracking ratio of 1. This number makes sense in some ways as a game with a backtracking ration of 1 will never finish.
+- $\beta_1 = -82$: The coefficient for the _semantic increase score (SIS)_ suggests that having a semantic increase score of 1 decreases the average game completion time by 82 seconds. That’s an impressive reduction!
+- $\beta_2 = -34.1$: A high _top links click ratio_ also decreases completion time on average, but to a lesser extent compared to SIS
+- $\beta_3 = 16.8$: A high _hub usage_ does not seem to improve the completion time
+- $\beta_4 = 533$: _Backtracking_, on the other hand, has a significant negative impact, increasing the game time by 533 seconds on average for a backtracking ratio of 1. This number makes sense in some ways as a game with a backtracking ratio of 1 will never finish.
 
 Furthermore, all of the p-values are 0 which is great news as this indicate that the results are statistically significant.
 
@@ -288,7 +288,7 @@ Another advantage of the Mixed Linear Model is that it allows us to extract the 
   <iframe src="assets/plots/random_effect.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-For instance, the target article with the highest random effect is the US, with a random effect of -50, which indicates that games ending at US takes on average 50 seconds less than the average game time.
+For instance, the target article with the highest random effect is _Cultural Diversity_, which has a random effect value of 210. This means that games ending at _Cultural Diversity_ take, on average, 210 seconds longer than the typical game duration. Upon closer examination, we observe that the article _Cultural Diversity_ has an in-degree of only one, and is only reachable from the article _Globalization_. This limited connectivity makes _Cultural Diversity_ particularly challenging to reach!
 
 [TODO Gabriel]
 
