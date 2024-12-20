@@ -207,9 +207,7 @@ The link strategy appears to have the shortest times while the semantic strategy
 
 ### Causal Analysis
 
-To figure out which strategy is the best, we need a solid metric to measure how well a strategy performs. A straightforward way to do this is to calculate the **average game time** when a strategy is used. We can then compare this number to the overall average game time to see if the strategy is effective.
-
-However, this simple approach might lead to misleading results because of—you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
+An important consideration in our initial comparison of strategies using metrics like success rate and completion time might lead to misleading results because of —you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
 
 <div style="text-align:center;">
   <img src="assets/images/confounding1.png" alt="Diagram of current situation" style="width:80%;">
