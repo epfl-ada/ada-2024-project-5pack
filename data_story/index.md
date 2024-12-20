@@ -164,9 +164,9 @@ The **Backtrack Strategy** aims to quantify exploratory behavior in navigation p
 
 The Backtrack Ratio (BR) is defined as:
 
-$
+$$
 BR = \frac{\text{Number of Backtrack Steps in Path}}{\text{Total Number of Steps in Path}}
-$
+$$
 
 Where:
 - **Backtrack Steps**: Moves represented by `<` in the path.
@@ -228,6 +228,67 @@ Here’s why: Imagine the very isolated article "Black Robin" 🐦‍⬛.
 + But if "Black Robin" is the target article, you’re in trouble. Getting to an isolated article from another location is significantly harder!
 
 Therefore, in the subsequent analysis, all metrics are calculated with the confounding variable carefully accounted for.
+
+### Regression Analysis [TODO: Make sure the formula display nice, Make sure the summary is correct, Make sure numbers are correct, remove outliers]
+
+Now, let's actually start analyzing the strategies performance.
+
+To do that, we will use regression analysis. While using OLS might sounds tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
+
+Let's take a look at Mixed Linear Model equation:
+
+$$
+\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{semantic_increase_score}_{ij} + \beta_2 \cdot \text{top_links_usage_ratio}_{ij} + \beta_3 \cdot \text{hub_ratio}_{ij} + \beta_4 \cdot \text{backtrack_ratio}_{ij} + u_{i} + \epsilon
+$$
+
+Where, for a given path $j$ ending at target $i$:
+- $\beta_0$ is the fixed intercept, representing the average game time when all predictors are zero.
+- $\beta_1, \beta_2, \beta_3, \beta_4$: Fixed effects for the strategies. These coefficients measure the global effectiveness of each strategy.
+- $u_i$: The random effect for the i-th target, capturing the difficulty of reaching that target.
+- $\epsilon_{ij}$: Residual error term.
+
+Great! Now let us look at the results:
+
+```
+                 Mixed Linear Model Regression Results
+=======================================================================
+Model:              MixedLM   Dependent Variable:   duration_in_seconds
+No. Observations:   50138     Method:               REML               
+No. Groups:         3323      Scale:                11923.4479         
+Min. group size:    1         Log-Likelihood:       -308414.9826       
+Max. group size:    1123      Converged:            Yes                
+Mean group size:    15.1                                               
+-----------------------------------------------------------------------
+                         Coef.   Std.Err.    z    P>|z|  [0.025  0.975]
+-----------------------------------------------------------------------
+Intercept                221.143    2.568  86.130 0.000 216.110 226.175
+semantic_increase_score  -82.398    2.108 -39.091 0.000 -86.529 -78.266
+top_links_ratio          -34.139    2.141 -15.948 0.000 -38.334 -29.943
+hub_ratio                 16.775    3.079   5.449 0.000  10.741  22.809
+backtrack_ratio          533.046    6.977  76.404 0.000 519.372 546.720
+Group Var               2458.259    0.981                              
+=======================================================================
+```
+
+Let's analyze those results:
+- $\beta_1 = -82$: The coefficient for the _semantic increase score (SIS)_ suggests that having a semantic increase score of 1 decreases the average game completion time by 82 seconds. That’s an impressive reduction!
+- $\beta_2 = -34.1$: A high _top links click ratio_ also decreases completion time on average, but to a lesser extent compared to SIS
+- $\beta_3 = 16.8$: A high _hub usage_ does not seem to improve the completion time
+- $\beta_4 = 533$: _Backtracking_, on the other hand, has a significant negative impact, increasing the game time by 533 seconds on average for a backtracking ratio of 1. This number makes sense in some ways as a game with a backtracking ratio of 1 will never finish.
+
+Furthermore, all of the p-values are 0 which is great news as this indicate that the results are statistically significant.
+
+<div class="plot">
+  <iframe src="assets/plots/fixed_effect.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+Another advantage of the Mixed Linear Model is that it allows us to extract the random effect term for each target. This term captures how difficult it is to reach a particular target, independent of the strategies used.
+
+<div class="plot">
+  <iframe src="assets/plots/random_effect.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+For instance, the target article with the highest random effect is _Cultural Diversity_, which has a random effect value of 210. This means that games ending at _Cultural Diversity_ take, on average, 210 seconds longer than the typical game duration. Upon closer examination, we observe that the article _Cultural Diversity_ has an in-degree of only one, and is only reachable from the article _Globalization_. This limited connectivity makes _Cultural Diversity_ particularly challenging to reach!
 
 [TODO Gabriel]
 

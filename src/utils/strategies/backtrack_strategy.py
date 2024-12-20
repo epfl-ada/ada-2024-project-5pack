@@ -11,8 +11,5 @@ def compute_backtrack_ratio(path: list[str]) -> float:
     # Count backtrack steps
     backtrack_count = sum(1 for step in path if step == "<")
     
-    # Total path length (including backtrack steps)
-    total_length = len(path)
-    
-    # Return ratio (0 if path is empty)
-    return backtrack_count / total_length if total_length > 0 else 0.0
+    # Return ratio
+    return backtrack_count / len(path)
