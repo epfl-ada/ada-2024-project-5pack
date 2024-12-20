@@ -108,3 +108,26 @@ def rank_length_analysis(paths: pd.DataFrame) -> pd.DataFrame:
 	)
 
 	return corr_data
+
+def explode_paths_and_compute_all_scores(paths: pd.DataFrame, compute: bool = False, write: bool = False) -> pd.DataFrame:
+	if compute:
+		from src.utils.data import explode_paths
+		df = explode_paths(paths, clear_backticks=True)[['source', 'target', 'path', 'path_length', 'rank']][
+			lambda x: x['source'] != "<"
+		]
+		df['sub_path'] = df.apply(
+			func=lambda entry: entry['path'][entry['rank']:],
+			axis='columns',
+		)
+		hur, tlr, sis = 'hub_usage_ratio', 'top_link_ratio', 'semantic_increase_score'
+		from src.utils.strategies.hub_focused_strategy import compute_hub_usage_ratio
+		df[hur] = df['sub_path'].apply(func=compute_hub_usage_ratio)
+		from src.utils.strategies.semantic_strategy import semantic_increase_score
+		df[sis] = df['sub_path'].apply(func=semantic_increase_score)
+		from src.utils.strategies.link_strategy import top_link_ratio
+		df[tlr] = df['sub_path'].apply(func=top_link_ratio)
+	else:
+		df = pd.read_csv('./data/generated/strategy_comparison/exploded_paths_data.csv')
+	if write:
+		df.to_csv('./data/generated/strategy_comparison/exploded_paths_data.csv')
+	return df

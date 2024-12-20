@@ -312,10 +312,9 @@ On its own, a higher hub ratio tends to increase the average game duration. Howe
 We have measured the efficiency of strategies in terms of completion time and in terms of path length.
 
 We will now measure them considering the length of the path.
-This metric has the advantage that we are allowed to **explode** the games to multiply our datapoints and 
-improve the statistical significance of our results.
-To explain what we mean by exploding the paths, let's consider the following game:
-No, actually let's consider this other game:
+This metric has the advantage that we are allowed to **explode** the game paths which allows us to increase
+the number of datapoints.
+To explain what we mean by exploding the game paths, let's consider the following game from `Global warming` to `Sun`:
 
 ```
 Global warming > Greenhouse effect > Planet > Sun
@@ -329,6 +328,9 @@ Global warming > Greenhouse effect > Planet > Sun
 Greenhouse effect > Planet > Sun
 Planet > Sun
 ```
+Increasing the number of datapoints has multiple advantages:
+- The statistical significance of our general results is improved.
+- We can condition our computations on (source, target) pairs and still have statistically significant results, which allows us to mitigate the fact that different (source, target) pairs might inherently have higher/lower difficulty and encourage specific strategies.
 
 {analyse du shortest path}
 {déterminer les stratégies qui correspondent}

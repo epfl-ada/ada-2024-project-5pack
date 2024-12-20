@@ -2,6 +2,7 @@ data/*
 
 !data/README.md
 !data/download_linux_or_macos.sh
+!data/generated/strategy_comparison/*.csv
 
 # Website generated files
 data_story/assets/plots/*.html
