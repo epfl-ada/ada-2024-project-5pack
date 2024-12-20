@@ -141,8 +141,6 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 
 Since time is the determining winning factor of the game, we consider a strategy to be to click among the first links of the page. We extract the links order from their position in the files, then we check if this strategy appears to be used by players of the game.
 
-To illustrate how this strategy might pay off, we can take the example of the path in the introduction (Yarralumla -> Lincoln). The path goes through Australia and the United States, while United States appeared at the end of the wikipedia page of Yarralumla. So it is not the shortest path, but Australia appeared at the top of the page of Yarralumla, then United States at the top of Australia (since they are closed allies), which explains why the player solved the game quickly (53 seconds).
-
 Since a significant portion of the clicks are among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly among players who don't have the time to read through the whole page.
 
 <div class="plot">
