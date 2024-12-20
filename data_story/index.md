@@ -344,10 +344,6 @@ Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar S
   <iframe src="assets/plots/score_vs_length.html" width="100%" height="600px" frameborder="0"></iframe>
 </div>
 
-<div class="plot">
-  <iframe src="assets/plots/strategies_combinations.html" width="100%" height="550px" frameborder="0"></iframe>
-</div>
-
 ## Conclusion
 
 Our analysis reveals that while players aren't necessarily playing Wikispeedia "wrong," there's significant room for improvement in navigation strategies. The data shows that players typically take paths 2.4 times longer than optimal, suggesting that most players aren't using the most efficient strategies.
