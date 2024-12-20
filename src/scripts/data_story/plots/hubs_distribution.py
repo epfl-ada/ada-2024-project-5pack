@@ -40,25 +40,21 @@ def create_hub_usage_ratio_plot(data: dict) -> go.Figure:
             offsetgroup=label  # Group bars for side-by-side comparison
         ))
 
-    # Add dashed lines for means
-    fig.add_shape(
-        type="line",
-        x0=mean_finished,
-        x1=mean_finished,
-        y0=0,
-        y1=8000,
+    # Add dashed lines for means as Scatter traces (for legend inclusion)
+    fig.add_trace(go.Scatter(
+        x=[mean_finished, mean_finished],
+        y=[0, 8000],
+        mode="lines",
         line=dict(color="#2ecc71", dash="dash"),
         name="Mean HUR (Finished)"
-    )
-    fig.add_shape(
-        type="line",
-        x0=mean_unfinished,
-        x1=mean_unfinished,
-        y0=0,
-        y1=8000,
+    ))
+    fig.add_trace(go.Scatter(
+        x=[mean_unfinished, mean_unfinished],
+        y=[0, 8000],
+        mode="lines",
         line=dict(color="#e74c3c", dash="dash"),
         name="Mean HUR (Unfinished)"
-    )
+    ))
 
     # Add mean values above dashed lines
     fig.add_annotation(
