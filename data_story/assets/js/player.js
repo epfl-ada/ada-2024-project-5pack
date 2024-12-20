@@ -58,29 +58,31 @@ function renderPlayerComponent(el) {
             backtrack: false
         },
         duration() {
-            let duration = 156.146;
+            let duration = 156.099;
             const s = this.strategies;
-            if (s.semantic) duration += -20.593;
-            if (s.topLinks) duration += -8.146;
-            if (s.hub) duration += 2.477;
-            if (s.backtrack) duration += 37.394;
-            if (s.semantic && s.hub) duration += -1.764;
-            if (s.semantic && s.backtrack) duration += -2.428;
-            if (s.topLinks && s.hub) duration += -2.985;
-            if (s.hub && s.backtrack) duration += -4.058;
+            if (s.semantic) duration += -21.262;
+            if (s.topLinks) duration += -8.163;
+            if (s.hub) duration += 2.414;
+            if (s.backtrack) duration += 37.520;
+            if (s.semantic && s.hub) duration += -2.337;
+            if (s.semantic && s.backtrack) duration += -4.617;
+            if (s.topLinks && s.hub) duration += -2.939;
+            if (s.hub && s.backtrack) duration += -4.099;
+            if (s.semantic && s.hub && s.backtrack) duration += -2.983;
             return duration;
         },
         uncertainty() {
-            let varianceSum = 1.098 * 1.098;
+            let varianceSum = 1.097 * 1.097;
             const s = this.strategies;
-            if (s.semantic) varianceSum += 0.528 * 0.528;
+            if (s.semantic) varianceSum += 0.546 * 0.546;
             if (s.topLinks) varianceSum += 0.549 * 0.549;
             if (s.hub) varianceSum += 0.639 * 0.639;
-            if (s.backtrack) varianceSum += 0.625 * 0.625;
-            if (s.semantic && s.hub) varianceSum += 0.498 * 0.498;
-            if (s.semantic && s.backtrack) varianceSum += 0.472 * 0.472;
+            if (s.backtrack) varianceSum += 0.626 * 0.626;
+            if (s.semantic && s.hub) varianceSum += 0.512 * 0.512;
+            if (s.semantic && s.backtrack) varianceSum += 0.656 * 0.656;
             if (s.topLinks && s.hub) varianceSum += 0.493 * 0.493;
             if (s.hub && s.backtrack) varianceSum += 0.651 * 0.651;
+            if (s.semantic && s.hub && s.backtrack) varianceSum += 0.62 * 0.62;
             return 1.96 * Math.sqrt(varianceSum);
         },
         progressStyle() {
