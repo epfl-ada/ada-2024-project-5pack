@@ -2,7 +2,7 @@ from functools import cache
 
 import pandas as pd
 
-from src.utils.data_utils import get_links_from_html_files
+from src.utils.data import get_links_from_html_files
 
 
 @cache
