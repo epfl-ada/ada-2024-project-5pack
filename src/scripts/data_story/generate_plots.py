@@ -10,7 +10,7 @@ from .plots import rank_vs_length as rank_vs_length_plot
 from .plots import game_stats_intro as intro_plot
 from .plots import semantic_strategy as semantic_plot
 from .plots import regression_analysis as regression_plot
-from .plots import link_strat
+from .plots import link_strat_and_comparison
 from .plots import hubs_distribution as hubs_plot
 from .plots import backtrack_distribution as backtrack_plot
 from .plots import hubs_impact
@@ -39,9 +39,9 @@ def generate_all_plots() -> None:
 		regression_plot,
 		hubs_plot,
 		backtrack_plot,
+		link_strat_and_comparison,
 		hubs_impact,
-  		combinations,
-    	link_strat
+  		combinations
 	]
 
 	for plot_module in plot_modules:

@@ -4,30 +4,31 @@ import plotly.express as px
 from src.utils.data import load_graph_data
 from src.utils.metrics import average_on_paths, pagerank
 from src.utils.strategies.comparison import build_comparison_df
-from src.utils.strategies.link_strategy import build_link_order, get_click_positions
+from src.utils.strategies.link_strategy import get_click_positions
 
 
 def generate_plot(data, output_dir):
 	graph_data = load_graph_data()
 
-	all_links_dict = build_link_order()
-	fig = pie(graph_data, all_links_dict)
-	fig.write_html(output_dir / "pie_top_clicks.html", include_plotlyjs=True, full_html=True)
+	pie_link = pie(graph_data)
+	pie_link.write_html(output_dir / "pie_top_clicks.html", include_plotlyjs=True, full_html=True)
 
-	finished, unfinished = build_comparison_df(graph_data, all_links_dict)
-
-	barplot_success, barplot_times = comparison_performance(finished, unfinished)
-	barplot_success.write_html(output_dir / "barplot_success.html", include_plotlyjs=True, full_html=True)
-	barplot_times.write_html(output_dir / "barplot_times.html", include_plotlyjs=True, full_html=True)
-
-	plot_gen = generality_behavior(graph_data)
-	plot_gen.write_html(output_dir / "plot_gen.html", include_plotlyjs=True, full_html=True)
+	finished, unfinished = build_comparison_df(graph_data)
 
 	link_barplot = times_comparison(finished)
 	link_barplot.write_html(output_dir / "link_barplot.html", include_plotlyjs=True, full_html=True)
 
 
-def pie(graph_data, all_links_dict) -> px:
+
+	barplot_success, barplot_times = comparison_performance(finished, unfinished)
+	barplot_success.write_html(output_dir / "barplot_success.html", include_plotlyjs=True, full_html=True)
+	barplot_times.write_html(output_dir / "barplot_times.html", include_plotlyjs=True, full_html=True)
+
+
+
+
+
+def pie(graph_data) -> px:
 	paths_finished = graph_data["paths_finished"]
 	click_positions_fin = get_click_positions(paths_finished)
 
@@ -37,27 +38,17 @@ def pie(graph_data, all_links_dict) -> px:
 	labels = ["Top 20%", "Bottom 80%"]
 	sizes = [len(top_links), len(otherlinks)]
 
-	fig = px.pie(
+	pie_link = px.pie(
 		names=labels,
 		values=sizes,
 		title="Proportion of clicks on top 20% links vs bottom 80%",
 	)
 
-	fig.update_traces(texttemplate="%{percent:.1%}", textposition="inside")
-	return fig
+	pie_link.update_traces(texttemplate="%{percent:.1%}", textposition="inside")
+	return pie_link
 
 
-def generality_behavior(graph_data):
-	scores, percent = average_on_paths(10, graph_data["paths_finished"], pagerank(graph_data["graph"]))
 
-	fig = px.line(
-		x=percent,
-		y=scores,
-		labels={"x": "Percentage of path", "y": "Generality Score (higher is more general)"},
-		title="Average generality behavior (taken accross all finished paths)",
-	)
-
-	return fig
 
 
 def times_comparison(finished):
@@ -70,7 +61,7 @@ def times_comparison(finished):
 
 	global_avg_time_finished = finished["time"].mean()
 
-	fig = px.bar(
+	barplot = px.bar(
 		avg_time_finished,
 		x="bin",
 		y="avg_completion_time",
@@ -81,7 +72,7 @@ def times_comparison(finished):
 	)
 
 	# Horizontal line for the global mean
-	fig.add_shape(
+	barplot.add_shape(
 		type="line",
 		x0=-0.5,
 		x1=2.5,
@@ -90,14 +81,14 @@ def times_comparison(finished):
 		line=dict(color="Red", dash="dash"),
 	)
 
-	fig.add_annotation(
+	barplot.add_annotation(
 		x=2,
 		y=global_avg_time_finished,
 		text=f"Average game time : {global_avg_time_finished:.2f} seconds",
 		showarrow=False,
 		yshift=10,
 	)
-	return fig
+	return barplot
 
 
 def comparison_performance(finished, unfinished):
@@ -107,17 +98,19 @@ def comparison_performance(finished, unfinished):
 	global_success_rate = all_paths["finished"].mean()
 	success_link = all_paths[all_paths["top_link_usage"]]["finished"].mean()
 	success_semantic = all_paths[all_paths["semantic"]]["finished"].mean()
-	success_maxgen = all_paths[all_paths["max_generality"]]["finished"].mean()
+	success_maxgen = all_paths[all_paths["hub_usage"]]["finished"].mean()
+	success_backtrack = all_paths[all_paths["backtrack"]]["finished"].mean()
 
 	# times (finished)
 	global_avg_time = finished["time"].mean()
 	time_link = finished[finished["top_link_usage"]]["time"].mean()
 	time_semantic = finished[finished["semantic"]]["time"].mean()
-	time_maxgen = finished[finished["max_generality"]]["time"].mean()
+	time_maxgen = finished[finished["hub_usage"]]["time"].mean()
+	time_backtrack= finished[finished["backtrack"]]["time"].mean()
 
-	categories = ["Global", "Link>0.8", "Semantic>0.8", "Visit top 200 articles"]
+	categories = ["Global", "Link>0.8", "Semantic>0.8", "Hub>0.8", "Backtrack>0.1"]
 
-	success_rates = [global_success_rate, success_link, success_semantic, success_maxgen]
+	success_rates = [global_success_rate, success_link, success_semantic, success_maxgen, success_backtrack]
 	success_data = pd.DataFrame({"Category": categories, "Success Rate": success_rates})
 
 	barplot_success = px.bar(
@@ -130,7 +123,7 @@ def comparison_performance(finished, unfinished):
 		color_discrete_sequence=px.colors.sequential.Plasma,
 	)
 
-	avg_times = [global_avg_time, time_link, time_semantic, time_maxgen]
+	avg_times = [global_avg_time, time_link, time_semantic, time_maxgen, time_backtrack]
 	times_data = pd.DataFrame({"Category": categories, "Average time (seconds)": avg_times})
 
 	barplot_times = px.bar(

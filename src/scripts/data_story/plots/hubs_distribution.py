@@ -4,6 +4,10 @@ from pathlib import Path
 import numpy as np
 from src.utils.strategies.hub_focused_strategy import compute_hub_usage_ratio
 
+import plotly.graph_objs as go
+import plotly.express as px
+import networkx as nx
+from pathlib import Path
 
 def create_hub_usage_ratio_plot(data: dict) -> go.Figure:
     """
@@ -94,6 +98,9 @@ def create_hub_usage_ratio_plot(data: dict) -> go.Figure:
 
     return fig
 
+from src.utils.data import load_graph_data
+from src.utils.metrics import average_on_paths, pagerank
+
 def create_pagerank_distribution_plot(data: dict) -> go.Figure:
     """
     Create a simple visualization of PageRank distribution.
@@ -165,12 +172,28 @@ def create_pagerank_distribution_plot(data: dict) -> go.Figure:
 
     return fig
 
+def generality_behavior(graph_data):
+	scores, percent = average_on_paths(10, graph_data["paths_finished"], pagerank(graph_data["graph"]))
+
+	plot = px.line(
+		x=percent,
+		y=scores,
+		labels={"x": "Percentage of path", "y": "Generality Score (higher is more general)"},
+		title="Average generality behavior (taken accross all finished paths)",
+	)
+
+	return plot
+
 
 def generate_plot(data: dict, output_dir: Path) -> None:
     """
     Generate and save the plots.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
+    graph_data = load_graph_data()
+    
+    plot_gen = generality_behavior(graph_data)
+    plot_gen.write_html(output_dir / "plot_gen.html", include_plotlyjs=True, full_html=True)
 
     # Generate PageRank distribution plot
     pagerank_fig = create_pagerank_distribution_plot(data)
