@@ -73,11 +73,14 @@ Done in 56 seconds as follows
 
 Among the players we discovered a first strategy that clearly splits them into two groups, and this has to do with the hub usage of the players. During their navigation, players tend to have different behaviors in the use of hubs. When hubs are defined to be the top 200 articles by highest page rank. Indeed, we see a clear drop in the pagerank score for top articles, indicating a gap in their importance in the Wikispeedia network.
 
+To see that there is a clear pattern of paths going through general articles, we analyze the behavior for an average path.
 
-Link strategy:
-The goal of the game is to get to the target pair the fastest possible. Therefore it is possible that players are biased towards clicking on the top links instead of reading through the whole article and then clicking on the best one.
-We want to determine if this strategy pays off compared to players who click anywhere on the page.
-{Plot de la position des clics}
+<div class="plot">
+  <iframe src="assets/plots/plot_gen.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more links between the source and target (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
+
 
 {faire plot distribution hub usage ratio}
 {gabriel}
@@ -119,11 +122,45 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 
 [Timothee]
 
+Since time is the determining winning factor of the game, we consider a strategy to be to click among the first links of the page. We extract the links order from their position in the files, then we check if this strategy appears to be used by players of the game.
+
+To illustrate how this strategy might pay off, we can take the example of the path in the introduction (Yarralumla -> Lincoln). The path goes through Australia and the United States, while United States appeared at the end of the wikipedia page of Yarralumla. So it is not the shortest path, but Australia appeared at the top of the page of Yarralumla, then United States at the top of Australia (since they are closed allies), which explains why the player solved the game quickly (53 seconds).
+
+Since a significant portion of the clicks are among the top links of the page (which also accounts for the clicks on the side of the wikipedia web page), we can deduce that this strategy is used significantly among players who don't have the time to read through the whole page.
+
+<div class="plot">
+  <iframe src="assets/plots/pie_top_clicks.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+
+We now compare players using this strategy consistently (i.e. making a significant amount of clicks on the top links) are performing better or worse than average. We compare the average completion time of 3 group of paths depending on the proportion of top clicks they have.
+
+<div class="plot">
+  <iframe src="assets/plots/link_barplot.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+So clicking on the top links seems to be decreasing completion time. 
+
+
+
 ### Fast exploration
 
 [Backtrack, Peter]
 
 ## Discussing the best strategy
+
+To measure the strengths of each strategies, we will be comparing 2 metrics : success rate (among the paths using these strategies, how many are finished), and average completion time (the average time to finish the path).
+
+<div class="plot">
+  <iframe src="assets/plots/barplot_success.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+<div class="plot">
+  <iframe src="assets/plots/barplot_times.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+The link strategy appears to have the shortest times while the semantic strategy has the best success rate. The hub strategy underperforms both of these strategies and also the average path, signaling that this strategy might be too naive and be used when players don't have a specific plan in mind.
+
 
 [TODO Gabriel]
 
@@ -134,5 +171,6 @@ Then, we can compute the final SIS score using Spearman's rank correlation. For 
 </div>
 
 ## Conclusion
+
 
 TODO

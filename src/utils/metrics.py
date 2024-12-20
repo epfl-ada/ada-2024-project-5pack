@@ -16,13 +16,22 @@ def pagerank(graph: nx.Graph) -> pd.DataFrame:
 		columns=["Article", "Pagerank"],
 	)
 	# Normalizing
-	graph_pagerank["Generality_score"] = (graph_pagerank["Pagerank"] - graph_pagerank["Pagerank"].min()) / (
-		graph_pagerank["Pagerank"].max() - graph_pagerank["Pagerank"].min()
-	)
+	graph_pagerank["Generality_score"] = (graph_pagerank["Pagerank"] - graph_pagerank["Pagerank"].min()) / (graph_pagerank["Pagerank"].max() - graph_pagerank["Pagerank"].min())
 	return graph_pagerank
 
 
-def average_path(n_bins: int, paths: pd.DataFrame) -> tuple[np.array, np.array]:
+def average_on_paths(n_bins: int, paths: pd.DataFrame, graph_pagerank:pd.DataFrame) -> tuple[np.array, np.array]:
+
+	article_gen_score = graph_pagerank.set_index('Article')['Generality_score']
+
+	# Get path finished and filter so that we only keep short paths (other are noise)
+	paths = paths[paths['path'].apply(len) <= 20]
+	#Remove < from path (but keep the articles that the person attempted to go to)
+	paths['path'] = paths['path'].apply(lambda x: [u for u in x if u != '<'])
+
+
+	paths['Generality_score'] = paths['path'].apply(
+    lambda path: article_gen_score.loc[path].tolist())
 	scores_bins = [[] for _ in range(n_bins + 1)]
 
 	# We have bins for every steps then add the scores that fall in that bin

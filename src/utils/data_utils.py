@@ -5,7 +5,7 @@ from typing import Dict, Union
 import warnings
 
 from src.utils import logger
-from src.utils import graph
+from src.utils.data import graph
 
 import os
 import numpy as np
