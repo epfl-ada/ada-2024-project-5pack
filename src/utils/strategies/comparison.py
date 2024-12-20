@@ -1,3 +1,5 @@
+from functools import cache
+
 import pandas as pd
 import statsmodels.formula.api as smf
 from statsmodels.regression.mixed_linear_model import MixedLMResults
@@ -10,6 +12,7 @@ from src.utils.strategies.link_strategy import get_click_positions, get_probabil
 from src.utils.strategies.semantic_strategy import semantic_increase_score
 
 
+@cache
 def get_strategies_scores() -> pd.DataFrame:
 	"""
 	Computes and returns a DataFrame containing various strategy scores for all the finished paths.
