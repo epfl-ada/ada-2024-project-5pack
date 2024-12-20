@@ -306,9 +306,6 @@ Finally, the interaction effect terms provide information into how strategies in
 
 On its own, a higher hub ratio tends to increase the average game duration. However, when combined with other strategies, it will trigger an interaction term that will reduce the average game time.
 
-
-[TODO Gabriel]
-
 We have measured the efficiency of strategies in terms of completion time and in terms of path length.
 
 We will now measure them considering the length of the path.
