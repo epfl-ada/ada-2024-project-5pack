@@ -1,5 +1,6 @@
 # Are We Playing Wikispeedia All Wrong?
 Team *5Pack* - Applied Data Analysis 2024 EPFL
+[**Visit the Project Website**](https://epfl-ada.github.io/ada-2024-project-5pack/)
 
 ## Abstract
 The Wikispeedia game challenges players to navigate from one Wikipedia article to another using only hyperlinks. Through analysis of over 75,000 gameplay paths (51,000 completed, 25,000 abandoned), we investigate what makes a successful navigation strategy. Our findings show that players typically take paths 2.4 times longer than optimal, suggesting significant room for improvement in navigation strategies. We analyze several key strategies including hub-based navigation, semantic-guided choices, and backtracking patterns to determine their effectiveness. By combining network analysis with player behavior data, we aim to uncover what distinguishes successful navigation attempts from failures and provide insights into optimal playing strategies.
