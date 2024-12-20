@@ -56,7 +56,7 @@ We evaluate the performance of navigation strategies by analyzing:
 
 To quantify and isolate the effects of navigation strategies, we use a **Mixed Linear Model (MLM)** that accounts for confounding variables, such as target article difficulty. The MLM is defined as:
 
-$\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{SIS}_{ij} + \beta_2 \cdot \text{Top Links Ratio}_{ij} + \beta_3 \cdot \text{HUR}_{ij} + \beta_4 \cdot \text{BR}_{ij} + u_i + \epsilon_{ij}$
+Game Time_{ij} = β₀ + β₁ · SIS_{ij} + β₂ · Top Links Ratio_{ij} + β₃ · HUR_{ij} + β₄ · BR_{ij} + u_i + ε_{ij}
 
 Where:
 
