@@ -346,7 +346,7 @@ Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar S
 ## Conclusion
 
 Our analysis reveals that while players aren't necessarily playing Wikispeedia "wrong," there's significant room for improvement in navigation strategies. The data shows that players typically take paths 2.4 times longer than optimal, suggesting that most players aren't using the most efficient strategies.
-Through rigorous analysis of different navigation approaches, we've identified several key insights about effective gameplay strategies:
+Through our analysis of different navigation approaches, we've identified several key factors about effective gameplay strategies:
 
 1. Semantic Navigation emerges as the most successful strategy overall:
 
