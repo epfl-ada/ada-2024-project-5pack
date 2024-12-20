@@ -38,7 +38,7 @@ def build_tf_idf() -> tuple[spmatrix, dict]:
 	tf_idf = vectorizer.fit_transform(texts)
 	return tf_idf, article_to_index
 
-
+@cache
 def get_semantic_similarity(title1: str, title2: str) -> float:
 	"""Use the TF-IDF matrix to compute the semantic similarity between two articles
 
