@@ -140,8 +140,7 @@ Similarly, we can compute how the similarity evolves as players progress along t
   <iframe src="assets/plots/semantic_path_example.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of **0.738** which indicates that the semantic similarity is generally increasing along the path.
-
+Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of **0.738** which indicates that the semantic similarity is generally increasing along the path. Computing the score on all paths, we find an average SIS score of **0.82** for finished paths and **0.65** for unfinished paths. Computed on the last 50% of each path, the scores drop to **0.69** and **0.43** respectively. This goes well with our intuition that unfinished paths tend to occur when players go semantically further from the target articles than for finished paths. Even if they are not able to reach the target, they also tend to not get closer to it at every step.
 
 ### Link strategy
 
