@@ -331,18 +331,33 @@ Increasing the number of datapoints has multiple advantages:
 - The statistical significance of our general results is improved.
 - We can condition our computations on (source, target) pairs and still have statistically significant results, which allows us to mitigate the fact that different (source, target) pairs might inherently have higher/lower difficulty and encourage specific strategies.
 
-{analyse du shortest path}
-{déterminer les stratégies qui correspondent}
-```
-Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar System > Sun 
-```
-<div class="plot">
-  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1040px" frameborder="0"></iframe>
-</div>
+When conditioning on all the possible (source, target) pairs, computing the spearman correlation between the score and the path length, and only selecting those pairs that are statistically significant (p-value less than 0.05), we get the following:
 
 <div class="plot">
   <iframe src="assets/plots/score_vs_length.html" width="100%" height="600px" frameborder="0"></iframe>
 </div>
+
+We can see that Hub Usage and Semantic Similarity seem to have a positive impact on game length, whereas
+the Top Link strategy has a negative impact.
+
+However, this might not be completely accurate, so want to determine whether players get better or worse as they progress within a single game, where better means finding the target in the least possible amount of clicks.
+To explain our method, let's consider two hypothetical games:
+- The first game is from `Bird` to `Sun`.
+- The second game is from `Telephone` to `Sun`, but at some during the game, the player visits the article `Bird`.
+In which of the two games will the player reach `Sun` from `Bird` in the least amount of clicks?
+Now, for all the games where the target was `Sun` and where the player visited the article `Bird` at some point during the game, do the players reach `Sun` from `Bird` slower if their encounter with `Bird` happens later in the game?
+
+To answer this question we will perform the following computation:
+
+For every ordered pair of distinct articles $A$ and $B$, we consider the games where $B$ is the target,
+and we study the correlation between the **rank**, that is, the moment in the game where $A$ is visited,
+(ignoring those games where $A$ is not visited)
+and the **remaining path length** (that is, the number of clicks the player takes to reach $B$ from $A$).
+
+<div class="plot">
+  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1040px" frameborder="0"></iframe>
+</div>
+
 
 ## Conclusion
 
