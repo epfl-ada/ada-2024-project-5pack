@@ -53,7 +53,7 @@ def perform_mixed_linear_regression() -> MixedLMResults:
 	return model.fit()
 
 
-def build_comparison_df(graph_data, all_links_dict, top_hubs=200, threshold_semantic=0.8, threshold_link=0.8):
+def build_comparison_df(graph_data, top_hubs=200, threshold_semantic=0.8, threshold_link=0.8, threshold_backtrack = 0.1, threshold_hub = 0.8):
 	graph_pagerank = pagerank(graph_data["graph"])
 	article_gen_score = graph_pagerank.set_index("Article")["Generality_score"]
 	sorted_scores = article_gen_score.sort_values(ascending=False)
@@ -62,13 +62,15 @@ def build_comparison_df(graph_data, all_links_dict, top_hubs=200, threshold_sema
 	article_gen_score = graph_pagerank.set_index("Article")["Generality_score"]
 
 	# Remove < from path (but keep the articles that the person attempted to go to)
-	graph_data["paths_finished"]["path"] = graph_data["paths_finished"]["path"].apply(lambda x: [u for u in x if u != "<"])
-	graph_data["paths_unfinished"]["path"] = graph_data["paths_finished"]["path"].apply(lambda x: [u for u in x if u != "<"])
+	graph_data["paths_finished"]["backtrack_ratio"] = graph_data["paths_finished"]["path"].apply(compute_backtrack_ratio)
+	graph_data["paths_unfinished"]["backtrack_ratio"] = graph_data["paths_unfinished"]["path"].apply(compute_backtrack_ratio)
+	graph_data["paths_finished"]["path_clean"] = graph_data["paths_finished"]["path"].apply(lambda x: [u for u in x if u != "<"])
+	graph_data["paths_unfinished"]["path_clean"] = graph_data["paths_finished"]["path"].apply(lambda x: [u for u in x if u != "<"])
 
 	fin_list = []
 
 	for _, row in graph_data["paths_finished"].iterrows():
-		path = row["path"]
+		path = row["path_clean"]
 		time = row["duration_in_seconds"]
 		click_positions = get_click_positions(pd.DataFrame({"path": [path]}))
 		prob = get_probability_link(click_positions)
@@ -88,6 +90,8 @@ def build_comparison_df(graph_data, all_links_dict, top_hubs=200, threshold_sema
 				"top_link_usage": prob > threshold_link,
 				"semantic": semantic > threshold_semantic,
 				"max_generality": max_gen > score_threshold,
+				"hub_usage" : compute_hub_usage_ratio(path) > threshold_hub,
+				"backtrack" : row["backtrack_ratio"] > threshold_backtrack
 			}
 		)
 
@@ -95,7 +99,7 @@ def build_comparison_df(graph_data, all_links_dict, top_hubs=200, threshold_sema
 
 	unfin_list = []
 	for _, row in graph_data["paths_unfinished"].iterrows():
-		path = row["path"]
+		path = row["path_clean"]
 		time = row["duration_in_seconds"]
 		click_positions = get_click_positions(pd.DataFrame({"path": [path]}))
 		prob = get_probability_link(click_positions)
@@ -120,6 +124,9 @@ def build_comparison_df(graph_data, all_links_dict, top_hubs=200, threshold_sema
 				"top_link_usage": prob > threshold_link,
 				"semantic": semantic > threshold_semantic,
 				"max_generality": max_gen > score_threshold,
+				"hub_usage" : compute_hub_usage_ratio(path) > threshold_hub,
+
+				"backtrack" : row["backtrack_ratio"] > threshold_backtrack
 			}
 		)
 
