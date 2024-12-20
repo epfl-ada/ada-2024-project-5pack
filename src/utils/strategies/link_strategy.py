@@ -4,14 +4,13 @@ import pandas as pd
 
 from src.utils.data import get_links_from_html_files
 
-
 @cache
 def build_link_order():
 	"""
 	Return a link with relative positions of all articles
 	"""
 	all_links_dict = get_links_from_html_files()
-	for article, links in all_links_dict.items():
+	for links in all_links_dict.values():
 		for link in links:
 			# Normalize to get relative position
 			link["position"] = link["position"] / len(links)
@@ -30,7 +29,7 @@ def get_click_positions(paths):
 	A list where we mapped path to their relative positions
 	"""
 	all_links_dict = build_link_order()
-	c = []
+	clicks = []
 
 	for path in paths.path:
 		for i in range(len(path) - 1):
@@ -40,10 +39,10 @@ def get_click_positions(paths):
 				for link in all_links_dict[before]:
 					if link.get("title") == next:
 						if "position" in link:
-							c.append(link["position"])
+							clicks.append(link["position"])
 						break
 
-	return c
+	return clicks
 
 
 def get_probability_link(path_click_positions, threshold=0.3):
