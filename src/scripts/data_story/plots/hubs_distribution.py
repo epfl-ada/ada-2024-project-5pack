@@ -84,4 +84,4 @@ def generate_plot(data: dict, output_dir: Path) -> None:
     """Generate and save the plot."""
     fig = create_pagerank_distribution_plot(data)
     output_dir.mkdir(parents=True, exist_ok=True)
-    fig.write_html(output_dir / "pagerank_distribution.html", include_plotlyjs=True)
+    fig.write_html(output_dir / "pagerank_distribution.html", include_plotlyjs=True, full_html=True)

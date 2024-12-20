@@ -12,6 +12,7 @@ from .plots import semantic_similarity_matrix as similarity_plot
 from .plots import semantic_path_example as semantic_path
 from .plots import link_strat
 from .plots import hubs_distribution as hubs_plot
+from .plots import backtrack_distribution as backtrack_plot
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -28,7 +29,7 @@ def generate_all_plots() -> None:
 
 	logger.info("Generating plots...")
 
-	plot_modules = [communities_plot, rank_plot, intro_plot, similarity_plot, semantic_path, hubs_plot, link_strat]
+	plot_modules = [communities_plot, rank_plot, intro_plot, similarity_plot, semantic_path, hubs_plot, link_strat, backtrack_plot]
 
 	for plot_module in plot_modules:
 		try:
