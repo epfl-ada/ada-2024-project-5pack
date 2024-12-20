@@ -349,26 +349,19 @@ Our analysis reveals that while players aren't necessarily playing Wikispeedia "
 Through our analysis of different navigation approaches, we've identified several key factors about effective gameplay strategies:
 
 1. Semantic Navigation emerges as the most successful strategy overall:
-
 - It shows the highest success rate among all strategies. 
 - The Mixed Linear Model confirms that increasing semantic similarity to the target reduces completion time by 21 seconds on average. 
 - This suggests players should prioritize choosing articles semantically related to their target
 
 2. Link Position Strategy proves surprisingly effective:
-
 - Clicking top-positioned links reduces completion time by about 8 seconds
 - 44.9% of all clicks are on the top 20% of links
 - This indicates that quick scanning and using prominent links is more time-efficient than thorough article reading
-
 3. Hub Usage requires careful consideration:
-
 - While hub articles (like "United States" or "Europe") are natural navigation landmarks, using them alone isn't optimal
 - Hub strategy becomes more effective when combined with other approaches, particularly semantic navigation
 - This suggests hubs should be used as stepping stones rather than the primary navigation method
-
-
 4. Backtracking should be minimized:
-
 - Excessive backtracking significantly increases completion time (37.5 seconds per unit of backtrack ratio)
 - Finished paths show notably lower backtrack ratios than unfinished ones, suggesting that unfinished paths may result from players getting lost or lacking a clear navigation strategy.
 - This indicates that confident, forward-moving navigation is generally more successful
