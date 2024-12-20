@@ -164,9 +164,9 @@ The **Backtrack Strategy** aims to quantify exploratory behavior in navigation p
 
 The Backtrack Ratio (BR) is defined as:
 
-$
+$$
 BR = \frac{\text{Number of Backtrack Steps in Path}}{\text{Total Number of Steps in Path}}
-$
+$$
 
 Where:
 - **Backtrack Steps**: Moves represented by `<` in the path.
@@ -236,6 +236,7 @@ Now, let's actually start analyzing the strategies performance.
 To do that, we will use regression analysis. While using OLS might sounds tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
 
 Let's take a look at that equation:
+
 $$
 \text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{hub_usage_ratio}_{ij} + \beta_2 \cdot \text{backtrack_ratio}_{ij} + \beta_3 \cdot \text{top_link_usage_ratio}_{ij} + \beta_4 \cdot \text{semantic_increase_score}_{ij} + u_{i} + \epsilon
 $$
