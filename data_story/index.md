@@ -236,8 +236,9 @@ Now, let's actually start analyzing the strategies performance.
 To do that, we will use regression analysis. While using OLS might sounds tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
 
 Let's take a look at that equation:
+
 $$
-\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{hub_usage_ratio}_{ij} + \beta_2 \cdot \text{backtrack_ratio}_{ij} + \beta_3 \cdot \text{top_link_usage_ratio}_{ij} + \beta_4 \cdot \text{semantic_increase_score}_{ij} + u_{i} + \epsilon
+\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{semantic_increase_score}_{ij} + \beta_2 \cdot \text{top_links_usage_ratio}_{ij} + \beta_3 \cdot \text{hub_ratio}_{ij} + \beta_4 \cdot \text{backtrack_ratio}_{ij} + u_{i} + \epsilon
 $$
 
 Where, for a given path $j$ ending at target $i$:
@@ -249,37 +250,43 @@ Where, for a given path $j$ ending at target $i$:
 Great! Now let us look at the results:
 
 ```
-              Mixed Linear Model Regression Results
-=================================================================
-Model:            MixedLM Dependent Variable: duration_in_seconds
-No. Observations: 50509   Method:             REML               
-No. Groups:       3324    Scale:              125535.8397        
-Min. group size:  1       Log-Likelihood:     -368549.1586       
-Max. group size:  1134    Converged:          Yes                
-Mean group size:  15.2                                           
------------------------------------------------------------------
-                 Coef.   Std.Err.    z    P>|z|  [0.025   0.975] 
------------------------------------------------------------------
-Intercept        254.881    6.813  37.408 0.000  241.527  268.235
-sis             -116.706    6.532 -17.867 0.000 -129.509 -103.904
-hub_ratio        -34.216    8.971  -3.814 0.000  -51.799  -16.633
-backtrack_ratio  666.752   21.531  30.968 0.000  624.553  708.951
-Group Var       2601.550    1.119                                
-=================================================================
+                 Mixed Linear Model Regression Results
+=======================================================================
+Model:              MixedLM   Dependent Variable:   duration_in_seconds
+No. Observations:   50138     Method:               REML               
+No. Groups:         3323      Scale:                11923.4479         
+Min. group size:    1         Log-Likelihood:       -308414.9826       
+Max. group size:    1123      Converged:            Yes                
+Mean group size:    15.1                                               
+-----------------------------------------------------------------------
+                         Coef.   Std.Err.    z    P>|z|  [0.025  0.975]
+-----------------------------------------------------------------------
+Intercept                221.143    2.568  86.130 0.000 216.110 226.175
+semantic_increase_score  -82.398    2.108 -39.091 0.000 -86.529 -78.266
+top_links_ratio          -34.139    2.141 -15.948 0.000 -38.334 -29.943
+hub_ratio                 16.775    3.079   5.449 0.000  10.741  22.809
+backtrack_ratio          533.046    6.977  76.404 0.000 519.372 546.720
+Group Var               2458.259    0.981                              
+=======================================================================
 ```
 
 Let's analyze those results:
-- $\beta_4 = 116.7$: The coefficient for the semantic increase score (SIS) suggests that having a semantic increase score of 1 decreases the average game completion time by 116.7 seconds. That’s an impressive reduction!
-- $\beta_1 = -34.2$: A high hub usage ratio also decreases completion time, but to a lesser extent compared to SIS
-- $\beta_2 = 666.8$: Backtracking, on the other hand, has a significant negative impact, increasing the average game time by 666.8 seconds for a backtracking ratio of 1. This number makes sense in some ways as a game with a backtracking ration of 1 will never finish in theory.
+- $\beta_1 = -82$: The coefficient for the semantic increase score (SIS) suggests that having a semantic increase score of 1 decreases the average game completion time by 82 seconds. That’s an impressive reduction!
+- $\beta_2 = -34.1$: A high top links click ratio also decreases completion time on average, but to a lesser extent compared to SIS
+- $\beta_3 = 16.8$: A high hub usage does not seem to improve the completion time
+- $\beta_4 = 533$: Backtracking, on the other hand, has a significant negative impact, increasing the game time by 533 seconds on average for a backtracking ratio of 1. This number makes sense in some ways as a game with a backtracking ration of 1 will never finish.
 
 Furthermore, all of the p-values are 0 which is great news as this indicate that the results are statistically significant.
 
-[TODO: Insert plot]
+<div class="plot">
+  <iframe src="assets/plots/fixed_effect.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
 
 Another advantage of the Mixed Linear Model is that it allows us to extract the random effect term for each target. This term captures how difficult it is to reach a particular target, independent of the strategies used.
 
-[TODO: Insert Plot]
+<div class="plot">
+  <iframe src="assets/plots/random_effect.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
 
 For instance, the target article with the highest random effect is the US, with a random effect of -50, which indicates that games ending at US takes on average 50 seconds less than the average game time.
 
