@@ -2,6 +2,7 @@ from functools import cache
 
 import pandas as pd
 import statsmodels.formula.api as smf
+from scipy.stats import zscore
 from statsmodels.regression.mixed_linear_model import MixedLMResults
 
 from src.utils.data import load_graph_data
@@ -34,6 +35,18 @@ def get_strategies_scores() -> pd.DataFrame:
 	paths_scores["top_links_ratio"] = paths_scores["path"].apply(top_link_ratio)
 	paths_scores["backtrack_ratio"] = paths_scores["path"].apply(compute_backtrack_ratio)
 	paths_scores["hub_ratio"] = paths_scores["path"].apply(compute_hub_usage_ratio)
+	return paths_scores
+
+
+def get_normalized_strategies_scores() -> pd.DataFrame:
+	paths_scores = get_strategies_scores
+
+	# Normalize the scores using z-score normalization
+	paths_scores["semantic_increase_score"] = zscore(paths_scores["semantic_increase_score"])
+	paths_scores["top_links_ratio"] = zscore(paths_scores["top_links_ratio"])
+	paths_scores["backtrack_ratio"] = zscore(paths_scores["backtrack_ratio"])
+	paths_scores["hub_ratio"] = zscore(paths_scores["hub_ratio"])
+
 	return paths_scores
 
 
