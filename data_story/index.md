@@ -80,7 +80,7 @@ To see that there is a clear pattern of paths going through general articles, we
   <iframe src="assets/plots/plot_gen.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However, players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more links between the source and target, and that is generally how the shortest paths are formed in the network (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
+We define the generality score as the pageRank score of that article over the max pageRank score across all articles. It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However, players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more links between the source and target, and that is generally how the shortest paths are formed in the network (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
 
 
 <div class="plot">
