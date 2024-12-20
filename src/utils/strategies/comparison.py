@@ -41,8 +41,8 @@ def get_strategies_scores() -> pd.DataFrame:
 def get_normalized_strategies_scores() -> pd.DataFrame:
 	"""
 	Same as get_strategies_scores(), but the scores and ratios are normalized using z-score normalization
-    """
-	paths_scores = get_strategies_scores
+	"""
+	paths_scores = get_strategies_scores()
 
 	# Normalize the scores using z-score normalization
 	paths_scores["semantic_increase_score"] = zscore(paths_scores["semantic_increase_score"])
@@ -69,7 +69,50 @@ def perform_mixed_linear_regression() -> MixedLMResults:
 	return model.fit()
 
 
-def build_comparison_df(graph_data, top_hubs=200, threshold_semantic=0.8, threshold_link=0.8, threshold_backtrack = 0.1, threshold_hub = 0.8):
+def perform_backward_selection(data: pd.DataFrame) -> MixedLMResults:
+	"""
+	Runs the backward selection algorithm to select the most important features
+	"""
+	paths_scores = get_strategies_scores()
+
+	terms = [
+		"semantic_increase_score",
+		"top_links_ratio",
+		"hub_ratio",
+		"backtrack_ratio",
+		"semantic_increase_score:top_links_ratio",
+		"semantic_increase_score:hub_ratio",
+		"semantic_increase_score:backtrack_ratio",
+		"top_links_ratio:hub_ratio",
+		"top_links_ratio:backtrack_ratio",
+		"hub_ratio:backtrack_ratio",
+		"semantic_increase_score:top_links_ratio:hub_ratio",
+		"semantic_increase_score:top_links_ratio:backtrack_ratio",
+		"semantic_increase_score:hub_ratio:backtrack_ratio",
+		"top_links_ratio:hub_ratio:backtrack_ratio",
+		"semantic_increase_score:top_links_ratio:hub_ratio:backtrack_ratio",
+	]
+
+	while True:
+		formula = f"duration_in_seconds ~ {' + '.join(terms)}"
+		model = smf.mixedlm(formula, data=paths_scores, groups=paths_scores["target"])
+		result = model.fit()
+  
+		worst_feature = result.pvalues.iloc[1:-1].idxmax()  # Exclude the Intercept and Group Var
+		max_pvalue = result.pvalues.max()
+
+		if len(terms) <= 1 or max_pvalue < 0.0002:
+			break
+
+		print(f"Removing '{worst_feature}' with p-value {max_pvalue}")
+		terms.remove(worst_feature)
+
+	return result
+
+
+def build_comparison_df(
+	graph_data, top_hubs=200, threshold_semantic=0.8, threshold_link=0.8, threshold_backtrack=0.1, threshold_hub=0.8
+):
 	graph_pagerank = pagerank(graph_data["graph"])
 	article_gen_score = graph_pagerank.set_index("Article")["Generality_score"]
 	sorted_scores = article_gen_score.sort_values(ascending=False)
@@ -81,7 +124,9 @@ def build_comparison_df(graph_data, top_hubs=200, threshold_semantic=0.8, thresh
 	graph_data["paths_finished"]["backtrack_ratio"] = graph_data["paths_finished"]["path"].apply(compute_backtrack_ratio)
 	graph_data["paths_unfinished"]["backtrack_ratio"] = graph_data["paths_unfinished"]["path"].apply(compute_backtrack_ratio)
 	graph_data["paths_finished"]["path_clean"] = graph_data["paths_finished"]["path"].apply(lambda x: [u for u in x if u != "<"])
-	graph_data["paths_unfinished"]["path_clean"] = graph_data["paths_finished"]["path"].apply(lambda x: [u for u in x if u != "<"])
+	graph_data["paths_unfinished"]["path_clean"] = graph_data["paths_finished"]["path"].apply(
+		lambda x: [u for u in x if u != "<"]
+	)
 
 	fin_list = []
 
@@ -106,8 +151,8 @@ def build_comparison_df(graph_data, top_hubs=200, threshold_semantic=0.8, thresh
 				"top_link_usage": prob > threshold_link,
 				"semantic": semantic > threshold_semantic,
 				"max_generality": max_gen > score_threshold,
-				"hub_usage" : compute_hub_usage_ratio(path) > threshold_hub,
-				"backtrack" : row["backtrack_ratio"] > threshold_backtrack
+				"hub_usage": compute_hub_usage_ratio(path) > threshold_hub,
+				"backtrack": row["backtrack_ratio"] > threshold_backtrack,
 			}
 		)
 
@@ -140,9 +185,8 @@ def build_comparison_df(graph_data, top_hubs=200, threshold_semantic=0.8, thresh
 				"top_link_usage": prob > threshold_link,
 				"semantic": semantic > threshold_semantic,
 				"max_generality": max_gen > score_threshold,
-				"hub_usage" : compute_hub_usage_ratio(path) > threshold_hub,
-
-				"backtrack" : row["backtrack_ratio"] > threshold_backtrack
+				"hub_usage": compute_hub_usage_ratio(path) > threshold_hub,
+				"backtrack": row["backtrack_ratio"] > threshold_backtrack,
 			}
 		)
 

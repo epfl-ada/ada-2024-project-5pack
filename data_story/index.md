@@ -234,54 +234,60 @@ Therefore, in the subsequent analysis, all metrics are calculated with the confo
 
 Now, let's actually start analyzing the strategies performance.
 
-To do that, we will use regression analysis. While using OLS might sounds tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
+To do that, we will use regression analysis. While using OLS might sound tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
 
 Let's take a look at Mixed Linear Model equation:
 
 $$
-\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{semantic_increase_score}_{ij} + \beta_2 \cdot \text{top_links_usage_ratio}_{ij} + \beta_3 \cdot \text{hub_ratio}_{ij} + \beta_4 \cdot \text{backtrack_ratio}_{ij} + u_{i} + \epsilon
+\text{Game Time}_{ij} = \beta_0 + \beta_1 \cdot \text{semantic_increase_score}_{ij} + \beta_2 \cdot \text{top_links_usage_ratio}_{ij} + \beta_3 \cdot \text{hub_ratio}_{ij} + \beta_4 \cdot \text{backtrack_ratio}_{ij} + \text{interaction effects} + u_{i} + \epsilon
 $$
 
 Where, for a given path $j$ ending at target $i$:
 - $\beta_0$ is the fixed intercept, representing the average game time when all predictors are zero.
 - $\beta_1, \beta_2, \beta_3, \beta_4$: Fixed effects for the strategies. These coefficients measure the global effectiveness of each strategy.
+- $\text{interaction effects}$: Interaction terms between predictors, chosen using the **backward selection** algorithm. This ensures that only statistically significant interactions are included. Those terms will help us analyze how strategies influence each other.
 - $u_i$: The random effect for the i-th target, capturing the difficulty of reaching that target.
 - $\epsilon_{ij}$: Residual error term.
 
 Great! Now let us look at the results:
 
 ```
-                 Mixed Linear Model Regression Results
-=======================================================================
-Model:              MixedLM   Dependent Variable:   duration_in_seconds
-No. Observations:   50138     Method:               REML               
-No. Groups:         3323      Scale:                11923.4479         
-Min. group size:    1         Log-Likelihood:       -308414.9826       
-Max. group size:    1123      Converged:            Yes                
-Mean group size:    15.1                                               
------------------------------------------------------------------------
-                         Coef.   Std.Err.    z    P>|z|  [0.025  0.975]
------------------------------------------------------------------------
-Intercept                221.143    2.568  86.130 0.000 216.110 226.175
-semantic_increase_score  -82.398    2.108 -39.091 0.000 -86.529 -78.266
-top_links_ratio          -34.139    2.141 -15.948 0.000 -38.334 -29.943
-hub_ratio                 16.775    3.079   5.449 0.000  10.741  22.809
-backtrack_ratio          533.046    6.977  76.404 0.000 519.372 546.720
-Group Var               2458.259    0.981                              
-=======================================================================
+                              Mixed Linear Model Regression Results
+=================================================================================================
+Model:                        MixedLM           Dependent Variable:           duration_in_seconds
+No. Observations:             50138             Method:                       REML               
+No. Groups:                   3323              Scale:                        11902.8300         
+Min. group size:              1                 Log-Likelihood:               -308371.8628       
+Max. group size:              1123              Converged:                    Yes                
+Mean group size:              15.1                                                               
+-------------------------------------------------------------------------------------------------
+                                                   Coef.   Std.Err.    z    P>|z|  [0.025  0.975]
+-------------------------------------------------------------------------------------------------
+Intercept                                          156.099    1.097 142.259 0.000 153.949 158.250
+semantic_increase_score                            -21.262    0.546 -38.934 0.000 -22.332 -20.191
+top_links_ratio                                     -8.163    0.549 -14.875 0.000  -9.239  -7.088
+hub_ratio                                            2.414    0.639   3.776 0.000   1.161   3.667
+backtrack_ratio                                     37.520    0.626  59.965 0.000  36.293  38.746
+semantic_increase_score:hub_ratio                   -2.337    0.512  -4.564 0.000  -3.341  -1.333
+semantic_increase_score:backtrack_ratio             -4.617    0.656  -7.042 0.000  -5.902  -3.332
+top_links_ratio:hub_ratio                           -2.939    0.493  -5.961 0.000  -3.905  -1.972
+hub_ratio:backtrack_ratio                           -4.099    0.651  -6.299 0.000  -5.374  -2.824
+semantic_increase_score:hub_ratio:backtrack_ratio   -2.983    0.620  -4.809 0.000  -4.199  -1.767
+Group Var                                         2448.012    0.979                              
+=================================================================================================
 ```
 
 Let's analyze those results:
-- $\beta_1 = -82$: The coefficient for the _semantic increase score (SIS)_ suggests that having a semantic increase score of 1 decreases the average game completion time by 82 seconds. That’s an impressive reduction!
-- $\beta_2 = -34.1$: A high _top links click ratio_ also decreases completion time on average, but to a lesser extent compared to SIS
-- $\beta_3 = 16.8$: A high _hub usage_ does not seem to improve the completion time
-- $\beta_4 = 533$: _Backtracking_, on the other hand, has a significant negative impact, increasing the game time by 533 seconds on average for a backtracking ratio of 1. This number makes sense in some ways as a game with a backtracking ratio of 1 will never finish.
+- $\beta_1 = -21.2$: The coefficient for the _semantic increase score (SIS)_ suggests that having a semantic increase score of 1 decreases the average game completion time by 21 seconds. That’s an impressive reduction!
+- $\beta_2 = -8.2$: A high _top links click ratio_ also decreases completion time on average, but to a lesser extent compared to SIS
+- $\beta_3 = 2.4$: A high _hub usage_ does not seem to improve the completion time
+- $\beta_4 = 37.5$: _Backtracking_, on the other hand, has a significant negative impact, increasing the game time by 37.5 seconds on average for a backtracking ratio of 1. This number makes sense in some ways as spending too much time backtracking can be a waste of precious time.
 
-Furthermore, all of the p-values are 0 which is great news as this indicate that the results are statistically significant.
+Furthermore, all of the p-values are close 0 which is great news as this indicate that the results are statistically significant.
 
-<div class="plot">
-  <iframe src="assets/plots/fixed_effect.html" width="100%" height="550px" frameborder="0"></iframe>
-</div>
+Below is a tool to visualize how adhering to a particular strategy affects the average game duration
+
+<div class="__vue-root player"></div>
 
 Another advantage of the Mixed Linear Model is that it allows us to extract the random effect term for each target. This term captures how difficult it is to reach a particular target, independent of the strategies used.
 
@@ -290,6 +296,15 @@ Another advantage of the Mixed Linear Model is that it allows us to extract the 
 </div>
 
 For instance, the target article with the highest random effect is _Cultural Diversity_, which has a random effect value of 210. This means that games ending at _Cultural Diversity_ take, on average, 210 seconds longer than the typical game duration. Upon closer examination, we observe that the article _Cultural Diversity_ has an in-degree of only one, and is only reachable from the article _Globalization_. This limited connectivity makes _Cultural Diversity_ particularly challenging to reach!
+
+Finally, the interaction effect terms provide information into how strategies influence each other when used in combination. To explain this better, let's take a closer look at the hub usage ratio:
+
+<div class="plot">
+  <iframe src="assets/plots/hubs_impact.html" width="100%" height="550px" style="overflow:hidden" frameborder="0"></iframe>
+</div>
+
+On its own, a higher hub ratio tends to increase the average game duration. However, when combined with other strategies, it will trigger an interaction term that will reduce the average game time.
+
 
 [TODO Gabriel]
 
@@ -323,14 +338,8 @@ Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar S
   <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1040px" frameborder="0"></iframe>
 </div>
 
-<div class="__vue-root player"></div>
-
 <div class="plot">
   <iframe src="assets/plots/strategies_combinations.html" width="100%" height="550px" frameborder="0"></iframe>
-</div>
-
-<div class="plot">
-  <iframe src="assets/plots/hubs_impact.html" width="100%" height="550px" style="overflow:hidden" frameborder="0"></iframe>
 </div>
 
 ## Conclusion

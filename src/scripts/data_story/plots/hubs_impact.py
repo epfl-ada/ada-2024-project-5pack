@@ -4,29 +4,29 @@ def generate_plot(data, output_dir):
     effects = [
         {
             "name": "Hub (main effect)",
-            "effect": 2.48,
-            "se": 0.638,
+            "effect": 2.414,
+            "se": 0.639,
             "category": "main",
             "description": "Direct impact of using Hub strategy"
         },
         {
             "name": "Hub × Semantic",
-            "effect": -1.76,
-            "se": 0.5,
+            "effect": -2.337,
+            "se": 0.512,
             "category": "interaction",
             "description": "Reduces duration when used with Semantic"
         },
         {
             "name": "Hub × Top Links",
-            "effect": -2.98,
-            "se": 0.495,
+            "effect": -2.939,
+            "se": 0.493,
             "category": "interaction",
             "description": "Stronger reduction with Top Links"
         },
         {
             "name": "Hub × Backtrack",
-            "effect": -4.06,
-            "se": 0.653,
+            "effect": -4.099,
+            "se": 0.651,
             "category": "interaction",
             "description": "Strongest interaction, mitigates Backtrack"
         }
