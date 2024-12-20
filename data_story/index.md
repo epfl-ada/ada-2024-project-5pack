@@ -140,8 +140,7 @@ Similarly, we can compute how the similarity evolves as players progress along t
   <iframe src="assets/plots/semantic_path_example.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
 
-Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of **0.738** which indicates that the semantic similarity is generally increasing along the path.
-
+Then, we can compute the final SIS score using Spearman's rank correlation. For instance, the SIS score for the above path is of **0.738** which indicates that the semantic similarity is generally increasing along the path. Computing the score on all paths, we find an average SIS score of **0.82** for finished paths and **0.65** for unfinished paths. Computed on the last 50% of each path, the scores drop to **0.69** and **0.43** respectively. This goes well with our intuition that unfinished paths tend to occur when players go semantically further from the target articles than for finished paths. Even if they are not able to reach the target, they also tend to not get closer to it at every step.
 
 ### Link strategy
 
@@ -208,7 +207,9 @@ The link strategy appears to have the shortest times while the semantic strategy
 
 ### Causal Analysis
 
-An important consideration in our initial comparison of strategies using metrics like success rate and completion time might lead to misleading results because of —you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
+The previous two evaluation metrics provide a straightforward way to analyze the performance of each strategy.
+
+However using global metrics like success rate and completion time might lead to misleading results because of —you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
 
 <div style="text-align:center;">
   <img src="assets/images/confounding1.png" alt="Diagram of current situation" style="width:80%;">
@@ -232,9 +233,9 @@ Therefore, in the subsequent analysis, all metrics are calculated with the confo
 
 ### Regression Analysis
 
-Now, let's actually start analyzing the strategies performance.
+Now, let's start analyzing the performance of strategy profiles.
 
-To do that, we will use regression analysis. While using OLS might sound tempting,  it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
+To do that, we will use regression analysis. While using OLS might sound tempting, it doesn’t account for confounding factors such as the varying difficulty of reaching different target articles. To address this, we’ll use a more robust approach: the **Mixed Linear Model**. This model introduces a "random effect" term to account for the variability introduced by different target articles.
 
 Let's take a look at Mixed Linear Model equation:
 
@@ -278,7 +279,7 @@ Group Var                                         2448.012    0.979
 ```
 
 Let's analyze those results:
-- $\beta_1 = -21.2$: The coefficient for the _semantic increase score (SIS)_ suggests that having a semantic increase score of 1 decreases the average game completion time by 21 seconds. That’s an impressive reduction!
+- $\beta_1 = -21.3$: The coefficient for the _semantic increase score (SIS)_ suggests that having a semantic increase score of 1 decreases the average game completion time by 21 seconds. That’s an impressive reduction!
 - $\beta_2 = -8.2$: A high _top links click ratio_ also decreases completion time on average, but to a lesser extent compared to SIS
 - $\beta_3 = 2.4$: A high _hub usage_ does not seem to improve the completion time
 - $\beta_4 = 37.5$: _Backtracking_, on the other hand, has a significant negative impact, increasing the game time by 37.5 seconds on average for a backtracking ratio of 1. This number makes sense in some ways as spending too much time backtracking can be a waste of precious time.
