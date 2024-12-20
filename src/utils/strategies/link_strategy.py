@@ -23,7 +23,8 @@ def get_click_positions(paths):
 	Get click positions of the paths
 
 	Parameters:
-	- paths : It is a dataframe with the format:   hashedIpAddress   timestamp   durationInSec   path (list of articles)   rating
+	- paths : It is a dataframe with the format:
+ 		hashedIpAddress   timestamp   durationInSec   path (list of articles)   rating
 
 	Returns:
 	A list where we mapped path to their relative positions
