@@ -1,7 +1,7 @@
 import numpy as np
 from src.utils.data_utils import get_links_from_html_files
 
-
+@cache
 def build_link_order():
     """
     Return a link with relative positions of all articles
@@ -17,7 +17,7 @@ def build_link_order():
 
 
 
-
+@cache
 def get_click_positions(paths, all_links_dict):
     """
     Get click positions of the paths
@@ -46,7 +46,7 @@ def get_click_positions(paths, all_links_dict):
     
     return c
 
-
+@cache
 def get_probability_link(path_click_positions, threshold = 0.3):
     """
     Get percentage of clicks on the top links
@@ -64,7 +64,7 @@ def get_probability_link(path_click_positions, threshold = 0.3):
 
     return top_clicks/len(path_click_positions)
 
-
+@cache
 def get_probability_link_onepath(path, all_links_dict, threshold = 0.3):
     """
     Get percentage of clicks on the top links for one path
