@@ -81,10 +81,6 @@ To see that there is a clear pattern of paths going through general articles, we
 It appears that paths follow a pattern as (specific -> general -> specific). This strategies appears very natural as we expect general articles to have more links. However players that have more knowledge might be able to take shortcuts and bypass these general articles, by finding more links between the source and target (for example, a path going from Albert Einstein to General Relativity could be shortened from Einstein -> Physics -> Relativity to Einstein -> Relativity if the player knows that Einstein is directly associated with the development of General Relativity).
 
 
-{faire plot distribution hub usage ratio}
-{gabriel}
-[plot of distribution of page rank among the top articles]
-
 <div class="plot">
   <iframe src="assets/plots/pagerank_distribution.html" width="100%" height="550px" frameborder="0"></iframe>
 </div>
@@ -164,9 +160,33 @@ So clicking on the top links seems to be decreasing completion time.
 
 
 
-### Fast exploration
+### Exploratory strategy
 
-[Backtrack, Peter]
+The **Backtrack Strategy** aims to quantify exploratory behavior in navigation paths by analyzing how frequently players revisit previously visited nodes (backtracking). This behavior is measured using the **Backtrack Ratio (BR)**.
+
+The Backtrack Ratio (BR) is defined as:
+
+$
+BR = \frac{\text{Number of Backtrack Steps in Path}}{\text{Total Number of Steps in Path}}
+$
+
+Where:
+- **Backtrack Steps**: Moves represented by `<` in the path.
+- **Total Steps**: All moves in the path, including backtracks.
+
+<div class="plot">
+  <iframe src="assets/plots/backtrack_analysis.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+The distribution of backtrack ratios reveals insights into player navigation strategies:
+
+1. **Limited Backtracking**:
+   - Most paths have very low backtrack ratios, with a significant spike at \( BR = 0 \), indicating players largely prefer forward navigation.
+
+2. **Finished vs. Unfinished Navigation**:
+   - **Finished Paths** (67.4%): Tend to cluster around BR = 0 with a lower mean backtrack ratio (green dashed line), reflecting more efficient navigation.
+   - **Unfinished Paths** (32.6%): Spread across higher BR values, with a higher mean backtrack ratio (red dashed line), indicating more exploratory behavior.
+
 
 ## Discussing the best strategy
 
