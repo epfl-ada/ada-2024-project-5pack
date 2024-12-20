@@ -217,4 +217,4 @@ def rank_length_plot_from_analysis_data(df_from_analysis, pvalue_threshold = 0.0
 	fig.update_xaxes(showticklabels=True, title_text="count (cumulative)", row=2, col=2)
 	fig.update_yaxes(showticklabels=True, title_text="p-value", row=2, col=2)
 
-	fig.show()
+	return fig
