@@ -107,6 +107,12 @@ This metric allows us to evaluate the degree to which players utilize hubs in th
 - A **HUR of 1.0** indicates that the player's path consists entirely of hub articles.
 - A **HUR of 0.0** indicates that no hub articles were used in the path.
 
+<div class="plot">
+  <iframe src="assets/plots/hub_usage_ratios.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+This plot shows that finished paths tend to have a higher mean Hub Usage Ratio (HUR) compared to unfinished paths, suggesting that using hubs is a key factor in successful navigation.
+
 ### Semantic navigation strategy
 
 In this strategy, the player will click on links to articles that are semantically closer to the target article.
@@ -292,13 +298,45 @@ For instance, the target article with the highest random effect is _Cultural Div
 
 [TODO Gabriel]
 
+We have measured the efficiency of strategies in terms of completion time and in terms of path length.
+
+We will now measure them considering the length of the path.
+This metric has the advantage that we are allowed to **explode** the games to multiply our datapoints and 
+improve the statistical significance of our results.
+To explain what we mean by exploding the paths, let's consider the following game:
+No, actually let's consider this other game:
+
+```
+Global warming > Greenhouse effect > Planet > Sun
+```
+Indeed, everytime thee player clicks on a new article, the player then starts to look for ways to reach
+the target from the new article, which effectively means that it is playing a game from the current article
+to the target.
+Thus, we can **explode** the previous game into three different games:
+```
+Global warming > Greenhouse effect > Planet > Sun
+Greenhouse effect > Planet > Sun
+Planet > Sun
+```
+
 {analyse du shortest path}
 {déterminer les stratégies qui correspondent}
+```
+Bird > Bird migration > El Niño-Southern Oscillation > Global warming > Solar System > Sun 
+```
 <div class="plot">
-  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="620px" frameborder="0"></iframe>
+  <iframe src="assets/plots/spearman_rank_length_graph.html" width="100%" height="1000px" frameborder="0"></iframe>
+</div>
+
+<div class="__vue-root player"></div>
+
+<div class="plot">
+  <iframe src="assets/plots/strategies_combinations.html" width="100%" height="550px" frameborder="0"></iframe>
+</div>
+
+<div class="plot">
+  <iframe src="assets/plots/hubs_impact.html" width="100%" height="550px" style="overflow:hidden" frameborder="0"></iframe>
 </div>
 
 ## Conclusion
-
-
 TODO

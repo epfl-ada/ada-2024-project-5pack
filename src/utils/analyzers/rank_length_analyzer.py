@@ -203,8 +203,8 @@ def rank_length_plot_from_analysis_data(df_from_analysis, pvalue_threshold = 0.0
 		title="Spearman correlation and associated p-values",
 		bargap=0.05,
 		barmode='stack',
-		height=1600,
-		width=1200,
+		height=1000,
+		width=750,
 		showlegend=True,
 	)
 
