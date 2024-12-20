@@ -208,7 +208,9 @@ The link strategy appears to have the shortest times while the semantic strategy
 
 ### Causal Analysis
 
-An important consideration in our initial comparison of strategies using metrics like success rate and completion time might lead to misleading results because of —you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
+The previous two evaluation metrics provide a straightforward way to analyze the performance of each strategy.
+
+However using global metrics like success rate and completion time might lead to misleading results because of —you guessed it—**confounding variables 😈**. One major confounder here is game difficulty: harder games naturally take longer to complete. If players tend to use a strategy in more challenging games, the average game time might be increased, even if the strategy is actually helpful. Conversely, if the strategy is primarily used in easier games, its effectiveness might appear exaggerated.
 
 <div style="text-align:center;">
   <img src="assets/images/confounding1.png" alt="Diagram of current situation" style="width:80%;">
